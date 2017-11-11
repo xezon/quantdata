@@ -1,0 +1,6 @@
+.*
+!/.gitignore
+apikey.h
+
+*.VC.db
+*.user
