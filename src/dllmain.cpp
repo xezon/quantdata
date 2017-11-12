@@ -1,6 +1,6 @@
 
 #include <Windows.h>
-#include "series.h"
+#include "quantdata/series.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "libcurl_a_debug.lib")
@@ -44,6 +44,6 @@ EQuantDataResult QUANTDATA_CALL QuantDataCleanup()
 
 EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries(IQuantDataSeries** ppSeries)
 {
-	*ppSeries = new quantdata::CQuantDataSeries();
+	*ppSeries = new quantdata::TDefaultSeries();
 	return EQuantDataResult::Success;
 }

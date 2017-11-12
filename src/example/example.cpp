@@ -15,6 +15,14 @@ int main(int argc, char** argv)
 	result = QuantDataInit();
 	assert(result == EQuantDataResult::Success);
 
+	IQuantDataSeries* pSeries = nullptr;
+	result = QuantDataCreateSeries(&pSeries);
+	assert(result == EQuantDataResult::Success);
+
+	TQuantDataLoadSettings loadSettings;
+	result = pSeries->Load(&loadSettings);
+	assert(result == EQuantDataResult::Success);
+
 	result = QuantDataCleanup();
 	assert(result == EQuantDataResult::Success);
 

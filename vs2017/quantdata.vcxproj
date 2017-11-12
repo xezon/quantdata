@@ -121,14 +121,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dllmain.cpp" />
-    <ClCompile Include="..\src\series.cpp" />
+    <ClCompile Include="..\src\quantdata\series.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\inttypes.h" />
     <ClInclude Include="..\include\iquantdata.h" />
     <ClInclude Include="..\src\apikey.h" />
     <ClInclude Include="..\src\quantdata.h" />
-    <ClInclude Include="..\src\series.h" />
+    <ClInclude Include="..\src\quantdata\series.h" />
+    <ClInclude Include="..\src\quantdata\series_tpl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

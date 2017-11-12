@@ -7,13 +7,16 @@
     <Filter Include="include">
       <UniqueIdentifier>{f4aef96f-f138-444b-8eb9-d48ba110494b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\quantdata">
+      <UniqueIdentifier>{2f4bb4bf-af29-417a-9ec3-1cc5de4462ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dllmain.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\series.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\src\quantdata\series.cpp">
+      <Filter>src\quantdata</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -29,8 +32,11 @@
     <ClInclude Include="..\src\apikey.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\series.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\src\quantdata\series.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\series_tpl.h">
+      <Filter>src\quantdata</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
