@@ -17,5 +17,14 @@
     <ClInclude Include="..\include\iquantdata.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\inttypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\apikey.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

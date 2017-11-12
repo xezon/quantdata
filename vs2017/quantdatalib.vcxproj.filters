@@ -12,6 +12,9 @@
     <ClInclude Include="..\include\iquantdata.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\inttypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dllmain.cpp">

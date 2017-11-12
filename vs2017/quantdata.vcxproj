@@ -123,7 +123,10 @@
     <ClCompile Include="..\src\dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\inttypes.h" />
     <ClInclude Include="..\include\iquantdata.h" />
+    <ClInclude Include="..\src\apikey.h" />
+    <ClInclude Include="..\src\quantdata.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

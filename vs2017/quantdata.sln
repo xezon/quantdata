@@ -7,8 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quantdata", "quantdata.vcxp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlib", "..\..\commonlib\vs2017\commonlib.vcxproj", "{1E96B197-7EC2-42F0-80DA-94E5B01AAC14}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quantdatalib", "quantdatalib.vcxproj", "{FA031FBE-C888-4CD9-902B-01888F56F6EF}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quantdata_example", "quantdata_example.vcxproj", "{B1555E67-28F5-4A5D-96FA-8B5E3D383F5F}"
 EndProject
 Global
@@ -35,14 +33,6 @@ Global
 		{1E96B197-7EC2-42F0-80DA-94E5B01AAC14}.Release|x64.Build.0 = Release|x64
 		{1E96B197-7EC2-42F0-80DA-94E5B01AAC14}.Release|x86.ActiveCfg = Release|Win32
 		{1E96B197-7EC2-42F0-80DA-94E5B01AAC14}.Release|x86.Build.0 = Release|Win32
-		{FA031FBE-C888-4CD9-902B-01888F56F6EF}.Debug|x64.ActiveCfg = Debug|x64
-		{FA031FBE-C888-4CD9-902B-01888F56F6EF}.Debug|x64.Build.0 = Debug|x64
-		{FA031FBE-C888-4CD9-902B-01888F56F6EF}.Debug|x86.ActiveCfg = Debug|Win32
-		{FA031FBE-C888-4CD9-902B-01888F56F6EF}.Debug|x86.Build.0 = Debug|Win32
-		{FA031FBE-C888-4CD9-902B-01888F56F6EF}.Release|x64.ActiveCfg = Release|x64
-		{FA031FBE-C888-4CD9-902B-01888F56F6EF}.Release|x64.Build.0 = Release|x64
-		{FA031FBE-C888-4CD9-902B-01888F56F6EF}.Release|x86.ActiveCfg = Release|Win32
-		{FA031FBE-C888-4CD9-902B-01888F56F6EF}.Release|x86.Build.0 = Release|Win32
 		{B1555E67-28F5-4A5D-96FA-8B5E3D383F5F}.Debug|x64.ActiveCfg = Debug|x64
 		{B1555E67-28F5-4A5D-96FA-8B5E3D383F5F}.Debug|x64.Build.0 = Debug|x64
 		{B1555E67-28F5-4A5D-96FA-8B5E3D383F5F}.Debug|x86.ActiveCfg = Debug|Win32

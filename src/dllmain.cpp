@@ -1,7 +1,6 @@
 
-#ifdef QUANTDATA_DLL
-
-#include <windows.h>
+#include <quantdata.h>
+#include <Windows.h>
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -11,4 +10,17 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	return TRUE;
 }
 
-#endif
+EQuantDataResult QUANTDATA_CALL QuantDataInit()
+{
+	return EQuantDataResult::Success;
+}
+
+void QUANTDATA_CALL QuantDataCleanup()
+{
+
+}
+
+EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries(IQuantDataSeries** ppSeries)
+{
+	return EQuantDataResult::Success;
+}

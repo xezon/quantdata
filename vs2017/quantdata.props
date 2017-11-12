@@ -11,7 +11,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir).$(Platform)\$(Configuration);..\..\curl\libc\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
 	<ClCompile>
-      <AdditionalIncludeDirectories>..\include;..\..\commonlib\include;..\src;..\..\curl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\src;..\..\commonlib\include;..\..\curl\include;..\..\genotick-cpp\include;..\..\zorro-dll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />

@@ -1,6 +1,6 @@
 .*
 !/.gitignore
-apikey.h
+src/example/apikey.h
 
 *.VC.db
 *.user
