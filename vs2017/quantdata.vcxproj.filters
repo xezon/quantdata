@@ -12,6 +12,9 @@
     <ClCompile Include="..\src\dllmain.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\series.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iquantdata.h">
@@ -24,6 +27,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\apikey.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\series.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -134,11 +134,12 @@ struct SQuantDataDownloadSettings
 	TQuantDataUnixtime start        QUANTDATA_ZERO_INIT; // optional, default is begin of time
 	TQuantDataUnixtime end          QUANTDATA_ZERO_INIT; // optional, default is end of time
 	TQuantDataString   symbol       QUANTDATA_ZERO_INIT; // mandatory
+	EQuantDataProvider provider     QUANTDATA_ZERO_INIT; // mandatory
 	EQuantDataInterval interval     QUANTDATA_ZERO_INIT; // mandatory
 	TQuantDataBool     adjusted     QUANTDATA_ZERO_INIT; // mandatory, might be unsupported
 	TQuantDataBool     padding[3]   QUANTDATA_ZERO_INIT;
 };
-typedef SQuantDataDownloadSettings TQuantDataDownloadSettings;
+typedef struct SQuantDataDownloadSettings TQuantDataDownloadSettings;
 
 struct SQuantDataSaveSettings
 {
@@ -146,13 +147,71 @@ struct SQuantDataSaveSettings
 	TQuantDataString   utf8filename QUANTDATA_ZERO_INIT; // optional, default is symbol name
 	EQuantDataFormat   format       QUANTDATA_ZERO_INIT; // mandatory
 };
-typedef SQuantDataSaveSettings TQuantDataSaveSettings;
+typedef struct SQuantDataSaveSettings TQuantDataSaveSettings;
 
 struct SQuantDataLoadSettings
 {
 	TQuantDataString   utf8filepath QUANTDATA_ZERO_INIT; // mandatory, path to file
 };
-typedef SQuantDataLoadSettings TQuantDataLoadSettings;
+typedef struct SQuantDataLoadSettings TQuantDataLoadSettings;
+
+struct SQuantDataSymbols
+{
+	TQuantDataString*   pBuffer    QUANTDATA_ZERO_INIT;
+	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
+	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+};
+typedef struct SQuantDataSymbols TQuantDataSymbols;
+
+struct SQuantDataIntervals
+{
+	EQuantDataInterval* pBuffer    QUANTDATA_ZERO_INIT;
+	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
+	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+};
+typedef struct SQuantDataIntervals TQuantDataIntervals;
+
+struct SQuantDataT1s
+{
+	T1*                 pBuffer    QUANTDATA_ZERO_INIT;
+	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
+	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+};
+typedef struct SQuantDataT1s TQuantDataT1s;
+
+struct SQuantDataT2s
+{
+	T2*                 pBuffer    QUANTDATA_ZERO_INIT;
+	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
+	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+};
+typedef struct SQuantDataT2s TQuantDataT2s;
+
+struct SQuantDataT6s
+{
+	T6*                 pBuffer    QUANTDATA_ZERO_INIT;
+	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
+	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+};
+typedef struct SQuantDataT6s TQuantDataT6s;
+
+struct SQuantDataT8s
+{
+	T8*                 pBuffer    QUANTDATA_ZERO_INIT;
+	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
+	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+};
+typedef struct SQuantDataT8s TQuantDataT8s;
+
+struct SQuantDataGtDataPoints
+{
+	TGenotickDataPoint* pBuffer                   QUANTDATA_ZERO_INIT;
+	TQuantDataSize      bufferSize                QUANTDATA_ZERO_INIT;
+	TQuantDataSize      actualSize                QUANTDATA_ZERO_INIT;
+	TQuantDataSize      bufferOptionalColumnCount QUANTDATA_ZERO_INIT;
+	TQuantDataSize      actualOptionalColumnCount QUANTDATA_ZERO_INIT;
+};
+typedef struct SQuantDataGtDataPoints TQuantDataGtDataPoints;
 
 struct SQuantDataSeries;
 struct SQuantDataSeriesFunctions;
@@ -165,22 +224,21 @@ typedef const struct SQuantDataSeriesFunctions IQuantDataSeries;
 struct SQuantDataSeriesFunctions
 {
 	EQuantDataResult (QUANTDATA_CALL* SetApiKey)(IQuantDataSeries* pThis, TQuantDataString apikey);
-	EQuantDataResult (QUANTDATA_CALL* GetSupportedIntervals)(IQuantDataSeries* pThis, EQuantDataInterval* pIntervals, TQuantDataSize* pCount);
-	EQuantDataResult (QUANTDATA_CALL* GetSupportedSymbols)(IQuantDataSeries* pThis, TQuantDataString* pSymbols, TQuantDataSize* pCount);
+	EQuantDataResult (QUANTDATA_CALL* GetSupportedIntervals)(IQuantDataSeries* pThis, TQuantDataIntervals* pIntervals);
+	EQuantDataResult (QUANTDATA_CALL* GetSupportedSymbols)(IQuantDataSeries* pThis, TQuantDataSymbols* pSymbols);
 	EQuantDataResult (QUANTDATA_CALL* Download)(IQuantDataSeries* pThis, TQuantDataDownloadSettings* pSettings);
-	EQuantDataResult (QUANTDATA_CALL* Load)(IQuantDataSeries* pThis, TQuantDataString utf8Filepath);
+	EQuantDataResult (QUANTDATA_CALL* Load)(IQuantDataSeries* pThis, TQuantDataLoadSettings* pSettings);
 	EQuantDataResult (QUANTDATA_CALL* Save)(IQuantDataSeries* pThis, TQuantDataSaveSettings* pSettings);
-	EQuantDataResult (QUANTDATA_CALL* GetSize)(IQuantDataSeries* pThis, TQuantDataSize* pBarCount, TQuantDataSize* pOptionalColumnCount);
-	EQuantDataResult (QUANTDATA_CALL* GetT1)(IQuantDataSeries* pThis, T1* pData);
-	EQuantDataResult (QUANTDATA_CALL* GetT2)(IQuantDataSeries* pThis, T2* pData);
-	EQuantDataResult (QUANTDATA_CALL* GetT6)(IQuantDataSeries* pThis, T6* pData);
-	EQuantDataResult (QUANTDATA_CALL* GetT8)(IQuantDataSeries* pThis, T8* pData);
-	EQuantDataResult (QUANTDATA_CALL* GetGno)(IQuantDataSeries* pThis, TGenotickDataPoint* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetT1)(IQuantDataSeries* pThis, T1* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetT2)(IQuantDataSeries* pThis, T2* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetT6)(IQuantDataSeries* pThis, T6* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetT8)(IQuantDataSeries* pThis, T8* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetGno)(IQuantDataSeries* pThis, TGenotickDataPoint* pData);
+	EQuantDataResult (QUANTDATA_CALL* GetT1)(IQuantDataSeries* pThis, TQuantDataT1s* pData);
+	EQuantDataResult (QUANTDATA_CALL* GetT2)(IQuantDataSeries* pThis, TQuantDataT2s* pData);
+	EQuantDataResult (QUANTDATA_CALL* GetT6)(IQuantDataSeries* pThis, TQuantDataT6s* pData);
+	EQuantDataResult (QUANTDATA_CALL* GetT8)(IQuantDataSeries* pThis, TQuantDataT8s* pData);
+	EQuantDataResult (QUANTDATA_CALL* GetGtData)(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData);
+	EQuantDataResult (QUANTDATA_CALL* SetT1)(IQuantDataSeries* pThis, TQuantDataT1s* pData);
+	EQuantDataResult (QUANTDATA_CALL* SetT2)(IQuantDataSeries* pThis, TQuantDataT2s* pData);
+	EQuantDataResult (QUANTDATA_CALL* SetT6)(IQuantDataSeries* pThis, TQuantDataT6s* pData);
+	EQuantDataResult (QUANTDATA_CALL* SetT8)(IQuantDataSeries* pThis, TQuantDataT8s* pData);
+	EQuantDataResult (QUANTDATA_CALL* SetGtData)(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData);
 	EQuantDataResult (QUANTDATA_CALL* Release)(IQuantDataSeries* pThis);
 };
 
@@ -191,53 +249,50 @@ struct SQuantDataSeries
 	EQuantDataResult SetApiKey(TQuantDataString apikey) {
 		return functions.SetApiKey(this, apikey);
 	}
-	EQuantDataResult GetSupportedIntervals(EQuantDataInterval* pIntervals, TQuantDataSize* pCount) {
-		return functions.GetSupportedIntervals(this, pIntervals, pCount);
+	EQuantDataResult GetSupportedIntervals(TQuantDataIntervals* pIntervals) {
+		return functions.GetSupportedIntervals(this, pIntervals);
 	}
-	EQuantDataResult GetSupportedSymbols(TQuantDataString* pSymbols, TQuantDataSize* pCount) {
-		return functions.GetSupportedSymbols(this, pSymbols, pCount);
+	EQuantDataResult GetSupportedSymbols(TQuantDataSymbols* pSymbols) {
+		return functions.GetSupportedSymbols(this, pSymbols);
 	}
 	EQuantDataResult Download(TQuantDataDownloadSettings* pSettings) {
 		return functions.Download(this, pSettings);
 	}
-	EQuantDataResult Load(TQuantDataString utf8Filepath) {
-		return functions.Load(this, utf8Filepath);
+	EQuantDataResult Load(TQuantDataLoadSettings* pSettings) {
+		return functions.Load(this, pSettings);
 	}
 	EQuantDataResult Save(TQuantDataSaveSettings* pSettings) {
 		return functions.Save(this, pSettings);
 	}
-	EQuantDataResult GetSize(TQuantDataSize* pBarCount, TQuantDataSize* pOptionalColumnCount) {
-		return functions.GetSize(this, pBarCount, pOptionalColumnCount);
-	}
-	EQuantDataResult GetT1(T1* pData) {
+	EQuantDataResult GetT1(TQuantDataT1s* pData) {
 		return functions.GetT1(this, pData);
 	}
-	EQuantDataResult GetT2(T2* pData) {
+	EQuantDataResult GetT2(TQuantDataT2s* pData) {
 		return functions.GetT2(this, pData);
 	}
-	EQuantDataResult GetT6(T6* pData) {
+	EQuantDataResult GetT6(TQuantDataT6s* pData) {
 		return functions.GetT6(this, pData);
 	}
-	EQuantDataResult GetT8(T8* pData) {
+	EQuantDataResult GetT8(TQuantDataT8s* pData) {
 		return functions.GetT8(this, pData);
 	}
-	EQuantDataResult GetGno(TGenotickDataPoint* pData) {
-		return functions.GetGno(this, pData);
+	EQuantDataResult GetGtData(TQuantDataGtDataPoints* pData) {
+		return functions.GetGtData(this, pData);
 	}
-	EQuantDataResult SetT1(T1* pData) {
+	EQuantDataResult SetT1(TQuantDataT1s* pData) {
 		return functions.SetT1(this, pData);
 	}
-	EQuantDataResult SetT2(T2* pData) {
+	EQuantDataResult SetT2(TQuantDataT2s* pData) {
 		return functions.SetT2(this, pData);
 	}
-	EQuantDataResult SetT6(T6* pData) {
+	EQuantDataResult SetT6(TQuantDataT6s* pData) {
 		return functions.SetT6(this, pData);
 	}
-	EQuantDataResult SetT8(T8* pData) {
+	EQuantDataResult SetT8(TQuantDataT8s* pData) {
 		return functions.SetT8(this, pData);
 	}
-	EQuantDataResult SetGno(TGenotickDataPoint* pData) {
-		return functions.SetGno(this, pData);
+	EQuantDataResult SetGtData(TQuantDataGtDataPoints* pData) {
+		return functions.SetGtData(this, pData);
 	}
 	EQuantDataResult Release() {
 		return functions.Release(this);
