@@ -4,10 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quantdata", "quantdata.vcxproj", "{56EB0FD2-E83C-40BC-8FAA-C9BA87A96BDA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1E96B197-7EC2-42F0-80DA-94E5B01AAC14} = {1E96B197-7EC2-42F0-80DA-94E5B01AAC14}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlib", "..\..\commonlib\vs2017\commonlib.vcxproj", "{1E96B197-7EC2-42F0-80DA-94E5B01AAC14}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quantdata_example", "quantdata_example.vcxproj", "{B1555E67-28F5-4A5D-96FA-8B5E3D383F5F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56EB0FD2-E83C-40BC-8FAA-C9BA87A96BDA} = {56EB0FD2-E83C-40BC-8FAA-C9BA87A96BDA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
