@@ -43,12 +43,14 @@ typedef int64_t     TQuantDataUnixtime;
 typedef uint32_t    TQuantDataSize;
 typedef uint8_t     TQuantDataBool;
 
-#define QuantDataResult_Success             0
-#define QuantDataResult_InvalidApiKey       1
-#define QuantDataResult_RejectedApiKey      2
-#define QuantDataResult_UnsupportedInterval 3
-#define QuantDataResult_UnsupportedSymbol   4
-#define QuantDataResult_UnsupportedTime     5
+#define QuantDataResult_Success               0
+#define QuantDataResult_InitFailed            1
+#define QuantDataResult_CleanupFailed         2
+#define QuantDataResult_InvalidApiKey       500
+#define QuantDataResult_RejectedApiKey      501
+#define QuantDataResult_UnsupportedInterval 600
+#define QuantDataResult_UnsupportedSymbol   601
+#define QuantDataResult_UnsupportedTime     602
 
 #define QuantDataProvider_Quandl        0
 #define QuantDataProvider_Oanda         1
@@ -77,6 +79,8 @@ typedef uint8_t     TQuantDataBool;
 enum class EQuantDataResult : int32_t
 {
 	Success             = QuantDataResult_Success,
+	InitFailed          = QuantDataResult_InitFailed,
+	CleanupFailed       = QuantDataResult_CleanupFailed,
 	InvalidApiKey       = QuantDataResult_InvalidApiKey,
 	RejectedApiKey      = QuantDataResult_RejectedApiKey,
 	UnsupportedInterval = QuantDataResult_UnsupportedInterval,
@@ -138,15 +142,15 @@ typedef SQuantDataDownloadSettings TQuantDataDownloadSettings;
 
 struct SQuantDataSaveSettings
 {
-	TQuantDataString   utf8Path     QUANTDATA_ZERO_INIT; // optional, default is working directory
-	TQuantDataString   utf8Filename QUANTDATA_ZERO_INIT; // optional, default is symbol name
+	TQuantDataString   utf8path     QUANTDATA_ZERO_INIT; // optional, default is working directory
+	TQuantDataString   utf8filename QUANTDATA_ZERO_INIT; // optional, default is symbol name
 	EQuantDataFormat   format       QUANTDATA_ZERO_INIT; // mandatory
 };
 typedef SQuantDataSaveSettings TQuantDataSaveSettings;
 
 struct SQuantDataLoadSettings
 {
-	TQuantDataString   utf8Filepath QUANTDATA_ZERO_INIT; // mandatory, path to file
+	TQuantDataString   utf8filepath QUANTDATA_ZERO_INIT; // mandatory, path to file
 };
 typedef SQuantDataLoadSettings TQuantDataLoadSettings;
 
@@ -249,7 +253,7 @@ extern "C" {
 #endif
 
 QUANTDATA_IMPORT_OR_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataInit();
-QUANTDATA_IMPORT_OR_EXPORT void             QUANTDATA_CALL QuantDataCleanup();
+QUANTDATA_IMPORT_OR_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataCleanup();
 QUANTDATA_IMPORT_OR_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries(IQuantDataSeries** ppSeries);
 
 #ifdef __cplusplus
