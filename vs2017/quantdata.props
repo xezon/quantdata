@@ -8,10 +8,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir).$(Platform)\$(Configuration);..\..\curl\libc\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir).$(Platform)\$(Configuration);..\..\deps\$(Platform)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-	<ClCompile>
-      <AdditionalIncludeDirectories>..\include;..\src;..\..\commonlib\include;..\..\curl\include;..\..\genotick-cpp\include;..\..\zorro-dll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    <ClCompile>
+      <RuntimeLibrary Condition="'$(Configuration)'=='Debug'">MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>..\include;..\src;..\..\commonlib\include;..\..\deps\$(Platform)\include;..\..\genotick-cpp\include;..\..\zorro-dll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
