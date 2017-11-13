@@ -4,7 +4,7 @@
 
 namespace quantdata {
 
-EQuantDataResult CQuantDataSeries::SetProvider(const TQuantDataProviderSettings* pSettings)
+EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSettings)
 {
 	if (!pSettings || !IsValidProvider(*pSettings))
 		return EQuantDataResult::InvalidArgument;
@@ -13,88 +13,88 @@ EQuantDataResult CQuantDataSeries::SetProvider(const TQuantDataProviderSettings*
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::GetSupportedIntervals(TQuantDataIntervals* pIntervals)
+EQuantDataResult CSeries::GetSupportedIntervals(TQuantDataIntervals* pIntervals)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::GetSupportedSymbols(TQuantDataSymbols* pSymbols)
+EQuantDataResult CSeries::GetSupportedSymbols(TQuantDataSymbols* pSymbols)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::Download(const TQuantDataDownloadSettings* pSettings)
+EQuantDataResult CSeries::Download(const TQuantDataDownloadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::Load(const TQuantDataLoadSettings* pSettings)
+EQuantDataResult CSeries::Load(const TQuantDataLoadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::Save(const TQuantDataSaveSettings* pSettings) const
+EQuantDataResult CSeries::Save(const TQuantDataSaveSettings* pSettings) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::GetT1(TQuantDataT1s* pData) const
+EQuantDataResult CSeries::GetT1(TQuantDataT1s* pData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::GetT2(TQuantDataT2s* pData) const
+EQuantDataResult CSeries::GetT2(TQuantDataT2s* pData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::GetT6(TQuantDataT6s* pData) const
+EQuantDataResult CSeries::GetT6(TQuantDataT6s* pData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::GetT8(TQuantDataT8s* pData) const
+EQuantDataResult CSeries::GetT8(TQuantDataT8s* pData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::GetGtick(TQuantDataGtDataPoints* pData) const
+EQuantDataResult CSeries::GetGtick(TQuantDataGtDataPoints* pData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::SetT1(TQuantDataT1s* pData)
+EQuantDataResult CSeries::SetT1(TQuantDataT1s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::SetT2(TQuantDataT2s* pData)
+EQuantDataResult CSeries::SetT2(TQuantDataT2s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::SetT6(TQuantDataT6s* pData)
+EQuantDataResult CSeries::SetT6(TQuantDataT6s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::SetT8(TQuantDataT8s* pData)
+EQuantDataResult CSeries::SetT8(TQuantDataT8s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::SetGtick(TQuantDataGtDataPoints* pData)
+EQuantDataResult CSeries::SetGtick(TQuantDataGtDataPoints* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::Release()
+EQuantDataResult CSeries::Release()
 {
 	utils::PlacementFree(this, m_free);
 	return EQuantDataResult::Success;
 }
 
-bool CQuantDataSeries::IsValidProvider(const TQuantDataProviderSettings& provider)
+bool CSeries::IsValidProvider(const TQuantDataProviderSettings& provider)
 {
 	if (!::IsValidString(provider.apikey))
 	{

@@ -5,10 +5,10 @@
 
 namespace quantdata {
 
-class CQuantDataSeries : public IQuantDataSeries
+class CSeries : public IQuantDataSeries
 {
 protected:
-	CQuantDataSeries(TQuantDataAlloc alloc, TQuantDataFree free)
+	CSeries(TQuantDataAlloc alloc, TQuantDataFree free)
 		: m_alloc(alloc)
 		, m_free(free)
 	{}
@@ -39,6 +39,6 @@ private:
 	TQuantDataProviderSettings m_providerSettings;
 };
 
-using TSeries = CQuantDataSeriesTpl<CQuantDataSeries>;
+using TSeries = CSeriesTpl<CSeries>;
 
 } // namespace quantdata
