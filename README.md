@@ -1,17 +1,17 @@
 # quantdata
-Library for downloading and storing quantitative data
+Library for downloading and storing quantitative data <br />
 
-Dependencies:
-https://github.com/curl/curl
-https://github.com/openssl/openssl
-https://github.com/xezon/zorro-dll
-https://github.com/xezon/commonlib
-https://github.com/xezon/genotick-cpp
+Dependencies: <br />
+https://github.com/curl/curl <br />
+https://github.com/openssl/openssl <br />
+https://github.com/xezon/zorro-dll <br />
+https://github.com/xezon/commonlib <br />
+https://github.com/xezon/genotick-cpp <br />
 
-Where to copy dependencies?
-\quantdata
-\curl
-\openssl
-\zorro-dll
-\commonlib
-\genotick-cpp
+Where to copy dependencies? <br />
+\quantdata <br />
+\curl <br />
+\openssl <br />
+\zorro-dll <br />
+\commonlib <br />
+\genotick-cpp <br />
