@@ -3,87 +3,87 @@
 
 namespace quantdata {
 
-EQuantDataResult CDefaultSeries::SetApiKey(TQuantDataString apikey)
+EQuantDataResult CQuantDataSeries::SetProvider(TQuantDataProviderSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::GetSupportedIntervals(TQuantDataIntervals* pIntervals)
+EQuantDataResult CQuantDataSeries::GetSupportedIntervals(TQuantDataIntervals* pIntervals)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::GetSupportedSymbols(TQuantDataSymbols* pSymbols)
+EQuantDataResult CQuantDataSeries::GetSupportedSymbols(TQuantDataSymbols* pSymbols)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::Download(TQuantDataDownloadSettings* pSettings)
+EQuantDataResult CQuantDataSeries::Download(TQuantDataDownloadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::Load(TQuantDataLoadSettings* pSettings)
+EQuantDataResult CQuantDataSeries::Load(TQuantDataLoadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::Save(TQuantDataSaveSettings* pSettings) const
+EQuantDataResult CQuantDataSeries::Save(TQuantDataSaveSettings* pSettings) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::GetT1(TQuantDataT1s* pData) const
+EQuantDataResult CQuantDataSeries::GetT1(TQuantDataT1s* pData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::GetT2(TQuantDataT2s* pData) const
+EQuantDataResult CQuantDataSeries::GetT2(TQuantDataT2s* pData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::GetT6(TQuantDataT6s* pData) const
+EQuantDataResult CQuantDataSeries::GetT6(TQuantDataT6s* pData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::GetT8(TQuantDataT8s* pData) const
+EQuantDataResult CQuantDataSeries::GetT8(TQuantDataT8s* pData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::GetGtData(TQuantDataGtDataPoints* pData) const
+EQuantDataResult CQuantDataSeries::GetGtick(TQuantDataGtDataPoints* pData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::SetT1(TQuantDataT1s* pData)
+EQuantDataResult CQuantDataSeries::SetT1(TQuantDataT1s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::SetT2(TQuantDataT2s* pData)
+EQuantDataResult CQuantDataSeries::SetT2(TQuantDataT2s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::SetT6(TQuantDataT6s* pData)
+EQuantDataResult CQuantDataSeries::SetT6(TQuantDataT6s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::SetT8(TQuantDataT8s* pData)
+EQuantDataResult CQuantDataSeries::SetT8(TQuantDataT8s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::SetGtData(TQuantDataGtDataPoints* pData)
+EQuantDataResult CQuantDataSeries::SetGtick(TQuantDataGtDataPoints* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CDefaultSeries::Release()
+EQuantDataResult CQuantDataSeries::Release()
 {
 	return EQuantDataResult::Success;
 }

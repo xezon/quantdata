@@ -66,13 +66,13 @@ typedef uint8_t     TQuantDataBool;
 #define QuantDataInterval_Week1    10080
 #define QuantDataInterval_Month1   43800
 
-#define QuantDataFormat_csv   0
-#define QuantDataFormat_json  1
-#define QuantDataFormat_t1   10 // zorro tick data
-#define QuantDataFormat_t2   11 // zorro order book data
-#define QuantDataFormat_t6   12 // zorro standard time series
-#define QuantDataFormat_t8   13 // zorro contracts
-#define QuantDataFormat_gno  20 // genotick data
+#define QuantDataFormat_csv    0
+#define QuantDataFormat_json   1
+#define QuantDataFormat_t1    10 // zorro tick data
+#define QuantDataFormat_t2    11 // zorro order book data
+#define QuantDataFormat_t6    12 // zorro standard time series
+#define QuantDataFormat_t8    13 // zorro contracts
+#define QuantDataFormat_gtick 20 // genotick data
 
 #ifdef __cplusplus
 
@@ -111,13 +111,13 @@ enum class EQuantDataInterval : int32_t
 
 enum class EQuantDataFormat : int32_t
 {
-	csv  = QuantDataFormat_csv,
-	json = QuantDataFormat_json,
-	t1   = QuantDataFormat_t1,
-	t2   = QuantDataFormat_t2,
-	t6   = QuantDataFormat_t6,
-	t8   = QuantDataFormat_t8,
-	gno  = QuantDataFormat_gno,
+	csv   = QuantDataFormat_csv,
+	json  = QuantDataFormat_json,
+	t1    = QuantDataFormat_t1,
+	t2    = QuantDataFormat_t2,
+	t6    = QuantDataFormat_t6,
+	t8    = QuantDataFormat_t8,
+	gtick = QuantDataFormat_gtick,
 };
 
 #else
@@ -129,12 +129,18 @@ typedef int32_t EQuantDataFormat;
 
 #endif // __cplusplus
 
+struct SQuantDataProviderSettings
+{
+	EQuantDataProvider provider     QUANTDATA_ZERO_INIT; // mandatory
+	TQuantDataString   apikey       QUANTDATA_ZERO_INIT; // mandatory
+};
+typedef struct SQuantDataProviderSettings TQuantDataProviderSettings;
+
 struct SQuantDataDownloadSettings
 {
 	TQuantDataUnixtime start        QUANTDATA_ZERO_INIT; // optional, default is begin of time
 	TQuantDataUnixtime end          QUANTDATA_ZERO_INIT; // optional, default is end of time
 	TQuantDataString   symbol       QUANTDATA_ZERO_INIT; // mandatory
-	EQuantDataProvider provider     QUANTDATA_ZERO_INIT; // mandatory
 	EQuantDataInterval interval     QUANTDATA_ZERO_INIT; // mandatory
 	TQuantDataBool     adjusted     QUANTDATA_ZERO_INIT; // mandatory, might be unsupported
 	TQuantDataBool     padding[3]   QUANTDATA_ZERO_INIT;
@@ -146,6 +152,8 @@ struct SQuantDataSaveSettings
 	TQuantDataString   utf8path     QUANTDATA_ZERO_INIT; // optional, default is working directory
 	TQuantDataString   utf8filename QUANTDATA_ZERO_INIT; // optional, default is symbol name
 	EQuantDataFormat   format       QUANTDATA_ZERO_INIT; // mandatory
+	TQuantDataBool     splitYears   QUANTDATA_ZERO_INIT; // optional
+	TQuantDataBool     padding[3]   QUANTDATA_ZERO_INIT;
 };
 typedef struct SQuantDataSaveSettings TQuantDataSaveSettings;
 
@@ -223,7 +231,7 @@ typedef const struct SQuantDataSeriesFunctions IQuantDataSeries;
 
 struct SQuantDataSeriesFunctions
 {
-	EQuantDataResult (QUANTDATA_CALL* SetApiKey)(IQuantDataSeries* pThis, TQuantDataString apikey);
+	EQuantDataResult (QUANTDATA_CALL* SetProvider)(IQuantDataSeries* pThis, TQuantDataProviderSettings* pSettings);
 	EQuantDataResult (QUANTDATA_CALL* GetSupportedIntervals)(IQuantDataSeries* pThis, TQuantDataIntervals* pIntervals);
 	EQuantDataResult (QUANTDATA_CALL* GetSupportedSymbols)(IQuantDataSeries* pThis, TQuantDataSymbols* pSymbols);
 	EQuantDataResult (QUANTDATA_CALL* Download)(IQuantDataSeries* pThis, TQuantDataDownloadSettings* pSettings);
@@ -233,12 +241,12 @@ struct SQuantDataSeriesFunctions
 	EQuantDataResult (QUANTDATA_CALL* GetT2)(IQuantDataSeries* pThis, TQuantDataT2s* pData);
 	EQuantDataResult (QUANTDATA_CALL* GetT6)(IQuantDataSeries* pThis, TQuantDataT6s* pData);
 	EQuantDataResult (QUANTDATA_CALL* GetT8)(IQuantDataSeries* pThis, TQuantDataT8s* pData);
-	EQuantDataResult (QUANTDATA_CALL* GetGtData)(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData);
+	EQuantDataResult (QUANTDATA_CALL* GetGtick)(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData);
 	EQuantDataResult (QUANTDATA_CALL* SetT1)(IQuantDataSeries* pThis, TQuantDataT1s* pData);
 	EQuantDataResult (QUANTDATA_CALL* SetT2)(IQuantDataSeries* pThis, TQuantDataT2s* pData);
 	EQuantDataResult (QUANTDATA_CALL* SetT6)(IQuantDataSeries* pThis, TQuantDataT6s* pData);
 	EQuantDataResult (QUANTDATA_CALL* SetT8)(IQuantDataSeries* pThis, TQuantDataT8s* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetGtData)(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData);
+	EQuantDataResult (QUANTDATA_CALL* SetGtick)(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData);
 	EQuantDataResult (QUANTDATA_CALL* Release)(IQuantDataSeries* pThis);
 };
 
@@ -246,8 +254,8 @@ struct SQuantDataSeries
 {
 	const struct SQuantDataSeriesFunctions functions QUANTDATA_ZERO_INIT;
 #ifdef __cplusplus
-	EQuantDataResult SetApiKey(TQuantDataString apikey) {
-		return functions.SetApiKey(this, apikey);
+	EQuantDataResult SetProvider(TQuantDataProviderSettings* pSettings) {
+		return functions.SetProvider(this, pSettings);
 	}
 	EQuantDataResult GetSupportedIntervals(TQuantDataIntervals* pIntervals) {
 		return functions.GetSupportedIntervals(this, pIntervals);
@@ -276,8 +284,8 @@ struct SQuantDataSeries
 	EQuantDataResult GetT8(TQuantDataT8s* pData) {
 		return functions.GetT8(this, pData);
 	}
-	EQuantDataResult GetGtData(TQuantDataGtDataPoints* pData) {
-		return functions.GetGtData(this, pData);
+	EQuantDataResult GetGtick(TQuantDataGtDataPoints* pData) {
+		return functions.GetGtick(this, pData);
 	}
 	EQuantDataResult SetT1(TQuantDataT1s* pData) {
 		return functions.SetT1(this, pData);
@@ -291,8 +299,8 @@ struct SQuantDataSeries
 	EQuantDataResult SetT8(TQuantDataT8s* pData) {
 		return functions.SetT8(this, pData);
 	}
-	EQuantDataResult SetGtData(TQuantDataGtDataPoints* pData) {
-		return functions.SetGtData(this, pData);
+	EQuantDataResult SetGtick(TQuantDataGtDataPoints* pData) {
+		return functions.SetGtick(this, pData);
 	}
 	EQuantDataResult Release() {
 		return functions.Release(this);

@@ -44,6 +44,6 @@ EQuantDataResult QUANTDATA_CALL QuantDataCleanup()
 
 EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries(IQuantDataSeries** ppSeries)
 {
-	*ppSeries = new quantdata::TDefaultSeries();
+	*ppSeries = new quantdata::TSeries();
 	return EQuantDataResult::Success;
 }

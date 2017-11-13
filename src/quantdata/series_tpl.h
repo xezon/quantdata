@@ -15,7 +15,7 @@ public:
 		SQuantDataSeriesFunctions& mutableFunctions = const_cast<SQuantDataSeriesFunctions&>(functions);
 		memset(&mutableFunctions, 0, sizeof(mutableFunctions));
 
-		mutableFunctions.SetApiKey             = Static_SetApiKey;
+		mutableFunctions.SetProvider           = Static_SetProvider;
 		mutableFunctions.GetSupportedIntervals = Static_GetSupportedIntervals;
 		mutableFunctions.GetSupportedSymbols   = Static_GetSupportedSymbols;
 		mutableFunctions.Download              = Static_Download;
@@ -25,12 +25,12 @@ public:
 		mutableFunctions.GetT2                 = Static_GetT2;
 		mutableFunctions.GetT6                 = Static_GetT6;
 		mutableFunctions.GetT8                 = Static_GetT8;
-		mutableFunctions.GetGtData             = Static_GetGtData;
+		mutableFunctions.GetGtick              = Static_GetGtick;
 		mutableFunctions.SetT1                 = Static_SetT1;
 		mutableFunctions.SetT2                 = Static_SetT2;
 		mutableFunctions.SetT6                 = Static_SetT6;
 		mutableFunctions.SetT8                 = Static_SetT8;
-		mutableFunctions.SetGtData             = Static_SetGtData;
+		mutableFunctions.SetGtick              = Static_SetGtick;
 		mutableFunctions.Release               = Static_Release;
 
 		::utils::VerifyFunctionsStruct(functions);
@@ -41,8 +41,8 @@ private:
 	UTILS_DELETE_COPY_CONSTRUCTOR(CQuantDataSeriesTpl)
 
 private:
-	static EQuantDataResult QUANTDATA_CALL Static_SetApiKey(IQuantDataSeries* pThis, TQuantDataString apikey) {
-		return static_cast<CQuantDataSeriesTpl*>(pThis)->SetApiKey(apikey);
+	static EQuantDataResult QUANTDATA_CALL Static_SetProvider(IQuantDataSeries* pThis, TQuantDataProviderSettings* pSettings) {
+		return static_cast<CQuantDataSeriesTpl*>(pThis)->SetProvider(pSettings);
 	}
 	static EQuantDataResult QUANTDATA_CALL Static_GetSupportedIntervals(IQuantDataSeries* pThis, TQuantDataIntervals* pIntervals) {
 		return static_cast<CQuantDataSeriesTpl*>(pThis)->GetSupportedIntervals(pIntervals);
@@ -71,8 +71,8 @@ private:
 	static EQuantDataResult QUANTDATA_CALL Static_GetT8(IQuantDataSeries* pThis, TQuantDataT8s* pData) {
 		return static_cast<const CQuantDataSeriesTpl*>(pThis)->GetT8(pData);
 	}
-	static EQuantDataResult QUANTDATA_CALL Static_GetGtData(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData) {
-		return static_cast<const CQuantDataSeriesTpl*>(pThis)->GetGtData(pData);
+	static EQuantDataResult QUANTDATA_CALL Static_GetGtick(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData) {
+		return static_cast<const CQuantDataSeriesTpl*>(pThis)->GetGtick(pData);
 	}
 	static EQuantDataResult QUANTDATA_CALL Static_SetT1(IQuantDataSeries* pThis, TQuantDataT1s* pData) {
 		return static_cast<CQuantDataSeriesTpl*>(pThis)->SetT1(pData);
@@ -86,8 +86,8 @@ private:
 	static EQuantDataResult QUANTDATA_CALL Static_SetT8(IQuantDataSeries* pThis, TQuantDataT8s* pData) {
 		return static_cast<CQuantDataSeriesTpl*>(pThis)->SetT8(pData);
 	}
-	static EQuantDataResult QUANTDATA_CALL Static_SetGtData(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData) {
-		return static_cast<CQuantDataSeriesTpl*>(pThis)->SetGtData(pData);
+	static EQuantDataResult QUANTDATA_CALL Static_SetGtick(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData) {
+		return static_cast<CQuantDataSeriesTpl*>(pThis)->SetGtick(pData);
 	}
 	static EQuantDataResult QUANTDATA_CALL Static_Release(IQuantDataSeries* pThis) {
 		return static_cast<CQuantDataSeriesTpl*>(pThis)->Release();
