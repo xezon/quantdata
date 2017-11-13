@@ -2,7 +2,7 @@
 #ifndef I_QUANTDATA_H
 #define I_QUANTDATA_H
 
-#include <inttypes.h>
+#include <commontypes.h>
 
 #ifdef QUANTDATA_IGNORE_ZORRO
 typedef struct T1 {} T1;
@@ -42,10 +42,18 @@ typedef double      TQuantDataOletime;
 typedef int64_t     TQuantDataUnixtime;
 typedef uint32_t    TQuantDataSize;
 typedef uint8_t     TQuantDataBool;
+#ifdef ZORRO_LITE_C
+typedef void*       TQuantDataAlloc;
+typedef void*       TQuantDataFree;
+#else
+typedef alloc_func  TQuantDataAlloc;
+typedef free_func   TQuantDataFree;
+#endif
 
 #define QuantDataResult_Success               0
 #define QuantDataResult_InitFailed            1
 #define QuantDataResult_CleanupFailed         2
+#define QuantDataResult_InvalidArgument       3
 #define QuantDataResult_InvalidApiKey       500
 #define QuantDataResult_RejectedApiKey      501
 #define QuantDataResult_UnsupportedInterval 600
@@ -81,6 +89,7 @@ enum class EQuantDataResult : int32_t
 	Success             = QuantDataResult_Success,
 	InitFailed          = QuantDataResult_InitFailed,
 	CleanupFailed       = QuantDataResult_CleanupFailed,
+	InvalidArgument     = QuantDataResult_InvalidArgument,
 	InvalidApiKey       = QuantDataResult_InvalidApiKey,
 	RejectedApiKey      = QuantDataResult_RejectedApiKey,
 	UnsupportedInterval = QuantDataResult_UnsupportedInterval,
@@ -128,6 +137,13 @@ typedef int32_t EQuantDataInterval;
 typedef int32_t EQuantDataFormat;
 
 #endif // __cplusplus
+
+struct SQuantDataCreationSettings
+{
+	TQuantDataAlloc    alloc        QUANTDATA_ZERO_INIT; // optional
+	TQuantDataFree     free         QUANTDATA_ZERO_INIT; // optional
+};
+typedef struct SQuantDataCreationSettings TQuantDataCreationSettings;
 
 struct SQuantDataProviderSettings
 {
@@ -231,12 +247,12 @@ typedef const struct SQuantDataSeriesFunctions IQuantDataSeries;
 
 struct SQuantDataSeriesFunctions
 {
-	EQuantDataResult (QUANTDATA_CALL* SetProvider)(IQuantDataSeries* pThis, TQuantDataProviderSettings* pSettings);
+	EQuantDataResult (QUANTDATA_CALL* SetProvider)(IQuantDataSeries* pThis, const TQuantDataProviderSettings* pSettings);
 	EQuantDataResult (QUANTDATA_CALL* GetSupportedIntervals)(IQuantDataSeries* pThis, TQuantDataIntervals* pIntervals);
 	EQuantDataResult (QUANTDATA_CALL* GetSupportedSymbols)(IQuantDataSeries* pThis, TQuantDataSymbols* pSymbols);
-	EQuantDataResult (QUANTDATA_CALL* Download)(IQuantDataSeries* pThis, TQuantDataDownloadSettings* pSettings);
-	EQuantDataResult (QUANTDATA_CALL* Load)(IQuantDataSeries* pThis, TQuantDataLoadSettings* pSettings);
-	EQuantDataResult (QUANTDATA_CALL* Save)(IQuantDataSeries* pThis, TQuantDataSaveSettings* pSettings);
+	EQuantDataResult (QUANTDATA_CALL* Download)(IQuantDataSeries* pThis, const TQuantDataDownloadSettings* pSettings);
+	EQuantDataResult (QUANTDATA_CALL* Load)(IQuantDataSeries* pThis, const TQuantDataLoadSettings* pSettings);
+	EQuantDataResult (QUANTDATA_CALL* Save)(IQuantDataSeries* pThis, const TQuantDataSaveSettings* pSettings);
 	EQuantDataResult (QUANTDATA_CALL* GetT1)(IQuantDataSeries* pThis, TQuantDataT1s* pData);
 	EQuantDataResult (QUANTDATA_CALL* GetT2)(IQuantDataSeries* pThis, TQuantDataT2s* pData);
 	EQuantDataResult (QUANTDATA_CALL* GetT6)(IQuantDataSeries* pThis, TQuantDataT6s* pData);
@@ -254,7 +270,7 @@ struct SQuantDataSeries
 {
 	const struct SQuantDataSeriesFunctions functions QUANTDATA_ZERO_INIT;
 #ifdef __cplusplus
-	EQuantDataResult SetProvider(TQuantDataProviderSettings* pSettings) {
+	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings) {
 		return functions.SetProvider(this, pSettings);
 	}
 	EQuantDataResult GetSupportedIntervals(TQuantDataIntervals* pIntervals) {
@@ -263,13 +279,13 @@ struct SQuantDataSeries
 	EQuantDataResult GetSupportedSymbols(TQuantDataSymbols* pSymbols) {
 		return functions.GetSupportedSymbols(this, pSymbols);
 	}
-	EQuantDataResult Download(TQuantDataDownloadSettings* pSettings) {
+	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings) {
 		return functions.Download(this, pSettings);
 	}
-	EQuantDataResult Load(TQuantDataLoadSettings* pSettings) {
+	EQuantDataResult Load(const TQuantDataLoadSettings* pSettings) {
 		return functions.Load(this, pSettings);
 	}
-	EQuantDataResult Save(TQuantDataSaveSettings* pSettings) {
+	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) {
 		return functions.Save(this, pSettings);
 	}
 	EQuantDataResult GetT1(TQuantDataT1s* pData) {
@@ -317,7 +333,7 @@ extern "C" {
 
 QUANTDATA_IMPORT_OR_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataInit();
 QUANTDATA_IMPORT_OR_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataCleanup();
-QUANTDATA_IMPORT_OR_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries(IQuantDataSeries** ppSeries);
+QUANTDATA_IMPORT_OR_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings);
 
 #ifdef __cplusplus
 }

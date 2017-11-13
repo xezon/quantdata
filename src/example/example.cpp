@@ -3,6 +3,7 @@
 
 #include <iquantdata.h>
 #include <cassert>
+#include <utils.h>
 #include "apikey.h"
 
 int main(int argc, char** argv)
@@ -16,11 +17,17 @@ int main(int argc, char** argv)
 	assert(result == EQuantDataResult::Success);
 
 	IQuantDataSeries* pSeries = nullptr;
-	result = QuantDataCreateSeries(&pSeries);
+	TQuantDataCreationSettings settings;
+	settings.alloc = Alloc;
+	settings.free = Free;
+	result = QuantDataCreateSeries(&pSeries, &settings);
 	assert(result == EQuantDataResult::Success);
 
 	TQuantDataLoadSettings loadSettings;
 	result = pSeries->Load(&loadSettings);
+	assert(result == EQuantDataResult::Success);
+
+	result = pSeries->Release();
 	assert(result == EQuantDataResult::Success);
 
 	result = QuantDataCleanup();

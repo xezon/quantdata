@@ -124,7 +124,7 @@
     <ClCompile Include="..\src\quantdata\series.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\inttypes.h" />
+    <ClInclude Include="..\include\commontypes.h" />
     <ClInclude Include="..\include\iquantdata.h" />
     <ClInclude Include="..\src\apikey.h" />
     <ClInclude Include="..\src\quantdata.h" />

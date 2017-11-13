@@ -10,7 +10,8 @@ template <class SeriesImpl>
 class CQuantDataSeriesTpl : public SeriesImpl
 {
 public:
-	CQuantDataSeriesTpl()
+	CQuantDataSeriesTpl(TQuantDataAlloc alloc, TQuantDataFree free)
+		: SeriesImpl(alloc, free)
 	{
 		SQuantDataSeriesFunctions& mutableFunctions = const_cast<SQuantDataSeriesFunctions&>(functions);
 		memset(&mutableFunctions, 0, sizeof(mutableFunctions));
@@ -41,7 +42,7 @@ private:
 	UTILS_DELETE_COPY_CONSTRUCTOR(CQuantDataSeriesTpl)
 
 private:
-	static EQuantDataResult QUANTDATA_CALL Static_SetProvider(IQuantDataSeries* pThis, TQuantDataProviderSettings* pSettings) {
+	static EQuantDataResult QUANTDATA_CALL Static_SetProvider(IQuantDataSeries* pThis, const TQuantDataProviderSettings* pSettings) {
 		return static_cast<CQuantDataSeriesTpl*>(pThis)->SetProvider(pSettings);
 	}
 	static EQuantDataResult QUANTDATA_CALL Static_GetSupportedIntervals(IQuantDataSeries* pThis, TQuantDataIntervals* pIntervals) {
@@ -50,13 +51,13 @@ private:
 	static EQuantDataResult QUANTDATA_CALL Static_GetSupportedSymbols(IQuantDataSeries* pThis, TQuantDataSymbols* pSymbols) {
 		return static_cast<CQuantDataSeriesTpl*>(pThis)->GetSupportedSymbols(pSymbols);
 	}
-	static EQuantDataResult QUANTDATA_CALL Static_Download(IQuantDataSeries* pThis, TQuantDataDownloadSettings* pSettings) {
+	static EQuantDataResult QUANTDATA_CALL Static_Download(IQuantDataSeries* pThis, const TQuantDataDownloadSettings* pSettings) {
 		return static_cast<CQuantDataSeriesTpl*>(pThis)->Download(pSettings);
 	}
-	static EQuantDataResult QUANTDATA_CALL Static_Load(IQuantDataSeries* pThis, TQuantDataLoadSettings* pSettings) {
+	static EQuantDataResult QUANTDATA_CALL Static_Load(IQuantDataSeries* pThis, const TQuantDataLoadSettings* pSettings) {
 		return static_cast<CQuantDataSeriesTpl*>(pThis)->Load(pSettings);
 	}
-	static EQuantDataResult QUANTDATA_CALL Static_Save(IQuantDataSeries* pThis, TQuantDataSaveSettings* pSettings) {
+	static EQuantDataResult QUANTDATA_CALL Static_Save(IQuantDataSeries* pThis, const TQuantDataSaveSettings* pSettings) {
 		return static_cast<const CQuantDataSeriesTpl*>(pThis)->Save(pSettings);
 	}
 	static EQuantDataResult QUANTDATA_CALL Static_GetT1(IQuantDataSeries* pThis, TQuantDataT1s* pData) {

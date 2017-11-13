@@ -1,6 +1,7 @@
 
 #include <Windows.h>
 #include "quantdata/series.h"
+#include <utils.h>
 
 #ifdef _DEBUG
 #pragma comment(lib, "libcurl_a_debug.lib")
@@ -42,8 +43,20 @@ EQuantDataResult QUANTDATA_CALL QuantDataCleanup()
 	return EQuantDataResult::InitFailed;
 }
 
-EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries(IQuantDataSeries** ppSeries)
+EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings)
 {
-	*ppSeries = new quantdata::TSeries();
+	if (!ppSeries || !pSettings)
+		return EQuantDataResult::InvalidArgument;
+
+	TQuantDataAlloc alloc = pSettings->alloc;
+	TQuantDataFree free = pSettings->free;
+
+	if (!alloc || !free)
+	{
+		alloc = quantdata::GetDefaultAlloc();
+		free = quantdata::GetDefaultFree();
+	}
+
+	*ppSeries = utils::PlacementAlloc<quantdata::TSeries>(alloc, alloc, free);
 	return EQuantDataResult::Success;
 }

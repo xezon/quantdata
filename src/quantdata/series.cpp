@@ -1,10 +1,15 @@
 
 #include "series.h"
+#include <utils.h>
 
 namespace quantdata {
 
-EQuantDataResult CQuantDataSeries::SetProvider(TQuantDataProviderSettings* pSettings)
+EQuantDataResult CQuantDataSeries::SetProvider(const TQuantDataProviderSettings* pSettings)
 {
+	if (!pSettings || !IsValidProvider(*pSettings))
+		return EQuantDataResult::InvalidArgument;
+
+	m_providerSettings = *pSettings;
 	return EQuantDataResult::Success;
 }
 
@@ -18,17 +23,17 @@ EQuantDataResult CQuantDataSeries::GetSupportedSymbols(TQuantDataSymbols* pSymbo
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::Download(TQuantDataDownloadSettings* pSettings)
+EQuantDataResult CQuantDataSeries::Download(const TQuantDataDownloadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::Load(TQuantDataLoadSettings* pSettings)
+EQuantDataResult CQuantDataSeries::Load(const TQuantDataLoadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CQuantDataSeries::Save(TQuantDataSaveSettings* pSettings) const
+EQuantDataResult CQuantDataSeries::Save(const TQuantDataSaveSettings* pSettings) const
 {
 	return EQuantDataResult::Success;
 }
@@ -85,7 +90,18 @@ EQuantDataResult CQuantDataSeries::SetGtick(TQuantDataGtDataPoints* pData)
 
 EQuantDataResult CQuantDataSeries::Release()
 {
+	utils::PlacementFree(this, m_free);
 	return EQuantDataResult::Success;
+}
+
+bool CQuantDataSeries::IsValidProvider(const TQuantDataProviderSettings& provider)
+{
+	if (!::IsValidString(provider.apikey))
+	{
+		return false;
+	}
+	
+	return true;
 }
 
 } // namespace quantdata
