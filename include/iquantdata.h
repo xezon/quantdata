@@ -1,8 +1,8 @@
 
-#ifndef I_QUANTDATA_H
-#define I_QUANTDATA_H
+#ifndef I_QUANTDATA_H_
+#define I_QUANTDATA_H_
 
-#include <commontypes.h>
+#include <common/types.h>
 
 #ifdef QUANTDATA_IGNORE_ZORRO
 typedef struct T1 {} T1;
@@ -42,13 +42,8 @@ typedef double      TQuantDataOletime;
 typedef int64_t     TQuantDataUnixtime;
 typedef uint32_t    TQuantDataSize;
 typedef uint8_t     TQuantDataBool;
-#ifdef ZORRO_LITE_C
-typedef void*       TQuantDataAlloc;
-typedef void*       TQuantDataFree;
-#else
 typedef alloc_func  TQuantDataAlloc;
 typedef free_func   TQuantDataFree;
-#endif
 
 #define QuantDataResult_Success               0
 #define QuantDataResult_Failure               1
@@ -342,4 +337,4 @@ protected:
 
 #undef ZERO_INIT
 
-#endif // I_QUANTDATA_H
+#endif // I_QUANTDATA_H_
