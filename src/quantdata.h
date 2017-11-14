@@ -8,7 +8,7 @@
 #define CURL_STATICLIB
 #include <curl/curl.h>
 
-#include <utils_c.h>
+#include <common/utils_c.h>
 
 namespace quantdata {
 

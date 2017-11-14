@@ -93,7 +93,7 @@ typedef free_func   TQuantDataFree;
 
 #ifdef __cplusplus
 
-#include <data_enum.h>
+#include <common/enum.h>
 
 #ifdef QUANTDATA_IMPL
 #define QUANTDATA_DEFINE_ENUM_CLASS(clazz, underlying_t, list, meta_t) DEFINE_DATA_ENUM_CLASS(clazz, underlying_t, list, meta_t)

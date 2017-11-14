@@ -2,7 +2,7 @@
 #pragma once
 
 #include "quantdata.h"
-#include <utils.h>
+#include <common/utils.h>
 
 namespace quantdata {
 
