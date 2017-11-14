@@ -13,24 +13,24 @@ int main(int argc, char** argv)
 
 	EQuantDataResult result;
 
-	result = QuantDataInit();
+	result = QuantData_Init();
 	assert(result == QuantDataResult_Success);
 
 	IQuantDataSeries* pSeries = 0;
 	TQuantDataCreationSettings settings;
 	settings.alloc = Alloc;
 	settings.free = Free;
-	result = QuantDataCreateSeries(&pSeries, &settings);
+	result = QuantData_CreateSeries(&pSeries, &settings);
 	assert(result == QuantDataResult_Success);
 
 	TQuantDataLoadSettings loadSettings;
-	result = QuantDataSeriesLoad(pSeries, &loadSettings);
+	result = QuantDataSeries_Load(pSeries, &loadSettings);
 	assert(result == QuantDataResult_Success);
 
-	result = QuantDataSeriesRelease(pSeries);
+	result = QuantDataSeries_Release(pSeries);
 	assert(result == QuantDataResult_Success);
 
-	result = QuantDataCleanup();
+	result = QuantData_Cleanup();
 	assert(result == QuantDataResult_Success);
 
 	return 0;

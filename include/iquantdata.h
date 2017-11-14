@@ -252,27 +252,27 @@ typedef struct SQuantDataSeries IQuantDataSeries;
 extern "C" {
 #endif
 
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataInit();
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataCleanup();
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_Init();
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_Cleanup();
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings);
 
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesSetProvider(IQuantDataSeries* pSeries, const TQuantDataProviderSettings* pSettings);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesGetSupportedIntervals(IQuantDataSeries* pSeries, TQuantDataIntervals** ppIntervals);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesGetSupportedSymbols(IQuantDataSeries* pSeries, TQuantDataSymbols** ppSymbols);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesDownload(IQuantDataSeries* pSeries, const TQuantDataDownloadSettings* pSettings);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesLoad(IQuantDataSeries* pSeries, const TQuantDataLoadSettings* pSettings);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesSave(IQuantDataSeries* pSeries, const TQuantDataSaveSettings* pSettings);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesGetT1(IQuantDataSeries* pSeries, TQuantDataT1s** ppData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesGetT2(IQuantDataSeries* pSeries, TQuantDataT2s** ppData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesGetT6(IQuantDataSeries* pSeries, TQuantDataT6s** ppData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesGetT8(IQuantDataSeries* pSeries, TQuantDataT8s** ppData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesGetGtick(IQuantDataSeries* pSeries, TQuantDataGtDataPoints** ppData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesSetT1(IQuantDataSeries* pSeries, TQuantDataT1s* pData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesSetT2(IQuantDataSeries* pSeries, TQuantDataT2s* pData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesSetT6(IQuantDataSeries* pSeries, TQuantDataT6s* pData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesSetT8(IQuantDataSeries* pSeries, TQuantDataT8s* pData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesSetGtick(IQuantDataSeries* pSeries, TQuantDataGtDataPoints* pData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesRelease(IQuantDataSeries* pSeries);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetProvider(IQuantDataSeries* pSeries, const TQuantDataProviderSettings* pSettings);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetSupportedIntervals(IQuantDataSeries* pSeries, TQuantDataIntervals** ppIntervals);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetSupportedSymbols(IQuantDataSeries* pSeries, TQuantDataSymbols** ppSymbols);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_Download(IQuantDataSeries* pSeries, const TQuantDataDownloadSettings* pSettings);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_Load(IQuantDataSeries* pSeries, const TQuantDataLoadSettings* pSettings);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_Save(IQuantDataSeries* pSeries, const TQuantDataSaveSettings* pSettings);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetT1(IQuantDataSeries* pSeries, TQuantDataT1s** ppData);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetT2(IQuantDataSeries* pSeries, TQuantDataT2s** ppData);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetT6(IQuantDataSeries* pSeries, TQuantDataT6s** ppData);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetT8(IQuantDataSeries* pSeries, TQuantDataT8s** ppData);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetGtick(IQuantDataSeries* pSeries, TQuantDataGtDataPoints** ppData);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetT1(IQuantDataSeries* pSeries, TQuantDataT1s* pData);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetT2(IQuantDataSeries* pSeries, TQuantDataT2s* pData);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetT6(IQuantDataSeries* pSeries, TQuantDataT6s* pData);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetT8(IQuantDataSeries* pSeries, TQuantDataT8s* pData);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetGtick(IQuantDataSeries* pSeries, TQuantDataGtDataPoints* pData);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_Release(IQuantDataSeries* pSeries);
 
 #ifdef __cplusplus
 }
@@ -282,55 +282,55 @@ QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeriesRelease(I
 struct SQuantDataSeries
 {
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings) {
-		return QuantDataSeriesSetProvider(this, pSettings);
+		return QuantDataSeries_SetProvider(this, pSettings);
 	}
 	EQuantDataResult GetSupportedIntervals(TQuantDataIntervals** ppIntervals) {
-		return QuantDataSeriesGetSupportedIntervals(this, ppIntervals);
+		return QuantDataSeries_GetSupportedIntervals(this, ppIntervals);
 	}
 	EQuantDataResult GetSupportedSymbols(TQuantDataSymbols** ppSymbols) {
-		return QuantDataSeriesGetSupportedSymbols(this, ppSymbols);
+		return QuantDataSeries_GetSupportedSymbols(this, ppSymbols);
 	}
 	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings) {
-		return QuantDataSeriesDownload(this, pSettings);
+		return QuantDataSeries_Download(this, pSettings);
 	}
 	EQuantDataResult Load(const TQuantDataLoadSettings* pSettings) {
-		return QuantDataSeriesLoad(this, pSettings);
+		return QuantDataSeries_Load(this, pSettings);
 	}
 	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) {
-		return QuantDataSeriesSave(this, pSettings);
+		return QuantDataSeries_Save(this, pSettings);
 	}
 	EQuantDataResult GetT1(TQuantDataT1s** ppData) {
-		return QuantDataSeriesGetT1(this, ppData);
+		return QuantDataSeries_GetT1(this, ppData);
 	}
 	EQuantDataResult GetT2(TQuantDataT2s** ppData) {
-		return QuantDataSeriesGetT2(this, ppData);
+		return QuantDataSeries_GetT2(this, ppData);
 	}
 	EQuantDataResult GetT6(TQuantDataT6s** ppData) {
-		return QuantDataSeriesGetT6(this, ppData);
+		return QuantDataSeries_GetT6(this, ppData);
 	}
 	EQuantDataResult GetT8(TQuantDataT8s** ppData) {
-		return QuantDataSeriesGetT8(this, ppData);
+		return QuantDataSeries_GetT8(this, ppData);
 	}
 	EQuantDataResult GetGtick(TQuantDataGtDataPoints** ppData) {
-		return QuantDataSeriesGetGtick(this, ppData);
+		return QuantDataSeries_GetGtick(this, ppData);
 	}
 	EQuantDataResult SetT1(TQuantDataT1s* pData) {
-		return QuantDataSeriesSetT1(this, pData);
+		return QuantDataSeries_SetT1(this, pData);
 	}
 	EQuantDataResult SetT2(TQuantDataT2s* pData) {
-		return QuantDataSeriesSetT2(this, pData);
+		return QuantDataSeries_SetT2(this, pData);
 	}
 	EQuantDataResult SetT6(TQuantDataT6s* pData) {
-		return QuantDataSeriesSetT6(this, pData);
+		return QuantDataSeries_SetT6(this, pData);
 	}
 	EQuantDataResult SetT8(TQuantDataT8s* pData) {
-		return QuantDataSeriesSetT8(this, pData);
+		return QuantDataSeries_SetT8(this, pData);
 	}
 	EQuantDataResult SetGtick(TQuantDataGtDataPoints* pData) {
-		return QuantDataSeriesSetGtick(this, pData);
+		return QuantDataSeries_SetGtick(this, pData);
 	}
 	EQuantDataResult Release() {
-		return QuantDataSeriesRelease(this);
+		return QuantDataSeries_Release(this);
 	}
 protected:
 	SQuantDataSeries() {}
