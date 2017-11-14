@@ -30,9 +30,18 @@ typedef struct SGenotickDataPoint {} TGenotickDataPoint;
 #endif
 
 #ifdef __cplusplus
-#define QUANTDATA_ZERO_INIT = {}
+#define ZERO_INIT = {}
+#define FTHIS(type) struct type* pThis
+#define ITYPE(type, name) typedef struct type name;
 #else
-#define QUANTDATA_ZERO_INIT
+#define ZERO_INIT
+#define FTHIS(type) const struct type##Functions* pThis
+#define ITYPE(type, name) typedef const struct type##Functions name;
+#endif
+#ifdef ZORRO_LITE_C
+#define FPTR(name)  QUANTDATA_CALL  name
+#else
+#define FPTR(name) (QUANTDATA_CALL* name)
 #endif
 
 #pragma pack(push, 4)
@@ -149,135 +158,132 @@ typedef int32_t EQuantDataFormat;
 
 struct SQuantDataCreationSettings
 {
-	TQuantDataAlloc    alloc        QUANTDATA_ZERO_INIT; // optional
-	TQuantDataFree     free         QUANTDATA_ZERO_INIT; // optional
+	TQuantDataAlloc    alloc        ZERO_INIT; // optional
+	TQuantDataFree     free         ZERO_INIT; // optional
 };
 typedef struct SQuantDataCreationSettings TQuantDataCreationSettings;
 
 struct SQuantDataProviderSettings
 {
-	EQuantDataProvider provider     QUANTDATA_ZERO_INIT; // mandatory
-	TQuantDataString   apikey       QUANTDATA_ZERO_INIT; // mandatory
+	EQuantDataProvider provider     ZERO_INIT; // mandatory
+	TQuantDataString   apikey       ZERO_INIT; // mandatory
 };
 typedef struct SQuantDataProviderSettings TQuantDataProviderSettings;
 
 struct SQuantDataDownloadSettings
 {
-	TQuantDataUnixtime start        QUANTDATA_ZERO_INIT; // optional, default is begin of time
-	TQuantDataUnixtime end          QUANTDATA_ZERO_INIT; // optional, default is end of time
-	TQuantDataString   symbol       QUANTDATA_ZERO_INIT; // mandatory
-	EQuantDataInterval interval     QUANTDATA_ZERO_INIT; // mandatory
-	TQuantDataBool     adjusted     QUANTDATA_ZERO_INIT; // mandatory, might be unsupported
-	TQuantDataBool     padding[3]   QUANTDATA_ZERO_INIT;
+	TQuantDataUnixtime start        ZERO_INIT; // optional, default is begin of time
+	TQuantDataUnixtime end          ZERO_INIT; // optional, default is end of time
+	TQuantDataString   symbol       ZERO_INIT; // mandatory
+	EQuantDataInterval interval     ZERO_INIT; // mandatory
+	TQuantDataBool     adjusted     ZERO_INIT; // mandatory, might be unsupported
+	TQuantDataBool     padding[3]   ZERO_INIT;
 };
 typedef struct SQuantDataDownloadSettings TQuantDataDownloadSettings;
 
 struct SQuantDataSaveSettings
 {
-	TQuantDataString   utf8path     QUANTDATA_ZERO_INIT; // optional, default is working directory
-	TQuantDataString   utf8filename QUANTDATA_ZERO_INIT; // optional, default is symbol name
-	EQuantDataFormat   format       QUANTDATA_ZERO_INIT; // mandatory
-	TQuantDataBool     splitYears   QUANTDATA_ZERO_INIT; // optional
-	TQuantDataBool     padding[3]   QUANTDATA_ZERO_INIT;
+	TQuantDataString   utf8path     ZERO_INIT; // optional, default is working directory
+	TQuantDataString   utf8filename ZERO_INIT; // optional, default is symbol name
+	EQuantDataFormat   format       ZERO_INIT; // mandatory
+	TQuantDataBool     splitYears   ZERO_INIT; // optional
+	TQuantDataBool     padding[3]   ZERO_INIT;
 };
 typedef struct SQuantDataSaveSettings TQuantDataSaveSettings;
 
 struct SQuantDataLoadSettings
 {
-	TQuantDataString   utf8filepath QUANTDATA_ZERO_INIT; // mandatory, path to file
+	TQuantDataString   utf8filepath ZERO_INIT; // mandatory, path to file
 };
 typedef struct SQuantDataLoadSettings TQuantDataLoadSettings;
 
 struct SQuantDataSymbols
 {
-	TQuantDataString*   pBuffer    QUANTDATA_ZERO_INIT;
-	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
-	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+	TQuantDataString*   pBuffer    ZERO_INIT;
+	TQuantDataSize      bufferSize ZERO_INIT;
+	TQuantDataSize      actualSize ZERO_INIT;
 };
 typedef struct SQuantDataSymbols TQuantDataSymbols;
 
 struct SQuantDataIntervals
 {
-	EQuantDataInterval* pBuffer    QUANTDATA_ZERO_INIT;
-	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
-	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+	EQuantDataInterval* pBuffer    ZERO_INIT;
+	TQuantDataSize      bufferSize ZERO_INIT;
+	TQuantDataSize      actualSize ZERO_INIT;
 };
 typedef struct SQuantDataIntervals TQuantDataIntervals;
 
 struct SQuantDataT1s
 {
-	T1*                 pBuffer    QUANTDATA_ZERO_INIT;
-	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
-	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+	T1*                 pBuffer    ZERO_INIT;
+	TQuantDataSize      bufferSize ZERO_INIT;
+	TQuantDataSize      actualSize ZERO_INIT;
 };
 typedef struct SQuantDataT1s TQuantDataT1s;
 
 struct SQuantDataT2s
 {
-	T2*                 pBuffer    QUANTDATA_ZERO_INIT;
-	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
-	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+	T2*                 pBuffer    ZERO_INIT;
+	TQuantDataSize      bufferSize ZERO_INIT;
+	TQuantDataSize      actualSize ZERO_INIT;
 };
 typedef struct SQuantDataT2s TQuantDataT2s;
 
 struct SQuantDataT6s
 {
-	T6*                 pBuffer    QUANTDATA_ZERO_INIT;
-	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
-	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+	T6*                 pBuffer    ZERO_INIT;
+	TQuantDataSize      bufferSize ZERO_INIT;
+	TQuantDataSize      actualSize ZERO_INIT;
 };
 typedef struct SQuantDataT6s TQuantDataT6s;
 
 struct SQuantDataT8s
 {
-	T8*                 pBuffer    QUANTDATA_ZERO_INIT;
-	TQuantDataSize      bufferSize QUANTDATA_ZERO_INIT;
-	TQuantDataSize      actualSize QUANTDATA_ZERO_INIT;
+	T8*                 pBuffer    ZERO_INIT;
+	TQuantDataSize      bufferSize ZERO_INIT;
+	TQuantDataSize      actualSize ZERO_INIT;
 };
 typedef struct SQuantDataT8s TQuantDataT8s;
 
 struct SQuantDataGtDataPoints
 {
-	TGenotickDataPoint* pBuffer                   QUANTDATA_ZERO_INIT;
-	TQuantDataSize      bufferSize                QUANTDATA_ZERO_INIT;
-	TQuantDataSize      actualSize                QUANTDATA_ZERO_INIT;
-	TQuantDataSize      bufferOptionalColumnCount QUANTDATA_ZERO_INIT;
-	TQuantDataSize      actualOptionalColumnCount QUANTDATA_ZERO_INIT;
+	TGenotickDataPoint* pBuffer                   ZERO_INIT;
+	TQuantDataSize      bufferSize                ZERO_INIT;
+	TQuantDataSize      actualSize                ZERO_INIT;
+	TQuantDataSize      bufferOptionalColumnCount ZERO_INIT;
+	TQuantDataSize      actualOptionalColumnCount ZERO_INIT;
 };
 typedef struct SQuantDataGtDataPoints TQuantDataGtDataPoints;
 
-struct SQuantDataSeries;
-struct SQuantDataSeriesFunctions;
 #ifdef __cplusplus
-typedef       struct SQuantDataSeries          IQuantDataSeries;
-#else
-typedef const struct SQuantDataSeriesFunctions IQuantDataSeries;
+struct SQuantDataSeries;
 #endif
 
 struct SQuantDataSeriesFunctions
 {
-	EQuantDataResult (QUANTDATA_CALL* SetProvider)(IQuantDataSeries* pThis, const TQuantDataProviderSettings* pSettings);
-	EQuantDataResult (QUANTDATA_CALL* GetSupportedIntervals)(IQuantDataSeries* pThis, TQuantDataIntervals* pIntervals);
-	EQuantDataResult (QUANTDATA_CALL* GetSupportedSymbols)(IQuantDataSeries* pThis, TQuantDataSymbols* pSymbols);
-	EQuantDataResult (QUANTDATA_CALL* Download)(IQuantDataSeries* pThis, const TQuantDataDownloadSettings* pSettings);
-	EQuantDataResult (QUANTDATA_CALL* Load)(IQuantDataSeries* pThis, const TQuantDataLoadSettings* pSettings);
-	EQuantDataResult (QUANTDATA_CALL* Save)(IQuantDataSeries* pThis, const TQuantDataSaveSettings* pSettings);
-	EQuantDataResult (QUANTDATA_CALL* GetT1)(IQuantDataSeries* pThis, TQuantDataT1s* pData);
-	EQuantDataResult (QUANTDATA_CALL* GetT2)(IQuantDataSeries* pThis, TQuantDataT2s* pData);
-	EQuantDataResult (QUANTDATA_CALL* GetT6)(IQuantDataSeries* pThis, TQuantDataT6s* pData);
-	EQuantDataResult (QUANTDATA_CALL* GetT8)(IQuantDataSeries* pThis, TQuantDataT8s* pData);
-	EQuantDataResult (QUANTDATA_CALL* GetGtick)(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetT1)(IQuantDataSeries* pThis, TQuantDataT1s* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetT2)(IQuantDataSeries* pThis, TQuantDataT2s* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetT6)(IQuantDataSeries* pThis, TQuantDataT6s* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetT8)(IQuantDataSeries* pThis, TQuantDataT8s* pData);
-	EQuantDataResult (QUANTDATA_CALL* SetGtick)(IQuantDataSeries* pThis, TQuantDataGtDataPoints* pData);
-	EQuantDataResult (QUANTDATA_CALL* Release)(IQuantDataSeries* pThis);
+	EQuantDataResult FPTR(SetProvider)(FTHIS(SQuantDataSeries), const TQuantDataProviderSettings* pSettings);
+	EQuantDataResult FPTR(GetSupportedIntervals)(FTHIS(SQuantDataSeries), TQuantDataIntervals* pIntervals);
+	EQuantDataResult FPTR(GetSupportedSymbols)(FTHIS(SQuantDataSeries), TQuantDataSymbols* pSymbols);
+	EQuantDataResult FPTR(Download)(FTHIS(SQuantDataSeries), const TQuantDataDownloadSettings* pSettings);
+	EQuantDataResult FPTR(Load)(FTHIS(SQuantDataSeries), const TQuantDataLoadSettings* pSettings);
+	EQuantDataResult FPTR(Save)(FTHIS(SQuantDataSeries), const TQuantDataSaveSettings* pSettings);
+	EQuantDataResult FPTR(GetT1)(FTHIS(SQuantDataSeries), TQuantDataT1s* pData);
+	EQuantDataResult FPTR(GetT2)(FTHIS(SQuantDataSeries), TQuantDataT2s* pData);
+	EQuantDataResult FPTR(GetT6)(FTHIS(SQuantDataSeries), TQuantDataT6s* pData);
+	EQuantDataResult FPTR(GetT8)(FTHIS(SQuantDataSeries), TQuantDataT8s* pData);
+	EQuantDataResult FPTR(GetGtick)(FTHIS(SQuantDataSeries), TQuantDataGtDataPoints* pData);
+	EQuantDataResult FPTR(SetT1)(FTHIS(SQuantDataSeries), TQuantDataT1s* pData);
+	EQuantDataResult FPTR(SetT2)(FTHIS(SQuantDataSeries), TQuantDataT2s* pData);
+	EQuantDataResult FPTR(SetT6)(FTHIS(SQuantDataSeries), TQuantDataT6s* pData);
+	EQuantDataResult FPTR(SetT8)(FTHIS(SQuantDataSeries), TQuantDataT8s* pData);
+	EQuantDataResult FPTR(SetGtick)(FTHIS(SQuantDataSeries), TQuantDataGtDataPoints* pData);
+	EQuantDataResult FPTR(Release)(FTHIS(SQuantDataSeries));
 };
+ITYPE(SQuantDataSeries, IQuantDataSeries)
 
 struct SQuantDataSeries
 {
-	const struct SQuantDataSeriesFunctions functions QUANTDATA_ZERO_INIT;
+	const struct SQuantDataSeriesFunctions functions ZERO_INIT;
 #ifdef __cplusplus
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings) {
 		return functions.SetProvider(this, pSettings);
@@ -350,6 +356,6 @@ QUANTDATA_IMPORT_OR_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries
 
 #pragma pack(pop)
 
-#undef QUANTDATA_ZERO_INIT
+#undef ZERO_INIT
 
 #endif // I_QUANTDATA_H
