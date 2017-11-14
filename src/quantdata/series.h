@@ -33,6 +33,7 @@ protected:
 
 private:
 	bool IsValidProvider(const TQuantDataProviderSettings& provider);
+	EQuantDataResult DownloadFromAlphaVantage(const TQuantDataDownloadSettings& settings);
 
 	const TQuantDataAlloc m_alloc;
 	const TQuantDataFree m_free;

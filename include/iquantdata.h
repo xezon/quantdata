@@ -63,7 +63,7 @@ typedef free_func   TQuantDataFree;
 #define QuantDataResult_Failure               1
 #define QuantDataResult_NotInitialized        2
 #define QuantDataResult_InvalidArgument       3
-#define QuantDataResult_InvalidApiKey       500
+#define QuantDataResult_InvalidProvider     500
 #define QuantDataResult_RejectedApiKey      501
 #define QuantDataResult_UnsupportedInterval 600
 #define QuantDataResult_UnsupportedSymbol   601
@@ -101,20 +101,6 @@ typedef free_func   TQuantDataFree;
 #define QUANTDATA_DEFINE_ENUM_CLASS(clazz, underlying_t, list, meta_t) DEFINE_NORMAL_ENUM_CLASS(clazz, underlying_t, list)
 #endif
 
-enum class EQuantDataResult : int32_t
-{
-	Success             = QuantDataResult_Success,
-	Failure             = QuantDataResult_Failure,
-	NotInitialized      = QuantDataResult_NotInitialized,
-	InvalidArgument     = QuantDataResult_InvalidArgument,
-	InvalidApiKey       = QuantDataResult_InvalidApiKey,
-	RejectedApiKey      = QuantDataResult_RejectedApiKey,
-	UnsupportedInterval = QuantDataResult_UnsupportedInterval,
-	UnsupportedSymbol   = QuantDataResult_UnsupportedSymbol,
-	UnsupportedTime     = QuantDataResult_UnsupportedTime,
-};
-
-
 #define QUANTDATA_ENUM_PROVIDER(e) \
 	e(Quandl        , = QuantDataProvider_Quandl        , (false)) \
 	e(Oanda         , = QuantDataProvider_Oanda         , (false)) \
@@ -145,6 +131,19 @@ enum class EQuantDataFormat : int32_t
 	t6    = QuantDataFormat_t6,
 	t8    = QuantDataFormat_t8,
 	gtick = QuantDataFormat_gtick,
+};
+
+enum class EQuantDataResult : int32_t
+{
+	Success             = QuantDataResult_Success,
+	Failure             = QuantDataResult_Failure,
+	NotInitialized      = QuantDataResult_NotInitialized,
+	InvalidArgument     = QuantDataResult_InvalidArgument,
+	InvalidProvider     = QuantDataResult_InvalidProvider,
+	RejectedApiKey      = QuantDataResult_RejectedApiKey,
+	UnsupportedInterval = QuantDataResult_UnsupportedInterval,
+	UnsupportedSymbol   = QuantDataResult_UnsupportedSymbol,
+	UnsupportedTime     = QuantDataResult_UnsupportedTime,
 };
 
 #else

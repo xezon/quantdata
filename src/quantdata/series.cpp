@@ -6,8 +6,11 @@ namespace quantdata {
 
 EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSettings)
 {
-	if (!pSettings || !IsValidProvider(*pSettings))
+	if (!pSettings)
 		return EQuantDataResult::InvalidArgument;
+
+	if (!IsValidProvider(*pSettings))
+		return EQuantDataResult::InvalidProvider;
 
 	m_providerSettings = *pSettings;
 	return EQuantDataResult::Success;
@@ -15,17 +18,40 @@ EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSetting
 
 EQuantDataResult CSeries::GetSupportedIntervals(TQuantDataIntervals* pIntervals)
 {
+	if (!pIntervals)
+		return EQuantDataResult::InvalidArgument;
+
+	if (!IsValidProvider(m_providerSettings))
+		return EQuantDataResult::InvalidProvider;
+
 	return EQuantDataResult::Success;
 }
 
 EQuantDataResult CSeries::GetSupportedSymbols(TQuantDataSymbols* pSymbols)
 {
+	if (!pSymbols)
+		return EQuantDataResult::InvalidArgument;
+
+	if (!IsValidProvider(m_providerSettings))
+		return EQuantDataResult::InvalidProvider;
+
 	return EQuantDataResult::Success;
 }
 
 EQuantDataResult CSeries::Download(const TQuantDataDownloadSettings* pSettings)
 {
-	return EQuantDataResult::Success;
+	if (!pSettings)
+		return EQuantDataResult::InvalidArgument;
+
+	if (!IsValidProvider(m_providerSettings))
+		return EQuantDataResult::InvalidProvider;
+
+	switch (m_providerSettings.provider)
+	{
+	case EQuantDataProvider::AlphaVantage: return DownloadFromAlphaVantage(*pSettings);
+	}
+
+	return EQuantDataResult::Failure;
 }
 
 EQuantDataResult CSeries::Load(const TQuantDataLoadSettings* pSettings)
@@ -101,6 +127,11 @@ bool CSeries::IsValidProvider(const TQuantDataProviderSettings& settings)
 		return true;
 	}
 	return false;
+}
+
+EQuantDataResult DownloadFromAlphaVantage(const TQuantDataDownloadSettings& settings)
+{
+
 }
 
 } // namespace quantdata
