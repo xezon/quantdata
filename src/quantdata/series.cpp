@@ -16,9 +16,9 @@ EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSetting
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetSupportedIntervals(TQuantDataIntervals* pIntervals)
+EQuantDataResult CSeries::GetSupportedIntervals(TQuantDataIntervals** ppIntervals)
 {
-	if (!pIntervals)
+	if (!ppIntervals)
 		return EQuantDataResult::InvalidArgument;
 
 	if (!IsValidProvider(m_providerSettings))
@@ -27,9 +27,9 @@ EQuantDataResult CSeries::GetSupportedIntervals(TQuantDataIntervals* pIntervals)
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetSupportedSymbols(TQuantDataSymbols* pSymbols)
+EQuantDataResult CSeries::GetSupportedSymbols(TQuantDataSymbols** ppSymbols)
 {
-	if (!pSymbols)
+	if (!ppSymbols)
 		return EQuantDataResult::InvalidArgument;
 
 	if (!IsValidProvider(m_providerSettings))
@@ -64,27 +64,27 @@ EQuantDataResult CSeries::Save(const TQuantDataSaveSettings* pSettings) const
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetT1(TQuantDataT1s* pData) const
+EQuantDataResult CSeries::GetT1(TQuantDataT1s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetT2(TQuantDataT2s* pData) const
+EQuantDataResult CSeries::GetT2(TQuantDataT2s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetT6(TQuantDataT6s* pData) const
+EQuantDataResult CSeries::GetT6(TQuantDataT6s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetT8(TQuantDataT8s* pData) const
+EQuantDataResult CSeries::GetT8(TQuantDataT8s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetGtick(TQuantDataGtDataPoints* pData) const
+EQuantDataResult CSeries::GetGtick(TQuantDataGtDataPoints** ppData) const
 {
 	return EQuantDataResult::Success;
 }
@@ -129,9 +129,9 @@ bool CSeries::IsValidProvider(const TQuantDataProviderSettings& settings)
 	return false;
 }
 
-EQuantDataResult DownloadFromAlphaVantage(const TQuantDataDownloadSettings& settings)
+EQuantDataResult CSeries::DownloadFromAlphaVantage(const TQuantDataDownloadSettings& settings)
 {
-
+	return EQuantDataResult::Success;
 }
 
 } // namespace quantdata

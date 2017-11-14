@@ -32,9 +32,6 @@
     <ClInclude Include="..\src\quantdata\series.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\quantdata\series_tpl.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\commontypes.h">
       <Filter>include</Filter>
     </ClInclude>
