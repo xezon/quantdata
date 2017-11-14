@@ -15,6 +15,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quantdata_example", "quantd
 		{56EB0FD2-E83C-40BC-8FAA-C9BA87A96BDA} = {56EB0FD2-E83C-40BC-8FAA-C9BA87A96BDA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quantdata_example_c", "quantdata_example_c.vcxproj", "{E9A0FAF8-29B9-42EE-9258-4281CB7D789D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56EB0FD2-E83C-40BC-8FAA-C9BA87A96BDA} = {56EB0FD2-E83C-40BC-8FAA-C9BA87A96BDA}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -47,6 +52,14 @@ Global
 		{B1555E67-28F5-4A5D-96FA-8B5E3D383F5F}.Release|x64.Build.0 = Release|x64
 		{B1555E67-28F5-4A5D-96FA-8B5E3D383F5F}.Release|x86.ActiveCfg = Release|Win32
 		{B1555E67-28F5-4A5D-96FA-8B5E3D383F5F}.Release|x86.Build.0 = Release|Win32
+		{E9A0FAF8-29B9-42EE-9258-4281CB7D789D}.Debug|x64.ActiveCfg = Debug|x64
+		{E9A0FAF8-29B9-42EE-9258-4281CB7D789D}.Debug|x64.Build.0 = Debug|x64
+		{E9A0FAF8-29B9-42EE-9258-4281CB7D789D}.Debug|x86.ActiveCfg = Debug|Win32
+		{E9A0FAF8-29B9-42EE-9258-4281CB7D789D}.Debug|x86.Build.0 = Debug|Win32
+		{E9A0FAF8-29B9-42EE-9258-4281CB7D789D}.Release|x64.ActiveCfg = Release|x64
+		{E9A0FAF8-29B9-42EE-9258-4281CB7D789D}.Release|x64.Build.0 = Release|x64
+		{E9A0FAF8-29B9-42EE-9258-4281CB7D789D}.Release|x86.ActiveCfg = Release|Win32
+		{E9A0FAF8-29B9-42EE-9258-4281CB7D789D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
