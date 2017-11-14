@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	result = pSeries->Release();
 	assert(result == EQuantDataResult::Success);
 
-	result = QuantData_Cleanup();
+	result = QuantData_Shutdown();
 	assert(result == EQuantDataResult::Success);
 
 	return 0;

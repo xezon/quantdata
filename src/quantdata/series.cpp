@@ -1,6 +1,7 @@
 
 #include "series.h"
 #include <common/utils.h>
+#include <quantdata/manager.h>
 
 namespace quantdata {
 

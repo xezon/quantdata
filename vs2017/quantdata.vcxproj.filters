@@ -18,6 +18,9 @@
     <ClCompile Include="..\src\quantdata\series.cpp">
       <Filter>src\quantdata</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\quantdata\manager.cpp">
+      <Filter>src\quantdata</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iquantdata.h">
@@ -30,6 +33,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\quantdata\series.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\manager.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
   </ItemGroup>

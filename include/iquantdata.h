@@ -248,7 +248,7 @@ extern "C" {
 #endif
 
 QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_Init();
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_Cleanup();
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_Shutdown();
 QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings);
 
 QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetProvider(IQuantDataSeries* pSeries, const TQuantDataProviderSettings* pSettings);

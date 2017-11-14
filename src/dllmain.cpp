@@ -1,67 +1,32 @@
 
 #include <Windows.h>
-#include "quantdata/series.h"
-#include <common/utils.h>
+#include <quantdata/manager.h>
+#include <quantdata/series.h>
 
-#ifdef _DEBUG
-#pragma comment(lib, "libcurl_a_debug.lib")
-#else
-#pragma comment(lib, "libcurl_a.lib")
-#endif
-
-bool g_quantDataInit = false;
+quantdata::CManager g_manager;
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
 	(void)hinstDLL;
 	(void)fdwReason;
 	(void)lpvReserved;
+
 	return TRUE;
 }
 
 EQuantDataResult QUANTDATA_CALL QuantData_Init()
 {
-	if (!g_quantDataInit)
-	{
-		if (curl_global_init(CURL_GLOBAL_ALL) == CURLE_OK)
-		{
-			g_quantDataInit = true;
-			return EQuantDataResult::Success;
-		}
-	}
-	return EQuantDataResult::Failure;
+	return g_manager.Init();
 }
 
-EQuantDataResult QUANTDATA_CALL QuantData_Cleanup()
+EQuantDataResult QUANTDATA_CALL QuantData_Shutdown()
 {
-	if (g_quantDataInit)
-	{
-		curl_global_cleanup();
-		g_quantDataInit = false;
-		return EQuantDataResult::Success;
-	}
-	return EQuantDataResult::Failure;
+	return g_manager.Shutdown();
 }
 
 EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings)
 {
-	if (!g_quantDataInit)
-		return EQuantDataResult::NotInitialized;
-
-	if (!ppSeries || !pSettings)
-		return EQuantDataResult::InvalidArgument;
-
-	TQuantDataAlloc alloc = pSettings->alloc;
-	TQuantDataFree free = pSettings->free;
-
-	if (!alloc || !free)
-	{
-		alloc = quantdata::GetDefaultAlloc();
-		free = quantdata::GetDefaultFree();
-	}
-
-	*ppSeries = utils::PlacementAlloc<quantdata::CSeries>(alloc, alloc, free);
-	return EQuantDataResult::Success;
+	return g_manager.CreateSeries(ppSeries, pSettings);
 }
 
 EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetProvider(IQuantDataSeries* pSeries, const TQuantDataProviderSettings* pSettings)

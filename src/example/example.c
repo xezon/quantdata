@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	result = QuantDataSeries_Release(pSeries);
 	assert(result == QuantDataResult_Success);
 
-	result = QuantData_Cleanup();
+	result = QuantData_Shutdown();
 	assert(result == QuantDataResult_Success);
 
 	return 0;

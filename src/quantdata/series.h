@@ -5,11 +5,14 @@
 
 namespace quantdata {
 
+class CManager;
+
 class CSeries : public IQuantDataSeries
 {
 public:
-	CSeries(TQuantDataAlloc alloc, TQuantDataFree free)
-		: m_alloc(alloc)
+	CSeries(const CManager& manager, TQuantDataAlloc alloc, TQuantDataFree free)
+		: m_manager(manager)
+		, m_alloc(alloc)
 		, m_free(free)
 	{}
 
@@ -35,6 +38,7 @@ private:
 	bool IsValidProvider(const TQuantDataProviderSettings& provider);
 	EQuantDataResult DownloadFromAlphaVantage(const TQuantDataDownloadSettings& settings);
 
+	const CManager& m_manager;
 	const TQuantDataAlloc m_alloc;
 	const TQuantDataFree m_free;
 	TQuantDataProviderSettings m_providerSettings;
