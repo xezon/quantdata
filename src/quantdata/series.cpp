@@ -94,14 +94,13 @@ EQuantDataResult CSeries::Release()
 	return EQuantDataResult::Success;
 }
 
-bool CSeries::IsValidProvider(const TQuantDataProviderSettings& provider)
+bool CSeries::IsValidProvider(const TQuantDataProviderSettings& settings)
 {
-	if (!::IsValidString(provider.apikey))
+	if (::IsValidString(settings.apikey) && settings.provider.is_valid())
 	{
-		return false;
+		return true;
 	}
-	
-	return true;
+	return false;
 }
 
 } // namespace quantdata

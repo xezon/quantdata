@@ -51,8 +51,8 @@ typedef free_func   TQuantDataFree;
 #endif
 
 #define QuantDataResult_Success               0
-#define QuantDataResult_InitFailed            1
-#define QuantDataResult_CleanupFailed         2
+#define QuantDataResult_Failure               1
+#define QuantDataResult_NotInitialized        2
 #define QuantDataResult_InvalidArgument       3
 #define QuantDataResult_InvalidApiKey       500
 #define QuantDataResult_RejectedApiKey      501
@@ -84,11 +84,19 @@ typedef free_func   TQuantDataFree;
 
 #ifdef __cplusplus
 
+#include <data_enum.h>
+
+#ifdef QUANTDATA_IMPL
+#define QUANTDATA_DEFINE_ENUM_CLASS(clazz, underlying_t, list, meta_t) DEFINE_DATA_ENUM_CLASS(clazz, underlying_t, list, meta_t)
+#else
+#define QUANTDATA_DEFINE_ENUM_CLASS(clazz, underlying_t, list, meta_t) DEFINE_NORMAL_ENUM_CLASS(clazz, underlying_t, list)
+#endif
+
 enum class EQuantDataResult : int32_t
 {
 	Success             = QuantDataResult_Success,
-	InitFailed          = QuantDataResult_InitFailed,
-	CleanupFailed       = QuantDataResult_CleanupFailed,
+	Failure             = QuantDataResult_Failure,
+	NotInitialized      = QuantDataResult_NotInitialized,
 	InvalidArgument     = QuantDataResult_InvalidArgument,
 	InvalidApiKey       = QuantDataResult_InvalidApiKey,
 	RejectedApiKey      = QuantDataResult_RejectedApiKey,
@@ -97,13 +105,14 @@ enum class EQuantDataResult : int32_t
 	UnsupportedTime     = QuantDataResult_UnsupportedTime,
 };
 
-enum class EQuantDataProvider : int32_t
-{
-	Quandl        = QuantDataProvider_Quandl,
-	Oanda         = QuantDataProvider_Oanda,
-	AlphaVantage  = QuantDataProvider_AlphaVantage,
-	CurrencyLayer = QuantDataProvider_CurrencyLayer,
-};
+
+#define QUANTDATA_ENUM_PROVIDER(e) \
+	e(Quandl        , = QuantDataProvider_Quandl        , (false)) \
+	e(Oanda         , = QuantDataProvider_Oanda         , (false)) \
+	e(AlphaVantage  , = QuantDataProvider_AlphaVantage  , (false)) \
+	e(CurrencyLayer , = QuantDataProvider_CurrencyLayer , (false)) \
+
+QUANTDATA_DEFINE_ENUM_CLASS(EQuantDataProvider, int32_t, QUANTDATA_ENUM_PROVIDER, bool)
 
 enum class EQuantDataInterval : int32_t
 {

@@ -29,7 +29,7 @@ EQuantDataResult QUANTDATA_CALL QuantDataInit()
 			return EQuantDataResult::Success;
 		}
 	}
-	return EQuantDataResult::InitFailed;
+	return EQuantDataResult::Failure;
 }
 
 EQuantDataResult QUANTDATA_CALL QuantDataCleanup()
@@ -40,11 +40,14 @@ EQuantDataResult QUANTDATA_CALL QuantDataCleanup()
 		g_quantDataInit = false;
 		return EQuantDataResult::Success;
 	}
-	return EQuantDataResult::InitFailed;
+	return EQuantDataResult::Failure;
 }
 
 EQuantDataResult QUANTDATA_CALL QuantDataCreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings)
 {
+	if (!g_quantDataInit)
+		return EQuantDataResult::NotInitialized;
+
 	if (!ppSeries || !pSettings)
 		return EQuantDataResult::InvalidArgument;
 
