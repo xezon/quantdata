@@ -66,10 +66,11 @@ EQuantDataResult CSeries::Download(const TQuantDataDownloadSettings* pSettings)
 	TDownloader::TData header(m_stringAllocator);
 	TDownloader::TData page(m_stringAllocator);
 	TDownloader::SDownloadSettings dlsettings;
+	TDownloader::SDownloadInfo dlinfo;
 	dlsettings.url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=demo&datatype=csv";
 	dlsettings.certtype = m_certtype.c_str();
 	dlsettings.certfile = m_certfile.c_str();
-	CURLcode code = TDownloader::Download(header, page, dlsettings);
+	CURLcode code = TDownloader::Download(dlsettings, &header, &page, &dlinfo);
 
 	return EQuantDataResult::Success;
 }

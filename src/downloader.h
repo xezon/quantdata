@@ -11,9 +11,34 @@
 #endif
 #include <curl/curl.h>
 
+#define CURL_EASY_SETOPT_WITH_CHECK(curl, option, value) { \
+	CURLcode code = curl_easy_setopt(curl, option, value); \
+	if (code != CURLE_OK) { \
+		return code; \
+	} \
+}
+
 template <class Allocator = std::allocator<char>>
 class CDownloader
 {
+private:
+	struct CurlEasyInitRaii
+	{
+		CurlEasyInitRaii()
+			: m_curl(curl_easy_init()) {
+		}
+		~CurlEasyInitRaii() {
+			if (m_curl) {
+				curl_easy_cleanup(m_curl);
+			}
+		}
+		inline operator CURL*() {
+			return m_curl;
+		}
+	private:
+		CURL* m_curl;
+	};
+
 public:
 	static_assert(std::is_same<typename Allocator::value_type, char>::value,
 		"Allocator type must be of type char");
@@ -28,39 +53,58 @@ public:
 		const char* certfile = nullptr;
 	};
 
-	static CURLcode Download(TData& header, TData& page, const SDownloadSettings& settings)
+	struct SDownloadInfo
 	{
-		header.clear();
-		page.clear();
-		CURL* curl = curl_easy_init();
+		long responseCode = 0l;
+		curl_off_t bytesDownloaded = 0l;
+	};
 
-		if (curl == nullptr)
+	static CURLcode Download(const SDownloadSettings& settings, TData* pHeader, TData* pPage, SDownloadInfo* pInfo)
+	{
+		CurlEasyInitRaii curl;
+
+		if (!curl)
 			return CURLE_FAILED_INIT;
+		
+		CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_HEADER, 0L);
+		CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_URL, settings.url);
 
-		CURLcode code;
-		code = curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
-		code = curl_easy_setopt(curl, CURLOPT_URL, settings.url);
-		code = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteToString);
-		code = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &page);
-		code = curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, WriteToString);
-		code = curl_easy_setopt(curl, CURLOPT_HEADERDATA, &header);
+		if (pPage)
+		{
+			pPage->clear();
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_WRITEFUNCTION, WriteToString);
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_WRITEDATA, pPage);
+		}
+
+		if (pHeader)
+		{
+			pHeader->clear();
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_HEADERFUNCTION, WriteToString);
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_HEADERDATA, pHeader);
+		}
 
 		if (IsValidString(settings.certtype))
 		{
-			code = curl_easy_setopt(curl, CURLOPT_SSLCERTTYPE, settings.certtype);
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_SSLCERTTYPE, settings.certtype);
 		}
 		else if (IsValidString(settings.certfile))
 		{
-			code = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
-			code = curl_easy_setopt(curl, CURLOPT_CAINFO, settings.certfile);
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_SSL_VERIFYPEER, 1L);
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_CAINFO, settings.certfile);
 		}
 		else
 		{
-			code = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 		}
 
-		code = curl_easy_perform(curl);
-		curl_easy_cleanup(curl);
+		CURLcode code = curl_easy_perform(curl);
+
+		if (pInfo)
+		{
+			curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &pInfo->responseCode);
+			curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD_T, &pInfo->bytesDownloaded);
+		}
+
 		return code;
 	}
 
@@ -73,3 +117,5 @@ private:
 		return size * nmemb;
 	}
 };
+
+#undef CURL_EASY_SETOPT_WITH_CHECK
