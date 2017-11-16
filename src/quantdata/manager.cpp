@@ -1,7 +1,6 @@
 
 #include "manager.h"
 #include "quantdata/series.h"
-#include <common/utils.h>
 
 #ifdef _DEBUG
 #pragma comment(lib, "libcurl_a_debug.lib")
@@ -43,6 +42,14 @@ EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries, const TQuan
 	if (!ppSeries || !pSettings)
 		return EQuantDataResult::InvalidArgument;
 
+	utils::SAllocatorFunctions functions = GetAllocatorFunctions(pSettings);
+	*ppSeries = utils::PlacementAlloc<quantdata::CSeries>(functions.alloc, *this, functions);
+
+	return EQuantDataResult::Success;
+}
+
+utils::SAllocatorFunctions CManager::GetAllocatorFunctions(const TQuantDataCreationSettings* pSettings)
+{
 	TQuantDataAlloc alloc = pSettings->alloc;
 	TQuantDataFree free = pSettings->free;
 
@@ -52,8 +59,7 @@ EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries, const TQuan
 		free = quantdata::GetDefaultFree();
 	}
 
-	*ppSeries = utils::PlacementAlloc<quantdata::CSeries>(alloc, *this, alloc, free);
-	return EQuantDataResult::Success;
+	return utils::SAllocatorFunctions(alloc, free);
 }
 
 } // namespace quantdata

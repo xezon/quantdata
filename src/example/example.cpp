@@ -27,6 +27,20 @@ int main(int argc, char** argv)
 	result = pSeries->Load(&loadSettings);
 	assert(result == EQuantDataResult::Success);
 
+	TQuantDataProviderSettings providerSettings;
+	providerSettings.provider = EQuantDataProvider::AlphaVantage;
+	providerSettings.apikey = apikey_alphavantage;
+	result = pSeries->SetProvider(&providerSettings);
+	assert(result == EQuantDataResult::Success);
+
+	TQuantDataDownloadSettings downloadSettings;
+	downloadSettings.symbol = "MSFT";
+	downloadSettings.interval = EQuantDataInterval::Minute1;
+	downloadSettings.adjusted = false;
+
+	result = pSeries->Download(&downloadSettings);
+	assert(result == EQuantDataResult::Success);
+
 	result = pSeries->Release();
 	assert(result == EQuantDataResult::Success);
 

@@ -2,6 +2,9 @@
 #pragma once
 
 #include "quantdata.h"
+#include <string>
+#include <common/utils_mem.h>
+#include <downloader.h>
 
 namespace quantdata {
 
@@ -9,12 +12,13 @@ class CManager;
 
 class CSeries : public IQuantDataSeries
 {
+private:
+	using TStringAllocator = utils::CAllocatorWithFunc<char>;
+	using TString = std::basic_string<char, std::char_traits<char>, TStringAllocator>;
+	using TDownloader = CDownloader<TStringAllocator>;
+
 public:
-	CSeries(const CManager& manager, TQuantDataAlloc alloc, TQuantDataFree free)
-		: m_manager(manager)
-		, m_alloc(alloc)
-		, m_free(free)
-	{}
+	CSeries(CManager& manager, const utils::SAllocatorFunctions& functions);
 
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings);
 	EQuantDataResult GetSupportedIntervals(TQuantDataIntervals** ppIntervals);
@@ -35,13 +39,17 @@ public:
 	EQuantDataResult Release();
 
 private:
-	bool IsValidProvider(const TQuantDataProviderSettings& provider);
+	static bool IsValidProvider(const TQuantDataProviderSettings& provider);
+	bool HasValidProvider() const;
 	EQuantDataResult DownloadFromAlphaVantage(const TQuantDataDownloadSettings& settings);
 
-	const CManager& m_manager;
-	const TQuantDataAlloc m_alloc;
-	const TQuantDataFree m_free;
-	TQuantDataProviderSettings m_providerSettings;
+	CManager& m_manager;
+	utils::SAllocatorFunctions m_functions;
+	TStringAllocator m_stringAllocator;
+	EQuantDataProvider m_provider;
+	TString m_apikey;
+	TString m_certtype;
+	TString m_certfile;
 };
 
 } // namespace quantdata

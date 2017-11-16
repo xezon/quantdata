@@ -2,6 +2,7 @@
 #pragma once
 
 #include <quantdata.h>
+#include <common/utils.h>
 
 namespace quantdata {
 
@@ -15,6 +16,8 @@ public:
 	inline bool IsInitialized() { return m_isInitialized; }
 
 private:
+	utils::SAllocatorFunctions GetAllocatorFunctions(const TQuantDataCreationSettings* pSettings);
+
 	bool m_isInitialized = false;
 };
 

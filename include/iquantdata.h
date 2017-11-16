@@ -152,6 +152,8 @@ struct SQuantDataProviderSettings
 {
 	EQuantDataProvider provider     ZERO_INIT; // mandatory
 	TQuantDataString   apikey       ZERO_INIT; // mandatory
+	TQuantDataString   certtype     ZERO_INIT; // optional, default is PEM
+	TQuantDataString   certfile     ZERO_INIT; // optional
 };
 typedef struct SQuantDataProviderSettings TQuantDataProviderSettings;
 

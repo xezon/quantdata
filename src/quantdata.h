@@ -4,10 +4,6 @@
 #define DATA_ENUM_DEBUGGING 2
 #define QUANTDATA_IMPL
 #include <iquantdata.h>
-
-#define CURL_STATICLIB
-#include <curl/curl.h>
-
 #include <common/utils_c.h>
 
 namespace quantdata {
