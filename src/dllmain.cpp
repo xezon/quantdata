@@ -3,6 +3,12 @@
 #include <quantdata/manager.h>
 #include <quantdata/series.h>
 
+#ifdef _DEBUG
+#pragma comment(lib, "libcurl_a_debug.lib")
+#else
+#pragma comment(lib, "libcurl_a.lib")
+#endif
+
 quantdata::CManager g_manager;
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
