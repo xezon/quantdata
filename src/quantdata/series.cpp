@@ -143,7 +143,7 @@ EQuantDataResult CSeries::Release()
 
 bool CSeries::IsValidProvider(const TQuantDataProviderSettings& settings)
 {
-	return settings.provider.is_valid() && IsValidString(settings.apikey);
+	return CQuantDataProvider(settings.provider).is_valid() && IsValidString(settings.apikey);
 }
 
 bool CSeries::HasValidProvider() const

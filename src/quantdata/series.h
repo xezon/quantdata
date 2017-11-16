@@ -46,7 +46,7 @@ private:
 	CManager& m_manager;
 	utils::custom_allocator_functions m_functions;
 	TStringAllocator m_stringAllocator;
-	EQuantDataProvider m_provider;
+	CQuantDataProvider m_provider;
 	TString m_apikey;
 	TString m_certtype;
 	TString m_certfile;

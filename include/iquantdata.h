@@ -82,9 +82,11 @@ typedef free_func   TQuantDataFree;
 #include <common/enum.h>
 
 #ifdef QUANTDATA_IMPL
-#define QUANTDATA_DEFINE_ENUM_CLASS(clazz, underlying_t, list, meta_t) DEFINE_DATA_ENUM_CLASS(clazz, underlying_t, list, meta_t)
+#define QUANTDATA_DEFINE_ENUM_CLASS(enumClass, enumDataClass, underlying, list, meta) \
+             DEFINE_DATA_ENUM_CLASS(enumClass, enumDataClass, underlying, list, meta)
 #else
-#define QUANTDATA_DEFINE_ENUM_CLASS(clazz, underlying_t, list, meta_t) DEFINE_NORMAL_ENUM_CLASS(clazz, underlying_t, list)
+#define QUANTDATA_DEFINE_ENUM_CLASS(enumClass, enumDataClass, underlying, list, meta) \
+           DEFINE_NORMAL_ENUM_CLASS(enumClass, underlying, list)
 #endif
 
 #define QUANTDATA_ENUM_PROVIDER(e) \
@@ -93,7 +95,7 @@ typedef free_func   TQuantDataFree;
 	e(AlphaVantage  , = QuantDataProvider_AlphaVantage  , (false)) \
 	e(CurrencyLayer , = QuantDataProvider_CurrencyLayer , (false)) \
 
-QUANTDATA_DEFINE_ENUM_CLASS(EQuantDataProvider, int32_t, QUANTDATA_ENUM_PROVIDER, bool)
+QUANTDATA_DEFINE_ENUM_CLASS(EQuantDataProvider, CQuantDataProvider, int32_t, QUANTDATA_ENUM_PROVIDER, bool)
 
 enum class EQuantDataInterval : int32_t
 {
