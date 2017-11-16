@@ -137,7 +137,7 @@ EQuantDataResult CSeries::SetGtick(TQuantDataGtDataPoints* pData)
 
 EQuantDataResult CSeries::Release()
 {
-	utils::PlacementFree(this, m_functions.free);
+	utils::placement_free(this, m_functions.free);
 	return EQuantDataResult::Success;
 }
 

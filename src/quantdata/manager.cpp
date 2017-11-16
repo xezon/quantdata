@@ -37,7 +37,7 @@ EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries, const TQuan
 		return EQuantDataResult::InvalidArgument;
 
 	utils::custom_allocator_functions functions = GetAllocatorFunctions(pSettings);
-	*ppSeries = utils::PlacementAlloc<quantdata::CSeries>(functions.alloc, *this, functions);
+	*ppSeries = utils::placement_alloc<quantdata::CSeries>(functions.alloc, *this, functions);
 
 	return EQuantDataResult::Success;
 }

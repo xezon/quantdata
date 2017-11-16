@@ -18,8 +18,8 @@ int main(int argc, char** argv)
 
 	IQuantDataSeries* pSeries = nullptr;
 	TQuantDataCreationSettings settings;
-	settings.alloc = utils::Alloc;
-	settings.free = utils::Free;
+	settings.alloc = utils::alloc;
+	settings.free = utils::free;
 	result = QuantData_CreateSeries(&pSeries, &settings);
 	assert(result == EQuantDataResult::Success);
 

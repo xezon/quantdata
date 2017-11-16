@@ -10,12 +10,12 @@ namespace quantdata {
 
 inline TQuantDataAlloc GetDefaultAlloc()
 {
-	return utils::Alloc;
+	return utils::alloc;
 }
 
 inline TQuantDataFree GetDefaultFree()
 {
-	return utils::Free;
+	return utils::free;
 }
 
 } // namespace quantdata
