@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\iquantdata.h" />
     <ClInclude Include="..\src\apikey.h" />
+    <ClInclude Include="..\src\downloader.h" />
     <ClInclude Include="..\src\quantdata.h" />
     <ClInclude Include="..\src\quantdata\manager.h" />
     <ClInclude Include="..\src\quantdata\series.h" />
