@@ -13,7 +13,7 @@
     <ClCompile>
       <RuntimeLibrary Condition="'$(Configuration)'=='Debug'">MultiThreadedDebug</RuntimeLibrary>
       <RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\include;..\src;..\..\commonlib\include;..\..\deps\$(Platform)\include;..\..\genotick-cpp\include;..\..\zorro-dll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\src;..\..\commonlib\include;..\..\gsl\include;..\..\deps\$(Platform)\include;..\..\genotick-cpp\include;..\..\zorro-dll\include;..\..\jsoncons\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
