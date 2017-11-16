@@ -5,7 +5,7 @@
 
 namespace quantdata {
 
-CSeries::CSeries(CManager& manager, const utils::SAllocatorFunctions& functions)
+CSeries::CSeries(CManager& manager, const utils::custom_allocator_functions& functions)
 	: m_manager(manager)
 	, m_functions(functions)
 	, m_stringAllocator(functions)

@@ -16,7 +16,7 @@ public:
 	inline bool IsInitialized() { return m_isInitialized; }
 
 private:
-	utils::SAllocatorFunctions GetAllocatorFunctions(const TQuantDataCreationSettings* pSettings);
+	utils::custom_allocator_functions GetAllocatorFunctions(const TQuantDataCreationSettings* pSettings);
 
 	bool m_isInitialized = false;
 };

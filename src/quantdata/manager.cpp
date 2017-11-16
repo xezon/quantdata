@@ -36,13 +36,13 @@ EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries, const TQuan
 	if (!ppSeries || !pSettings)
 		return EQuantDataResult::InvalidArgument;
 
-	utils::SAllocatorFunctions functions = GetAllocatorFunctions(pSettings);
+	utils::custom_allocator_functions functions = GetAllocatorFunctions(pSettings);
 	*ppSeries = utils::PlacementAlloc<quantdata::CSeries>(functions.alloc, *this, functions);
 
 	return EQuantDataResult::Success;
 }
 
-utils::SAllocatorFunctions CManager::GetAllocatorFunctions(const TQuantDataCreationSettings* pSettings)
+utils::custom_allocator_functions CManager::GetAllocatorFunctions(const TQuantDataCreationSettings* pSettings)
 {
 	TQuantDataAlloc alloc = pSettings->alloc;
 	TQuantDataFree free = pSettings->free;
@@ -53,7 +53,7 @@ utils::SAllocatorFunctions CManager::GetAllocatorFunctions(const TQuantDataCreat
 		free = quantdata::GetDefaultFree();
 	}
 
-	return utils::SAllocatorFunctions(alloc, free);
+	return utils::custom_allocator_functions(alloc, free);
 }
 
 } // namespace quantdata

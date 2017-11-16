@@ -13,12 +13,12 @@ class CManager;
 class CSeries : public IQuantDataSeries
 {
 private:
-	using TStringAllocator = utils::CAllocatorWithFunc<char>;
+	using TStringAllocator = utils::custom_allocator<char>;
 	using TString = std::basic_string<char, std::char_traits<char>, TStringAllocator>;
 	using TDownloader = CDownloader<TStringAllocator>;
 
 public:
-	CSeries(CManager& manager, const utils::SAllocatorFunctions& functions);
+	CSeries(CManager& manager, const utils::custom_allocator_functions& functions);
 
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings);
 	EQuantDataResult GetSupportedIntervals(TQuantDataIntervals** ppIntervals);
@@ -44,7 +44,7 @@ private:
 	EQuantDataResult DownloadFromAlphaVantage(const TQuantDataDownloadSettings& settings);
 
 	CManager& m_manager;
-	utils::SAllocatorFunctions m_functions;
+	utils::custom_allocator_functions m_functions;
 	TStringAllocator m_stringAllocator;
 	EQuantDataProvider m_provider;
 	TString m_apikey;
