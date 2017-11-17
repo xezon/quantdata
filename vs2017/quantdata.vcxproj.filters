@@ -15,10 +15,10 @@
     <ClCompile Include="..\src\dllmain.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\quantdata\series.cpp">
+    <ClCompile Include="..\src\quantdata\manager.cpp">
       <Filter>src\quantdata</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\quantdata\manager.cpp">
+    <ClCompile Include="..\src\quantdata\series.cpp">
       <Filter>src\quantdata</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,14 +32,23 @@
     <ClInclude Include="..\src\apikey.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\quantdata\series.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\quantdata\manager.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
     <ClInclude Include="..\src\downloader.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\provider.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\types.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\checks.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\series.h">
+      <Filter>src\quantdata</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 
 #include "manager.h"
-#include "quantdata/series.h"
+#include <quantdata/series.h>
 
 namespace quantdata {
 
@@ -42,7 +42,7 @@ EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries, const TQuan
 	return EQuantDataResult::Success;
 }
 
-utils::custom_allocator_functions CManager::GetAllocatorFunctions(const TQuantDataCreationSettings* pSettings)
+TAllocatorFunctions CManager::GetAllocatorFunctions(const TQuantDataCreationSettings* pSettings)
 {
 	TQuantDataAlloc alloc = pSettings->alloc;
 	TQuantDataFree free = pSettings->free;
@@ -53,7 +53,7 @@ utils::custom_allocator_functions CManager::GetAllocatorFunctions(const TQuantDa
 		free = quantdata::GetDefaultFree();
 	}
 
-	return utils::custom_allocator_functions(alloc, free);
+	return TAllocatorFunctions(alloc, free);
 }
 
 } // namespace quantdata

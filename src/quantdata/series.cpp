@@ -1,32 +1,25 @@
 
 #include "series.h"
 #include <common/utils.h>
+#include <common/stl.h>
 #include <quantdata/manager.h>
+#include <quantdata/checks.h>
 
 namespace quantdata {
 
-CSeries::CSeries(CManager& manager, const utils::custom_allocator_functions& functions)
+CSeries::CSeries(CManager& manager, const TAllocatorFunctions& functions)
 	: m_manager(manager)
 	, m_functions(functions)
 	, m_stringAllocator(functions)
-	, m_apikey(m_stringAllocator)
-	, m_certtype(m_stringAllocator)
-	, m_certfile(m_stringAllocator)
+	, m_provider(m_stringAllocator)
 {}
 
 EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSettings)
 {
-	if (!pSettings)
-		return EQuantDataResult::InvalidArgument;
-
-	if (!IsValidProvider(*pSettings))
+	if (!IsValidProvider(pSettings))
 		return EQuantDataResult::InvalidProvider;
 
-	m_provider = pSettings->provider;
-	m_apikey = pSettings->apikey;
-	m_certtype = IsValidString(pSettings->certtype) ? pSettings->certtype : "";
-	m_certfile = IsValidString(pSettings->certfile) ? pSettings->certfile : "";
-
+	m_provider.Set(*pSettings);
 	return EQuantDataResult::Success;
 }
 
@@ -35,7 +28,7 @@ EQuantDataResult CSeries::GetSupportedIntervals(TQuantDataIntervals** ppInterval
 	if (!ppIntervals)
 		return EQuantDataResult::InvalidArgument;
 
-	if (!HasValidProvider())
+	if (!m_provider.Valid())
 		return EQuantDataResult::InvalidProvider;
 
 	return EQuantDataResult::Success;
@@ -46,7 +39,7 @@ EQuantDataResult CSeries::GetSupportedSymbols(TQuantDataSymbols** ppSymbols)
 	if (!ppSymbols)
 		return EQuantDataResult::InvalidArgument;
 
-	if (!HasValidProvider())
+	if (!m_provider.Valid())
 		return EQuantDataResult::InvalidProvider;
 
 	return EQuantDataResult::Success;
@@ -54,22 +47,28 @@ EQuantDataResult CSeries::GetSupportedSymbols(TQuantDataSymbols** ppSymbols)
 
 EQuantDataResult CSeries::Download(const TQuantDataDownloadSettings* pSettings)
 {
-	if (!pSettings)
+	if (!IsValidDownload(pSettings))
 		return EQuantDataResult::InvalidArgument;
 
 	if (!m_manager.IsInitialized())
 		return EQuantDataResult::NotInitialized;
 
-	if (!HasValidProvider())
+	if (!m_provider.Valid())
 		return EQuantDataResult::InvalidProvider;
 
 	TDownloader::TData header(m_stringAllocator);
 	TDownloader::TData page(m_stringAllocator);
 	TDownloader::SDownloadSettings dlsettings;
 	TDownloader::SDownloadInfo dlinfo;
-	dlsettings.url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=demo&datatype=csv";
-	dlsettings.certtype = m_certtype.c_str();
-	dlsettings.certfile = m_certfile.c_str();
+
+	TString url = stl::string_format_t<TString>(m_stringAllocator,
+		"https://www.alphavantage.co/"
+		"query?function=TIME_SERIES_INTRADAY"
+		"&symbol=%s&interval=1min&apikey=demo&datatype=csv", pSettings->symbol);
+
+	dlsettings.url = url.c_str();
+	dlsettings.certtype = m_provider.certtype.c_str();
+	dlsettings.certfile = m_provider.certfile.c_str();
 	CURLcode code = TDownloader::Download(dlsettings, &header, &page, &dlinfo);
 
 	return EQuantDataResult::Success;
@@ -138,21 +137,6 @@ EQuantDataResult CSeries::SetGtick(TQuantDataGtDataPoints* pData)
 EQuantDataResult CSeries::Release()
 {
 	utils::placement_free(this, m_functions.free);
-	return EQuantDataResult::Success;
-}
-
-bool CSeries::IsValidProvider(const TQuantDataProviderSettings& settings)
-{
-	return CQuantDataProvider(settings.provider).is_valid() && IsValidString(settings.apikey);
-}
-
-bool CSeries::HasValidProvider() const
-{
-	return m_provider.is_valid() && !m_apikey.empty();
-}
-
-EQuantDataResult CSeries::DownloadFromAlphaVantage(const TQuantDataDownloadSettings& settings)
-{
 	return EQuantDataResult::Success;
 }
 

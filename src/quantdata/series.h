@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include "quantdata.h"
-#include <string>
-#include <common/utils_mem.h>
+#include <quantdata.h>
+#include <quantdata/types.h>
+#include <quantdata/provider.h>
 #include <downloader.h>
 
 namespace quantdata {
@@ -13,12 +13,10 @@ class CManager;
 class CSeries : public IQuantDataSeries
 {
 private:
-	using TStringAllocator = utils::custom_allocator<char>;
-	using TString = std::basic_string<char, std::char_traits<char>, TStringAllocator>;
 	using TDownloader = CDownloader<TStringAllocator>;
 
 public:
-	CSeries(CManager& manager, const utils::custom_allocator_functions& functions);
+	CSeries(CManager& manager, const TAllocatorFunctions& functions);
 
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings);
 	EQuantDataResult GetSupportedIntervals(TQuantDataIntervals** ppIntervals);
@@ -39,17 +37,10 @@ public:
 	EQuantDataResult Release();
 
 private:
-	static bool IsValidProvider(const TQuantDataProviderSettings& provider);
-	bool HasValidProvider() const;
-	EQuantDataResult DownloadFromAlphaVantage(const TQuantDataDownloadSettings& settings);
-
 	CManager& m_manager;
-	utils::custom_allocator_functions m_functions;
+	TAllocatorFunctions m_functions;
 	TStringAllocator m_stringAllocator;
-	CQuantDataProvider m_provider;
-	TString m_apikey;
-	TString m_certtype;
-	TString m_certfile;
+	SProvider m_provider;
 };
 
 } // namespace quantdata

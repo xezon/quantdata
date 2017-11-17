@@ -90,24 +90,23 @@ typedef free_func   TQuantDataFree;
 #endif
 
 #define QUANTDATA_ENUM_PROVIDER(e) \
-	e(Quandl        , = QuantDataProvider_Quandl        , (false)) \
-	e(Oanda         , = QuantDataProvider_Oanda         , (false)) \
-	e(AlphaVantage  , = QuantDataProvider_AlphaVantage  , (false)) \
-	e(CurrencyLayer , = QuantDataProvider_CurrencyLayer , (false)) \
+	e(Quandl        , = QuantDataProvider_Quandl        , false) \
+	e(Oanda         , = QuantDataProvider_Oanda         , false) \
+	e(AlphaVantage  , = QuantDataProvider_AlphaVantage  , false) \
+	e(CurrencyLayer , = QuantDataProvider_CurrencyLayer , false) \
 
 QUANTDATA_DEFINE_ENUM_CLASS(EQuantDataProvider, CQuantDataProvider, int32_t, QUANTDATA_ENUM_PROVIDER, bool)
 
 enum class EQuantDataInterval : int32_t
 {
-	Invalid       = 0,
-	Minute1       = QuantDataInterval_Minute1,
-	Minute5       = QuantDataInterval_Minute5,
-	Minute15      = QuantDataInterval_Minute15,
-	Minute30      = QuantDataInterval_Minute30,
-	Minute60      = QuantDataInterval_Minute60,
-	Day1          = QuantDataInterval_Day1,
-	Week1         = QuantDataInterval_Week1,
-	Month1        = QuantDataInterval_Month1,
+	Minute1  = QuantDataInterval_Minute1,
+	Minute5  = QuantDataInterval_Minute5,
+	Minute15 = QuantDataInterval_Minute15,
+	Minute30 = QuantDataInterval_Minute30,
+	Minute60 = QuantDataInterval_Minute60,
+	Day1     = QuantDataInterval_Day1,
+	Week1    = QuantDataInterval_Week1,
+	Month1   = QuantDataInterval_Month1,
 };
 
 enum class EQuantDataFormat : int32_t
