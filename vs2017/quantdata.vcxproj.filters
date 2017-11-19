@@ -10,6 +10,9 @@
     <Filter Include="src\quantdata">
       <UniqueIdentifier>{2f4bb4bf-af29-417a-9ec3-1cc5de4462ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\quantdata\array">
+      <UniqueIdentifier>{caec26fc-9da4-4099-b623-23f40e9c57ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dllmain.cpp">
@@ -49,6 +52,18 @@
     </ClInclude>
     <ClInclude Include="..\src\quantdata\series.h">
       <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\series_functions.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\array\array_functions.h">
+      <Filter>src\quantdata\array</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\array\new_array.h">
+      <Filter>src\quantdata\array</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\array\static_array.h">
+      <Filter>src\quantdata\array</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

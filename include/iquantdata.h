@@ -31,8 +31,17 @@ typedef struct SGenotickDataPoint {} TGenotickDataPoint;
 
 #ifdef __cplusplus
 #define ZERO_INIT = {}
+#define FTHIS(type)               struct type*
+#define ITYPE(type, name) typedef struct type name;
 #else
 #define ZERO_INIT
+#define FTHIS(type)               const struct type##Functions*
+#define ITYPE(type, name) typedef const struct type##Functions name;
+#endif
+#ifdef ZORRO_LITE_C
+#define FPTR(name)  QUANTDATA_CALL  name
+#else
+#define FPTR(name) (QUANTDATA_CALL* name)
 #endif
 
 #pragma pack(push, 4)
@@ -45,29 +54,46 @@ typedef uint8_t     TQuantDataBool;
 typedef alloc_func  TQuantDataAlloc;
 typedef free_func   TQuantDataFree;
 
-#define QuantDataResult_Success               0
-#define QuantDataResult_Failure               1
-#define QuantDataResult_NotInitialized        2
-#define QuantDataResult_InvalidArgument       3
-#define QuantDataResult_InvalidProvider     500
-#define QuantDataResult_RejectedApiKey      501
-#define QuantDataResult_UnsupportedInterval 600
-#define QuantDataResult_UnsupportedSymbol   601
-#define QuantDataResult_UnsupportedTime     602
+#define QuantDataResult_Success             0
+#define QuantDataResult_Failure             1
+#define QuantDataResult_NotInitialized      2
+#define QuantDataResult_InvalidArgument     3
+#define QuantDataResult_InvalidProvider   500
+#define QuantDataResult_RejectedApiKey    501
+#define QuantDataResult_UnsupportedPeriod 600
+#define QuantDataResult_UnsupportedSymbol 601
+#define QuantDataResult_UnsupportedTime   602
 
-#define QuantDataProvider_Quandl        0
-#define QuantDataProvider_Oanda         1
-#define QuantDataProvider_AlphaVantage  2
-#define QuantDataProvider_CurrencyLayer 3
+#define QuantDataProvider_Quandl       0
+#define QuantDataProvider_Oanda        1
+#define QuantDataProvider_AlphaVantage 2
+#define QuantDataProvider_OpenExchange 3
+#define QuantDataProvider_TrueFx       4
 
-#define QuantDataInterval_Minute1  1
-#define QuantDataInterval_Minute5  5
-#define QuantDataInterval_Minute15 15
-#define QuantDataInterval_Minute30 30
-#define QuantDataInterval_Minute60 60
-#define QuantDataInterval_Day1     1440
-#define QuantDataInterval_Week1    10080
-#define QuantDataInterval_Month1   43800
+#define QuantDataPeriod_Finest       0.0
+#define QuantDataPeriod_Second5      1.0 / 12.0
+#define QuantDataPeriod_Second10     1.0 / 6.0
+#define QuantDataPeriod_Second15     1.0 / 4.0
+#define QuantDataPeriod_Second30     1.0 / 2.0
+#define QuantDataPeriod_Minute       1.0
+#define QuantDataPeriod_Minute2      2.0
+#define QuantDataPeriod_Minute4      4.0
+#define QuantDataPeriod_Minute5      5.0
+#define QuantDataPeriod_Minute10    10.0
+#define QuantDataPeriod_Minute15    15.0
+#define QuantDataPeriod_Minute30    30.0
+#define QuantDataPeriod_Hour        60.0
+#define QuantDataPeriod_Hour2      120.0 
+#define QuantDataPeriod_Hour3      180.0
+#define QuantDataPeriod_Hour4      240.0
+#define QuantDataPeriod_Hour6      360.0
+#define QuantDataPeriod_Hour8      480.0
+#define QuantDataPeriod_Hour12     720.0
+#define QuantDataPeriod_Day       1440.0
+#define QuantDataPeriod_Week     10080.0
+#define QuantDataPeriod_Month    43200.0
+#define QuantDataPeriod_Quarter 129600.0
+#define QuantDataPeriod_Annual  525600.0
 
 #define QuantDataFormat_csv    0
 #define QuantDataFormat_json   1
@@ -80,34 +106,61 @@ typedef free_func   TQuantDataFree;
 #ifdef __cplusplus
 
 #include <common/enum.h>
+#include <array>
 
-#ifdef QUANTDATA_IMPL
-#define QUANTDATA_DEFINE_ENUM_CLASS(enumClass, enumDataClass, underlying, list, meta) \
-             DEFINE_DATA_ENUM_CLASS(enumClass, enumDataClass, underlying, list, meta)
-#else
-#define QUANTDATA_DEFINE_ENUM_CLASS(enumClass, enumDataClass, underlying, list, meta) \
-           DEFINE_NORMAL_ENUM_CLASS(enumClass, underlying, list)
-#endif
+#define QUANTDATA_PROVIDER_LIST(e) \
+	e( Quandl       , = QuantDataProvider_Quandl       , 0 ) \
+	e( Oanda        , = QuantDataProvider_Oanda        , 0 ) \
+	e( AlphaVantage , = QuantDataProvider_AlphaVantage , 0 ) \
+	e( OpenExchange , = QuantDataProvider_OpenExchange , 0 ) \
+	e( TrueFx       , = QuantDataProvider_TrueFx       , 0 ) \
 
-#define QUANTDATA_ENUM_PROVIDER(e) \
-	e(Quandl        , = QuantDataProvider_Quandl        , false) \
-	e(Oanda         , = QuantDataProvider_Oanda         , false) \
-	e(AlphaVantage  , = QuantDataProvider_AlphaVantage  , false) \
-	e(CurrencyLayer , = QuantDataProvider_CurrencyLayer , false) \
+DEFINE_DATA_ENUM_CLASS(EQuantDataProvider, CQuantDataProvider, int32_t, QUANTDATA_PROVIDER_LIST, int8_t)
 
-QUANTDATA_DEFINE_ENUM_CLASS(EQuantDataProvider, CQuantDataProvider, int32_t, QUANTDATA_ENUM_PROVIDER, bool)
-
-enum class EQuantDataInterval : int32_t
+struct SQuantDataPeriodMeta
 {
-	Minute1  = QuantDataInterval_Minute1,
-	Minute5  = QuantDataInterval_Minute5,
-	Minute15 = QuantDataInterval_Minute15,
-	Minute30 = QuantDataInterval_Minute30,
-	Minute60 = QuantDataInterval_Minute60,
-	Day1     = QuantDataInterval_Day1,
-	Week1    = QuantDataInterval_Week1,
-	Month1   = QuantDataInterval_Month1,
+	using TString = const char* const;
+	using TProviderStrings = ::std::array<TString, CQuantDataProvider::count()>;
+	template <class... Args>
+	constexpr SQuantDataPeriodMeta(Args... args)
+		: apiNames({args...})
+	{
+		static_assert(sizeof...(args) == CQuantDataProvider::count(),
+			"Argument count must match meta data count");
+	}
+	const TProviderStrings apiNames;
 };
+
+#define QUANTDATA_PERIOD_LIST(e) \
+	e( Finest   , QuantDataPeriod_Finest   , (SQuantDataPeriodMeta( "none"     , "S5"  , "1min"  , "1m"  , "YES" )) ) \
+	e( Second5  , QuantDataPeriod_Second5  , (SQuantDataPeriodMeta( ""         , "S5"  , ""      , ""    , ""    )) ) \
+	e( Second10 , QuantDataPeriod_Second10 , (SQuantDataPeriodMeta( ""         , "S10" , ""      , ""    , ""    )) ) \
+	e( Second15 , QuantDataPeriod_Second15 , (SQuantDataPeriodMeta( ""         , "S15" , ""      , ""    , ""    )) ) \
+	e( Second30 , QuantDataPeriod_Second30 , (SQuantDataPeriodMeta( ""         , "S30" , ""      , ""    , ""    )) ) \
+	e( Minute   , QuantDataPeriod_Minute   , (SQuantDataPeriodMeta( ""         , "M1"  , "1min"  , "1m"  , ""    )) ) \
+	e( Minute2  , QuantDataPeriod_Minute2  , (SQuantDataPeriodMeta( ""         , "M2"  , ""      , ""    , ""    )) ) \
+	e( Minute4  , QuantDataPeriod_Minute4  , (SQuantDataPeriodMeta( ""         , "M4"  , ""      , ""    , ""    )) ) \
+	e( Minute5  , QuantDataPeriod_Minute5  , (SQuantDataPeriodMeta( ""         , "M5"  , "5min"  , "5m"  , ""    )) ) \
+	e( Minute10 , QuantDataPeriod_Minute10 , (SQuantDataPeriodMeta( ""         , "M10" , ""      , ""    , ""    )) ) \
+	e( Minute15 , QuantDataPeriod_Minute15 , (SQuantDataPeriodMeta( ""         , "M15" , "15min" , "15m" , ""    )) ) \
+	e( Minute30 , QuantDataPeriod_Minute30 , (SQuantDataPeriodMeta( ""         , "M30" , "30min" , "30m" , ""    )) ) \
+	e( Hour     , QuantDataPeriod_Hour     , (SQuantDataPeriodMeta( ""         , "H1"  , "60min" , "1h"  , ""    )) ) \
+	e( Hour2    , QuantDataPeriod_Hour2    , (SQuantDataPeriodMeta( ""         , "H2"  , ""      , ""    , ""    )) ) \
+	e( Hour3    , QuantDataPeriod_Hour3    , (SQuantDataPeriodMeta( ""         , "H3"  , ""      , ""    , ""    )) ) \
+	e( Hour4    , QuantDataPeriod_Hour4    , (SQuantDataPeriodMeta( ""         , "H4"  , ""      , ""    , ""    )) ) \
+	e( Hour6    , QuantDataPeriod_Hour6    , (SQuantDataPeriodMeta( ""         , "H6"  , ""      , ""    , ""    )) ) \
+	e( Hour8    , QuantDataPeriod_Hour8    , (SQuantDataPeriodMeta( ""         , "H8"  , ""      , ""    , ""    )) ) \
+	e( Hour12   , QuantDataPeriod_Hour12   , (SQuantDataPeriodMeta( ""         , "H12" , ""      , "12h" , ""    )) ) \
+	e( Day      , QuantDataPeriod_Day      , (SQuantDataPeriodMeta( "daily"    , "D"   , "YES"   , "1d"  , ""    )) ) \
+	e( Week     , QuantDataPeriod_Week     , (SQuantDataPeriodMeta( "weekly"   , "W"   , "YES"   , "1w"  , ""    )) ) \
+	e( Month    , QuantDataPeriod_Month    , (SQuantDataPeriodMeta( "monthly"  , "M"   , "YES"   , "1mo" , ""    )) ) \
+	e( Quarter  , QuantDataPeriod_Quarter  , (SQuantDataPeriodMeta( "quarterly", ""    , ""      , ""    , ""    )) ) \
+	e( Annual   , QuantDataPeriod_Annual   , (SQuantDataPeriodMeta( "annual"   , ""    , ""      , ""    , ""    )) ) \
+
+DEFINE_DATA_FLOAT(TQuantDataPeriod, CQuantDataPeriod, double, QUANTDATA_PERIOD_LIST, SQuantDataPeriodMeta)
+
+#undef QUANTDATA_PROVIDER_LIST
+#undef QUANTDATA_PERIOD_LIST
 
 enum class EQuantDataFormat : int32_t
 {
@@ -122,22 +175,22 @@ enum class EQuantDataFormat : int32_t
 
 enum class EQuantDataResult : int32_t
 {
-	Success             = QuantDataResult_Success,
-	Failure             = QuantDataResult_Failure,
-	NotInitialized      = QuantDataResult_NotInitialized,
-	InvalidArgument     = QuantDataResult_InvalidArgument,
-	InvalidProvider     = QuantDataResult_InvalidProvider,
-	RejectedApiKey      = QuantDataResult_RejectedApiKey,
-	UnsupportedInterval = QuantDataResult_UnsupportedInterval,
-	UnsupportedSymbol   = QuantDataResult_UnsupportedSymbol,
-	UnsupportedTime     = QuantDataResult_UnsupportedTime,
+	Success           = QuantDataResult_Success,
+	Failure           = QuantDataResult_Failure,
+	NotInitialized    = QuantDataResult_NotInitialized,
+	InvalidArgument   = QuantDataResult_InvalidArgument,
+	InvalidProvider   = QuantDataResult_InvalidProvider,
+	RejectedApiKey    = QuantDataResult_RejectedApiKey,
+	UnsupportedPeriod = QuantDataResult_UnsupportedPeriod,
+	UnsupportedSymbol = QuantDataResult_UnsupportedSymbol,
+	UnsupportedTime   = QuantDataResult_UnsupportedTime,
 };
 
 #else
 
 typedef int32_t EQuantDataResult;
 typedef int32_t EQuantDataProvider;
-typedef int32_t EQuantDataInterval;
+typedef double  TQuantDataPeriod;
 typedef int32_t EQuantDataFormat;
 
 #endif // __cplusplus
@@ -163,7 +216,7 @@ struct SQuantDataDownloadSettings
 	TQuantDataUnixtime start        ZERO_INIT; // optional, default is begin of time
 	TQuantDataUnixtime end          ZERO_INIT; // optional, default is end of time
 	TQuantDataString   symbol       ZERO_INIT; // mandatory
-	EQuantDataInterval interval     ZERO_INIT; // mandatory
+	TQuantDataPeriod   period       ZERO_INIT; // mandatory
 	TQuantDataBool     adjusted     ZERO_INIT; // mandatory, might be unsupported
 	TQuantDataBool     padding[3]   ZERO_INIT;
 };
@@ -192,14 +245,6 @@ struct SQuantDataSymbols
 	TQuantDataSize      actualSize ZERO_INIT;
 };
 typedef struct SQuantDataSymbols TQuantDataSymbols;
-
-struct SQuantDataIntervals
-{
-	EQuantDataInterval* pBuffer    ZERO_INIT;
-	TQuantDataSize      bufferSize ZERO_INIT;
-	TQuantDataSize      actualSize ZERO_INIT;
-};
-typedef struct SQuantDataIntervals TQuantDataIntervals;
 
 struct SQuantDataT1s
 {
@@ -243,8 +288,80 @@ struct SQuantDataGtDataPoints
 };
 typedef struct SQuantDataGtDataPoints TQuantDataGtDataPoints;
 
+#ifdef __cplusplus
 struct SQuantDataSeries;
-typedef struct SQuantDataSeries IQuantDataSeries;
+struct SQuantDataPeriods;
+#endif
+
+struct SQuantDataPeriodsFunctions
+{
+	const TQuantDataPeriod* FPTR(Get)     (FTHIS(SQuantDataPeriods), TQuantDataSize index);
+	TQuantDataSize          FPTR(Size)    (FTHIS(SQuantDataPeriods));
+	void                    FPTR(Release) (FTHIS(SQuantDataPeriods));
+};
+ITYPE(SQuantDataPeriods, IQuantDataPeriods)
+
+struct SQuantDataSeriesFunctions
+{
+	EQuantDataResult FPTR(SetProvider)        (FTHIS(SQuantDataSeries), const TQuantDataProviderSettings* pSettings);
+	EQuantDataResult FPTR(GetNativePeriods)   (FTHIS(SQuantDataSeries), IQuantDataPeriods** ppPeriods);
+	EQuantDataResult FPTR(GetSupportedSymbols)(FTHIS(SQuantDataSeries), TQuantDataSymbols** ppSymbols);
+	EQuantDataResult FPTR(Download)           (FTHIS(SQuantDataSeries), const TQuantDataDownloadSettings* pSettings);
+	EQuantDataResult FPTR(Load)               (FTHIS(SQuantDataSeries), const TQuantDataLoadSettings* pSettings);
+	EQuantDataResult FPTR(Save)               (FTHIS(SQuantDataSeries), const TQuantDataSaveSettings* pSettings);
+	EQuantDataResult FPTR(GetT1)              (FTHIS(SQuantDataSeries), TQuantDataT1s** ppData);
+	EQuantDataResult FPTR(GetT2)              (FTHIS(SQuantDataSeries), TQuantDataT2s** ppData);
+	EQuantDataResult FPTR(GetT6)              (FTHIS(SQuantDataSeries), TQuantDataT6s** ppData);
+	EQuantDataResult FPTR(GetT8)              (FTHIS(SQuantDataSeries), TQuantDataT8s** ppData);
+	EQuantDataResult FPTR(GetGtick)           (FTHIS(SQuantDataSeries), TQuantDataGtDataPoints** ppData);
+	EQuantDataResult FPTR(SetT1)              (FTHIS(SQuantDataSeries), TQuantDataT1s* pData);
+	EQuantDataResult FPTR(SetT2)              (FTHIS(SQuantDataSeries), TQuantDataT2s* pData);
+	EQuantDataResult FPTR(SetT6)              (FTHIS(SQuantDataSeries), TQuantDataT6s* pData);
+	EQuantDataResult FPTR(SetT8)              (FTHIS(SQuantDataSeries), TQuantDataT8s* pData);
+	EQuantDataResult FPTR(SetGtick)           (FTHIS(SQuantDataSeries), TQuantDataGtDataPoints* pData);
+	EQuantDataResult FPTR(Release)            (FTHIS(SQuantDataSeries));
+};
+ITYPE(SQuantDataSeries, IQuantDataSeries)
+
+#ifdef __cplusplus
+struct SQuantDataPeriods
+{
+	using TType = TQuantDataPeriod;
+	const TType* Get(TQuantDataSize index) { return m_functions.Get(this, index); }
+	TQuantDataSize Size() { return m_functions.Size(this); }
+	void Release() { return m_functions.Release(this); }
+protected:
+	~SQuantDataPeriods() {}
+	using TInterfaceFunctions = SQuantDataPeriodsFunctions;
+	const TInterfaceFunctions m_functions ZERO_INIT;
+};
+
+struct SQuantDataSeries
+{
+	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings) { return m_functions.SetProvider(this, pSettings); }
+	EQuantDataResult GetNativePeriods(IQuantDataPeriods** ppPeriods) { return m_functions.GetNativePeriods(this, ppPeriods); }
+	EQuantDataResult GetSupportedSymbols(TQuantDataSymbols** ppSymbols) { return m_functions.GetSupportedSymbols(this, ppSymbols); }
+	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings) { return m_functions.Download(this, pSettings); }
+	EQuantDataResult Load(const TQuantDataLoadSettings* pSettings) { return m_functions.Load(this, pSettings); }
+	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) { return m_functions.Save(this, pSettings); }
+	EQuantDataResult GetT1(TQuantDataT1s** ppData) { return m_functions.GetT1(this, ppData); }
+	EQuantDataResult GetT2(TQuantDataT2s** ppData) { return m_functions.GetT2(this, ppData); }
+	EQuantDataResult GetT6(TQuantDataT6s** ppData) { return m_functions.GetT6(this, ppData); }
+	EQuantDataResult GetT8(TQuantDataT8s** ppData) { return m_functions.GetT8(this, ppData); }
+	EQuantDataResult GetGtick(TQuantDataGtDataPoints** ppData) { return m_functions.GetGtick(this, ppData); }
+	EQuantDataResult SetT1(TQuantDataT1s* pData) { return m_functions.SetT1(this, pData); }
+	EQuantDataResult SetT2(TQuantDataT2s* pData) { return m_functions.SetT2(this, pData); }
+	EQuantDataResult SetT6(TQuantDataT6s* pData) { return m_functions.SetT6(this, pData); }
+	EQuantDataResult SetT8(TQuantDataT8s* pData) { return m_functions.SetT8(this, pData); }
+	EQuantDataResult SetGtick(TQuantDataGtDataPoints* pData) { return m_functions.SetGtick(this, pData); }
+	EQuantDataResult Release() { return m_functions.Release(this); }
+protected:
+	~SQuantDataSeries() {}
+	using TInterfaceFunctions = SQuantDataSeriesFunctions;
+	const TInterfaceFunctions m_functions ZERO_INIT;
+};
+
+#endif // __cplusplus
 
 #ifdef __cplusplus
 extern "C" {
@@ -254,90 +371,15 @@ QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_Init();
 QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_Shutdown();
 QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings);
 
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetProvider(IQuantDataSeries* pSeries, const TQuantDataProviderSettings* pSettings);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetSupportedIntervals(IQuantDataSeries* pSeries, TQuantDataIntervals** ppIntervals);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetSupportedSymbols(IQuantDataSeries* pSeries, TQuantDataSymbols** ppSymbols);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_Download(IQuantDataSeries* pSeries, const TQuantDataDownloadSettings* pSettings);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_Load(IQuantDataSeries* pSeries, const TQuantDataLoadSettings* pSettings);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_Save(IQuantDataSeries* pSeries, const TQuantDataSaveSettings* pSettings);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetT1(IQuantDataSeries* pSeries, TQuantDataT1s** ppData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetT2(IQuantDataSeries* pSeries, TQuantDataT2s** ppData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetT6(IQuantDataSeries* pSeries, TQuantDataT6s** ppData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetT8(IQuantDataSeries* pSeries, TQuantDataT8s** ppData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_GetGtick(IQuantDataSeries* pSeries, TQuantDataGtDataPoints** ppData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetT1(IQuantDataSeries* pSeries, TQuantDataT1s* pData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetT2(IQuantDataSeries* pSeries, TQuantDataT2s* pData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetT6(IQuantDataSeries* pSeries, TQuantDataT6s* pData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetT8(IQuantDataSeries* pSeries, TQuantDataT8s* pData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_SetGtick(IQuantDataSeries* pSeries, TQuantDataGtDataPoints* pData);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantDataSeries_Release(IQuantDataSeries* pSeries);
-
 #ifdef __cplusplus
 }
-#endif
-
-#ifdef __cplusplus
-struct SQuantDataSeries
-{
-	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings) {
-		return QuantDataSeries_SetProvider(this, pSettings);
-	}
-	EQuantDataResult GetSupportedIntervals(TQuantDataIntervals** ppIntervals) {
-		return QuantDataSeries_GetSupportedIntervals(this, ppIntervals);
-	}
-	EQuantDataResult GetSupportedSymbols(TQuantDataSymbols** ppSymbols) {
-		return QuantDataSeries_GetSupportedSymbols(this, ppSymbols);
-	}
-	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings) {
-		return QuantDataSeries_Download(this, pSettings);
-	}
-	EQuantDataResult Load(const TQuantDataLoadSettings* pSettings) {
-		return QuantDataSeries_Load(this, pSettings);
-	}
-	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) {
-		return QuantDataSeries_Save(this, pSettings);
-	}
-	EQuantDataResult GetT1(TQuantDataT1s** ppData) {
-		return QuantDataSeries_GetT1(this, ppData);
-	}
-	EQuantDataResult GetT2(TQuantDataT2s** ppData) {
-		return QuantDataSeries_GetT2(this, ppData);
-	}
-	EQuantDataResult GetT6(TQuantDataT6s** ppData) {
-		return QuantDataSeries_GetT6(this, ppData);
-	}
-	EQuantDataResult GetT8(TQuantDataT8s** ppData) {
-		return QuantDataSeries_GetT8(this, ppData);
-	}
-	EQuantDataResult GetGtick(TQuantDataGtDataPoints** ppData) {
-		return QuantDataSeries_GetGtick(this, ppData);
-	}
-	EQuantDataResult SetT1(TQuantDataT1s* pData) {
-		return QuantDataSeries_SetT1(this, pData);
-	}
-	EQuantDataResult SetT2(TQuantDataT2s* pData) {
-		return QuantDataSeries_SetT2(this, pData);
-	}
-	EQuantDataResult SetT6(TQuantDataT6s* pData) {
-		return QuantDataSeries_SetT6(this, pData);
-	}
-	EQuantDataResult SetT8(TQuantDataT8s* pData) {
-		return QuantDataSeries_SetT8(this, pData);
-	}
-	EQuantDataResult SetGtick(TQuantDataGtDataPoints* pData) {
-		return QuantDataSeries_SetGtick(this, pData);
-	}
-	EQuantDataResult Release() {
-		return QuantDataSeries_Release(this);
-	}
-protected:
-	SQuantDataSeries() {}
-	~SQuantDataSeries() {}
-};
 #endif
 
 #pragma pack(pop)
 
 #undef ZERO_INIT
+#undef FTHIS
+#undef FPTR
+#undef ITYPE
 
 #endif // I_QUANTDATA_H_

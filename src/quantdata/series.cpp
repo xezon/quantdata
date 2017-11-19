@@ -5,12 +5,14 @@
 #include <quantdata/manager.h>
 #include <quantdata/checks.h>
 
+// https://quant.stackexchange.com/questions/141/what-data-sources-are-available-online
+
 namespace quantdata {
 
-CSeries::CSeries(CManager& manager, const TAllocatorFunctions& functions)
+CSeries::CSeries(const CManager& manager, const TAllocatorFunctions& allocFunctions)
 	: m_manager(manager)
-	, m_functions(functions)
-	, m_stringAllocator(functions)
+	, m_allocFunctions(allocFunctions)
+	, m_stringAllocator(allocFunctions)
 	, m_provider(m_stringAllocator)
 {}
 
@@ -23,19 +25,26 @@ EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSetting
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetSupportedIntervals(TQuantDataIntervals** ppIntervals)
+EQuantDataResult CSeries::GetNativePeriods(IQuantDataPeriods** ppPeriods)
 {
-	if (!ppIntervals)
+	if (!ppPeriods)
 		return EQuantDataResult::InvalidArgument;
 
 	if (!m_provider.Valid())
 		return EQuantDataResult::InvalidProvider;
+
+	auto& providerInfo = m_manager.GetProviderInfo(m_provider.type);
+	auto periodArray = utils::placement_alloc<TPeriodArray>(m_allocFunctions.alloc(), providerInfo.periods, m_allocFunctions);
+	*ppPeriods = periodArray;
 
 	return EQuantDataResult::Success;
 }
 
 EQuantDataResult CSeries::GetSupportedSymbols(TQuantDataSymbols** ppSymbols)
 {
+	// https://www.alphavantage.co/physical_currency_list/
+	// https://www.alphavantage.co/digital_currency_list/
+
 	if (!ppSymbols)
 		return EQuantDataResult::InvalidArgument;
 
@@ -136,7 +145,7 @@ EQuantDataResult CSeries::SetGtick(TQuantDataGtDataPoints* pData)
 
 EQuantDataResult CSeries::Release()
 {
-	utils::placement_free(this, m_functions.free);
+	utils::placement_free(this, m_allocFunctions.free());
 	return EQuantDataResult::Success;
 }
 

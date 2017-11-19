@@ -129,10 +129,14 @@
     <ClInclude Include="..\src\apikey.h" />
     <ClInclude Include="..\src\downloader.h" />
     <ClInclude Include="..\src\quantdata.h" />
+    <ClInclude Include="..\src\quantdata\array\array_functions.h" />
+    <ClInclude Include="..\src\quantdata\array\new_array.h" />
+    <ClInclude Include="..\src\quantdata\array\static_array.h" />
     <ClInclude Include="..\src\quantdata\checks.h" />
     <ClInclude Include="..\src\quantdata\manager.h" />
     <ClInclude Include="..\src\quantdata\provider.h" />
     <ClInclude Include="..\src\quantdata\series.h" />
+    <ClInclude Include="..\src\quantdata\series_functions.h" />
     <ClInclude Include="..\src\quantdata\types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

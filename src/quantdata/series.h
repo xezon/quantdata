@@ -1,25 +1,34 @@
 
 #pragma once
 
-#include <quantdata.h>
-#include <quantdata/types.h>
+#include <quantdata/series_functions.h>
 #include <quantdata/provider.h>
+#include <quantdata/array/new_array.h>
+#include <quantdata/array/static_array.h>
 #include <downloader.h>
+#include <vector>
 
 namespace quantdata {
 
 class CManager;
 
+template <class AllocatorFunctions>
+using TPeriodArray = CArrayFunctions<CStaticArray<IQuantDataPeriods, AllocatorFunctions>>;
+
 class CSeries : public IQuantDataSeries
 {
-private:
-	using TDownloader = CDownloader<TStringAllocator>;
+protected:
+	using TInterface = IQuantDataSeries;
 
-public:
-	CSeries(CManager& manager, const TAllocatorFunctions& functions);
+private:
+	using TDownloader   = CDownloader<TCustomAllocator<char>>;
+	using TPeriodArray  = TPeriodArray<TAllocatorFunctions>;
+
+protected:
+	CSeries(const CManager& manager, const TAllocatorFunctions& allocFunctions);
 
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings);
-	EQuantDataResult GetSupportedIntervals(TQuantDataIntervals** ppIntervals);
+	EQuantDataResult GetNativePeriods(IQuantDataPeriods** ppPeriods);
 	EQuantDataResult GetSupportedSymbols(TQuantDataSymbols** ppSymbols);
 	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings);
 	EQuantDataResult Load(const TQuantDataLoadSettings* pSettings);
@@ -37,10 +46,10 @@ public:
 	EQuantDataResult Release();
 
 private:
-	CManager& m_manager;
-	TAllocatorFunctions m_functions;
-	TStringAllocator m_stringAllocator;
-	SProvider m_provider;
+	const CManager&              m_manager;
+	const TAllocatorFunctions    m_allocFunctions;
+	const TCustomAllocator<char> m_stringAllocator;
+	SProvider                    m_provider;
 };
 
 } // namespace quantdata

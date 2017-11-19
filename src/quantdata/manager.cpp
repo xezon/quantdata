@@ -1,8 +1,33 @@
 
 #include "manager.h"
 #include <quantdata/series.h>
+#include <common/utils.h>
 
 namespace quantdata {
+
+using TSeries = CSeriesFunctions<CSeries>;
+
+CManager::CManager()
+{
+	BuildProviderInfos();
+}
+
+void CManager::BuildProviderInfos()
+{
+	for (CQuantDataProvider provider : CQuantDataProvider())
+	{
+		auto ordinal = provider.ordinal();
+		for (CQuantDataPeriod period : CQuantDataPeriod())
+		{
+			auto apiName = period.meta().apiNames[ordinal];
+			if (is_valid_string(apiName))
+			{
+				auto value = period.value();
+				m_providerInfos[ordinal].periods.push_back(value);
+			}
+		}
+	}
+}
 
 EQuantDataResult CManager::Init()
 {
@@ -37,7 +62,7 @@ EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries, const TQuan
 		return EQuantDataResult::InvalidArgument;
 
 	utils::custom_allocator_functions functions = GetAllocatorFunctions(pSettings);
-	*ppSeries = utils::placement_alloc<quantdata::CSeries>(functions.alloc, *this, functions);
+	*ppSeries = utils::placement_alloc<quantdata::TSeries>(functions.alloc(), *this, functions);
 
 	return EQuantDataResult::Success;
 }

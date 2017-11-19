@@ -33,9 +33,15 @@ int main(int argc, char** argv)
 	result = pSeries->SetProvider(&providerSettings);
 	assert(result == EQuantDataResult::Success);
 
+	IQuantDataPeriods* pPeriods;
+	result = pSeries->GetNativePeriods(&pPeriods);
+	assert(result == EQuantDataResult::Success);
+
+	pPeriods->Release();
+
 	TQuantDataDownloadSettings downloadSettings;
 	downloadSettings.symbol = "MSFT";
-	downloadSettings.interval = EQuantDataInterval::Minute1;
+	downloadSettings.period = CQuantDataPeriod::Minute;
 	downloadSettings.adjusted = false;
 
 	result = pSeries->Download(&downloadSettings);
