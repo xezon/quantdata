@@ -36,7 +36,6 @@ public:
 
 private:
 	void BuildProviderInfos();
-	TAllocatorFunctions GetAllocatorFunctions(const TQuantDataCreationSettings* pSettings);
 	
 	TProviderInfos m_providerInfos;
 	bool m_isInitialized = false;

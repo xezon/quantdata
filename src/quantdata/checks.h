@@ -2,6 +2,7 @@
 #pragma once
 
 #include <quantdata.h>
+#include <common/util.h>
 
 namespace quantdata {
 

@@ -11,10 +11,10 @@ class CStaticArray : public Interface
 {
 protected:
 	using TInterface          = Interface;
-	using TType               = typename Interface::TType;
+	using TAllocatorFunctions = AllocatorFunctions;
+	using TType               = typename TInterface::TType;
 
 private:
-	using TAllocatorFunctions = AllocatorFunctions;
 	using TFree               = typename AllocatorFunctions::free_type;
 
 protected:

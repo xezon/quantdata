@@ -14,13 +14,14 @@ class CArrayFunctions : public Implementation
 private:
 	using TThis               = CArrayFunctions;
 	using TImplementation     = Implementation;
-	using TType               = typename Implementation::TType;
-	using TInterface          = typename Implementation::TInterface;
+	using TType               = typename TImplementation::TType;
+	using TInterface          = typename TImplementation::TInterface;
+	using TAllocatorFunctions = typename TImplementation::TAllocatorFunctions;
 	using TInterfaceFunctions = typename TInterface::TInterfaceFunctions;
 
 public:
 	template <class Container>
-	CArrayFunctions(const Container& container,const TAllocatorFunctions& allocFunctions)
+	CArrayFunctions(const Container& container, const TAllocatorFunctions& allocFunctions)
 		: TImplementation(container, allocFunctions)
 	{
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);

@@ -5,7 +5,8 @@
 
 namespace quantdata {
 
-using TSeries = CSeriesFunctions<CSeries>;
+template <class AllocatorFunctions>
+using TSeries = CSeriesFunctions<CSeries<AllocatorFunctions>>;
 
 CManager::CManager()
 {
@@ -61,24 +62,21 @@ EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries, const TQuan
 	if (!ppSeries || !pSettings)
 		return EQuantDataResult::InvalidArgument;
 
-	mem::custom_allocator_functions functions = GetAllocatorFunctions(pSettings);
-	*ppSeries = mem::placement_alloc<quantdata::TSeries>(functions.alloc(), *this, functions);
+	auto alloc = pSettings->alloc;
+	auto free = pSettings->free;
 
-	return EQuantDataResult::Success;
-}
-
-TAllocatorFunctions CManager::GetAllocatorFunctions(const TQuantDataCreationSettings* pSettings)
-{
-	TQuantDataAlloc alloc = pSettings->alloc;
-	TQuantDataFree free = pSettings->free;
-
-	if (!alloc || !free)
+	if (alloc && free)
 	{
-		alloc = quantdata::GetDefaultAlloc();
-		free = quantdata::GetDefaultFree();
+		auto functions = mem::custom_allocator_functions(alloc, free);
+		*ppSeries = mem::placement_alloc<TSeries<decltype(functions)>>(functions.alloc(), *this, functions);
+	}
+	else
+	{
+		auto functions = mem::regular_allocator_functions();
+		*ppSeries = mem::placement_alloc<TSeries<decltype(functions)>>(functions.alloc(), *this, functions);
 	}
 
-	return TAllocatorFunctions(alloc, free);
+	return EQuantDataResult::Success;
 }
 
 } // namespace quantdata

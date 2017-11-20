@@ -2,8 +2,8 @@
 #pragma once
 
 #include <quantdata/array/array_functions.h>
+#include <quantdata/types.h>
 #include <common/mem.h>
-#include <vector>
 
 namespace quantdata {
 
@@ -12,18 +12,18 @@ class CNewArray : public Interface
 {
 protected:
 	using TInterface          = Interface;
-	using TType               = typename Interface::TType;
+	using TAllocatorFunctions = AllocatorFunctions;
+	using TType               = typename TInterface::TType;
 
 private:
-	using TAllocatorFunctions = AllocatorFunctions;
-	using TFree               = typename AllocatorFunctions::free_type;
-	using TAllocator          = mem::custom_allocator<TType, AllocatorFunctions>;
-	using TVector             = std::vector<TType, TAllocator>;
+	using TFree               = typename TAllocatorFunctions::free_type;
+	using TVector             = TVector<TType, TAllocatorFunctions>;
+	using TVectorAllocator    = typename TVector::allocator_type;
 
 protected:
 	template <class Container>
 	CNewArray(const Container& container, const TAllocatorFunctions& allocFunctions)
-		: m_vector(container.cbegin(), container.cend(), TAllocator(allocFunctions))
+		: m_vector(container.cbegin(), container.cend(), TVectorAllocator(allocFunctions))
 		, m_free(allocFunctions.free())
 	{
 	}

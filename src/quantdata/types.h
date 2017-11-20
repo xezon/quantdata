@@ -1,14 +1,19 @@
 
 #pragma once
 
-#include <common/util.h>
+#include <common/mem.h>
 #include <string>
+#include <vector>
 
 namespace quantdata {
 
-using TAllocatorFunctions = mem::custom_allocator_functions;
-template <class T>
-using TCustomAllocator = mem::custom_allocator<T, TAllocatorFunctions>;
-using TString = std::basic_string<char, std::char_traits<char>, TCustomAllocator<char>>;
+template <class Type, class AllocatorFunctions>
+using TAllocator = mem::custom_allocator<Type, AllocatorFunctions>;
+
+template <class Type, class AllocatorFunctions>
+using TString = std::basic_string<Type, std::char_traits<Type>, TAllocator<Type, AllocatorFunctions>>;
+
+template <class Type, class AllocatorFunctions>
+using TVector = std::vector<Type, TAllocator<Type, AllocatorFunctions>>;
 
 } // namespace quantdata

@@ -15,7 +15,8 @@ class CSeriesFunctions : public Implementation
 private:
 	using TThis               = CSeriesFunctions;
 	using TImplementation     = Implementation;
-	using TInterface          = typename Implementation::TInterface;
+	using TInterface          = typename TImplementation::TInterface;
+	using TAllocatorFunctions = typename TImplementation::TAllocatorFunctions;
 	using TInterfaceFunctions = typename TInterface::TInterfaceFunctions;
 
 public:

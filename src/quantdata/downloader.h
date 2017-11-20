@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <quantdata/types.h>
+#include <common/mem.h>
 #include <string>
 #include <memory>
 #include <cassert>
@@ -18,7 +20,9 @@
 	} \
 }
 
-template <class Allocator = std::allocator<char>>
+namespace quantdata {
+
+template <class AllocatorFunctions>
 class CDownloader
 {
 private:
@@ -40,11 +44,9 @@ private:
 	};
 
 public:
-	static_assert(std::is_same<typename Allocator::value_type, char>::value,
-		"Allocator type must be of type char");
-
-	using TData = std::basic_string<char, std::char_traits<char>, Allocator>;
-	using TDataAllocator = typename TData::allocator_type;
+	using TAllocatorFunctions = AllocatorFunctions;
+	using TData               = TString<char, TAllocatorFunctions>;
+	using TDataAllocator      = typename TData::allocator_type;
 
 	struct SDownloadSettings
 	{
@@ -117,5 +119,7 @@ private:
 		return size * nmemb;
 	}
 };
+
+} // namespace quantdata
 
 #undef CURL_EASY_SETOPT_WITH_CHECK

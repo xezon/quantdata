@@ -4,16 +4,22 @@
 #include <quantdata.h>
 #include <quantdata/types.h>
 #include <common/util.h>
+#include <common/mem.h>
 
 namespace quantdata {
 
+template <class AllocatorFunctions>
 struct SProvider
 {
-	SProvider(const TString::allocator_type& allocator)
+	using TAllocatorFunctions = AllocatorFunctions;
+	using TStringA            = TString<char, TAllocatorFunctions>;
+	using TStringAllocatorA   = typename TStringA::allocator_type;
+
+	SProvider(const TAllocatorFunctions& allocFunctions)
 		: type()
-		, apikey(allocator)
-		, certtype(allocator)
-		, certfile(allocator)
+		, apikey(TStringAllocatorA(allocFunctions))
+		, certtype(TStringAllocatorA(allocFunctions))
+		, certfile(TStringAllocatorA(allocFunctions))
 	{}
 
 	bool Valid() const
@@ -30,9 +36,9 @@ struct SProvider
 	}
 
 	CQuantDataProvider type;
-	TString apikey;
-	TString certtype;
-	TString certfile;
+	TStringA apikey;
+	TStringA certtype;
+	TStringA certfile;
 };
 
 } // namespace quantdata
