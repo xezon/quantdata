@@ -1,7 +1,7 @@
 
 #include "manager.h"
 #include <quantdata/series.h>
-#include <common/utils.h>
+#include <common/util.h>
 
 namespace quantdata {
 
@@ -20,7 +20,7 @@ void CManager::BuildProviderInfos()
 		for (CQuantDataPeriod period : CQuantDataPeriod())
 		{
 			auto apiName = period.meta().apiNames[ordinal];
-			if (is_valid_string(apiName))
+			if (util::is_valid_string(apiName))
 			{
 				auto value = period.value();
 				m_providerInfos[ordinal].periods.push_back(value);
@@ -61,8 +61,8 @@ EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries, const TQuan
 	if (!ppSeries || !pSettings)
 		return EQuantDataResult::InvalidArgument;
 
-	utils::custom_allocator_functions functions = GetAllocatorFunctions(pSettings);
-	*ppSeries = utils::placement_alloc<quantdata::TSeries>(functions.alloc(), *this, functions);
+	mem::custom_allocator_functions functions = GetAllocatorFunctions(pSettings);
+	*ppSeries = mem::placement_alloc<quantdata::TSeries>(functions.alloc(), *this, functions);
 
 	return EQuantDataResult::Success;
 }

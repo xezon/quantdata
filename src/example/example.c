@@ -3,7 +3,7 @@
 
 #include <iquantdata.h>
 #include <assert.h>
-#include <common/utils_c.h>
+#include <common/util_c.h>
 #include "apikey.h"
 
 int main(int argc, char** argv)

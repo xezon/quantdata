@@ -2,7 +2,7 @@
 #pragma once
 
 #include <quantdata/array/array_functions.h>
-#include <common/utils_mem.h>
+#include <common/mem.h>
 
 namespace quantdata {
 
@@ -38,7 +38,7 @@ protected:
 
 	void Release()
 	{
-		utils::placement_free(this, m_free.free());
+		mem::placement_free(this, m_free.free());
 	}
 
 private:

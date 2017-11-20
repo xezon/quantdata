@@ -3,7 +3,8 @@
 
 #include <iquantdata.h>
 #include <cassert>
-#include <common/utils.h>
+#include <common/util.h>
+#include <common/mem.h>
 #include "apikey.h"
 
 int main(int argc, char** argv)
@@ -18,8 +19,8 @@ int main(int argc, char** argv)
 
 	IQuantDataSeries* pSeries = nullptr;
 	TQuantDataCreationSettings settings;
-	settings.alloc = utils::alloc;
-	settings.free = utils::free;
+	settings.alloc = mem::alloc;
+	settings.free = mem::free;
 	result = QuantData_CreateSeries(&pSeries, &settings);
 	assert(result == EQuantDataResult::Success);
 

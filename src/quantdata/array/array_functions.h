@@ -2,7 +2,7 @@
 #pragma once
 
 #include <quantdata.h>
-#include <common/utils.h>
+#include <common/util.h>
 
 namespace quantdata {
 
@@ -24,14 +24,14 @@ public:
 		: TImplementation(container, allocFunctions)
 	{
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);
-		utils::nullify_object_debug(mutableFunctions);
+		util::nullify_object_debug(mutableFunctions);
 
 		mutableFunctions.Get = Static_Get;
 		mutableFunctions.Size = Static_Size;
 		mutableFunctions.Release = Static_Release;
 
-		utils::verify_initialized_pointers_debug(m_functions);
-		utils::verify_equal_pointers_debug(&m_functions, static_cast<TInterface*>(this));
+		util::verify_initialized_pointers_debug(m_functions);
+		util::verify_equal_pointers_debug(&m_functions, static_cast<TInterface*>(this));
 	}
 
 private:

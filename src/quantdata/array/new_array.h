@@ -2,7 +2,7 @@
 #pragma once
 
 #include <quantdata/array/array_functions.h>
-#include <common/utils_mem.h>
+#include <common/mem.h>
 #include <vector>
 
 namespace quantdata {
@@ -17,7 +17,7 @@ protected:
 private:
 	using TAllocatorFunctions = AllocatorFunctions;
 	using TFree               = typename AllocatorFunctions::free_type;
-	using TAllocator          = utils::custom_allocator<TType, AllocatorFunctions>;
+	using TAllocator          = mem::custom_allocator<TType, AllocatorFunctions>;
 	using TVector             = std::vector<TType, TAllocator>;
 
 protected:
@@ -40,7 +40,7 @@ protected:
 
 	void Release()
 	{
-		utils::placement_free(this, m_free.free());
+		mem::placement_free(this, m_free.free());
 	}
 
 private:

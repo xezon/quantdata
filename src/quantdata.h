@@ -4,18 +4,18 @@
 #define DATA_ENUM_DEBUGGING 2
 #define QUANTDATA_IMPL
 #include <iquantdata.h>
-#include <common/utils.h>
+#include <common/mem.h>
 
 namespace quantdata {
 
 inline TQuantDataAlloc GetDefaultAlloc()
 {
-	return utils::alloc;
+	return mem::alloc;
 }
 
 inline TQuantDataFree GetDefaultFree()
 {
-	return utils::free;
+	return mem::free;
 }
 
 } // namespace quantdata

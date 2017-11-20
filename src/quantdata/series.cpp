@@ -1,6 +1,6 @@
 
 #include "series.h"
-#include <common/utils.h>
+#include <common/util.h>
 #include <common/stl.h>
 #include <quantdata/manager.h>
 #include <quantdata/checks.h>
@@ -34,7 +34,7 @@ EQuantDataResult CSeries::GetNativePeriods(IQuantDataPeriods** ppPeriods)
 		return EQuantDataResult::InvalidProvider;
 
 	auto& providerInfo = m_manager.GetProviderInfo(m_provider.type);
-	auto periodArray = utils::placement_alloc<TPeriodArray>(m_allocFunctions.alloc(), providerInfo.periods, m_allocFunctions);
+	auto periodArray = mem::placement_alloc<TPeriodArray>(m_allocFunctions.alloc(), providerInfo.periods, m_allocFunctions);
 	*ppPeriods = periodArray;
 
 	return EQuantDataResult::Success;
@@ -145,7 +145,7 @@ EQuantDataResult CSeries::SetGtick(TQuantDataGtDataPoints* pData)
 
 EQuantDataResult CSeries::Release()
 {
-	utils::placement_free(this, m_allocFunctions.free());
+	mem::placement_free(this, m_allocFunctions.free());
 	return EQuantDataResult::Success;
 }
 

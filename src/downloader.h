@@ -83,11 +83,11 @@ public:
 			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_HEADERDATA, pHeader);
 		}
 
-		if (is_valid_string(settings.certtype))
+		if (util::is_valid_string(settings.certtype))
 		{
 			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_SSLCERTTYPE, settings.certtype);
 		}
-		else if (is_valid_string(settings.certfile))
+		else if (util::is_valid_string(settings.certfile))
 		{
 			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_SSL_VERIFYPEER, 1L);
 			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_CAINFO, settings.certfile);

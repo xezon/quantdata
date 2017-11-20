@@ -3,7 +3,7 @@
 
 #include <quantdata.h>
 #include <quantdata/types.h>
-#include <common/utils.h>
+#include <common/util.h>
 
 namespace quantdata {
 
@@ -24,9 +24,9 @@ struct SProvider
 	void Set(const TQuantDataProviderSettings& settings)
 	{
 		type = settings.provider;
-		apikey = get_valid_string(settings.apikey);
-		certtype = get_valid_string(settings.certtype);
-		certfile = get_valid_string(settings.certfile);
+		apikey = util::get_valid_string(settings.apikey);
+		certtype = util::get_valid_string(settings.certtype);
+		certfile = util::get_valid_string(settings.certfile);
 	}
 
 	CQuantDataProvider type;

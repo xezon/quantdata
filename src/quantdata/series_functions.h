@@ -3,7 +3,7 @@
 
 #include <quantdata.h>
 #include <quantdata/types.h>
-#include <common/utils.h>
+#include <common/util.h>
 
 namespace quantdata {
 
@@ -23,7 +23,7 @@ public:
 		: TImplementation(manager, allocFunctions)
 	{
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);
-		utils::nullify_object_debug(mutableFunctions);
+		util::nullify_object_debug(mutableFunctions);
 
 		mutableFunctions.SetProvider         = Static_SetProvider;
 		mutableFunctions.GetNativePeriods    = Static_GetNativePeriods;
@@ -43,8 +43,8 @@ public:
 		mutableFunctions.SetGtick            = Static_SetGtick;
 		mutableFunctions.Release             = Static_Release;
 
-		utils::verify_initialized_pointers_debug(m_functions);
-		utils::verify_equal_pointers_debug(&m_functions, static_cast<TInterface*>(this));
+		util::verify_initialized_pointers_debug(m_functions);
+		util::verify_equal_pointers_debug(&m_functions, static_cast<TInterface*>(this));
 	}
 
 private:
