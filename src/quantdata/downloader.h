@@ -3,10 +3,11 @@
 
 #include <quantdata/types.h>
 #include <common/mem.h>
-#include <string>
 #include <memory>
 #include <cassert>
 #include <type_traits>
+#include <string_view>
+#include <gsl/span>
 
 #ifndef CURL_STATICLIB
 #define CURL_STATICLIB
@@ -22,37 +23,53 @@
 
 namespace quantdata {
 
-template <class AllocatorFunctions>
 class CDownloader
 {
 private:
 	struct CurlEasyInitRaii
 	{
 		CurlEasyInitRaii()
-			: m_curl(curl_easy_init()) {
-		}
+			: m_curl(curl_easy_init())
+		{}
 		~CurlEasyInitRaii() {
-			if (m_curl) {
+			if (m_curl)
 				curl_easy_cleanup(m_curl);
-			}
 		}
-		inline operator CURL*() {
+		operator CURL*() {
 			return m_curl;
 		}
 	private:
-		CURL* m_curl;
+		CURL* m_curl = nullptr;
+	};
+
+	struct CurlStringListRaii
+	{
+		~CurlStringListRaii() {
+			if (m_slist)
+				curl_slist_free_all(m_slist);
+		}
+		void append(const char* string) {
+			m_slist = curl_slist_append(m_slist, string);
+		}
+		operator struct curl_slist*() {
+			return m_slist;
+		}
+	private:
+		struct curl_slist* m_slist = nullptr;
 	};
 
 public:
-	using TAllocatorFunctions = AllocatorFunctions;
-	using TData               = TString<char, TAllocatorFunctions>;
-	using TDataAllocator      = typename TData::allocator_type;
-
+	template <class String = std::string>
 	struct SDownloadSettings
 	{
-		const char* url = nullptr;
-		const char* certtype = nullptr;
-		const char* certfile = nullptr;
+		using TString = String;
+		using TStringSpan = gsl::span<TString>;
+		using TStringView = std::string_view;
+
+		TStringSpan httpHeaders;
+		TStringView url;
+		TStringView certtype;
+		TStringView certfile;
 	};
 
 	struct SDownloadInfo
@@ -61,9 +78,11 @@ public:
 		curl_off_t bytesDownloaded = 0l;
 	};
 
-	static CURLcode Download(const SDownloadSettings& settings, TData* pHeader, TData* pPage, SDownloadInfo* pInfo)
+	template <class Data = std::string, class String = std::string>
+	static CURLcode Download(const SDownloadSettings<String>& settings, Data* pHeader, Data* pPage, SDownloadInfo* pInfo)
 	{
 		CurlEasyInitRaii curl;
+		CurlStringListRaii curlHttpHeaders;
 
 		if (!curl)
 			return CURLE_FAILED_INIT;
@@ -74,22 +93,22 @@ public:
 		if (pPage)
 		{
 			pPage->clear();
-			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_WRITEFUNCTION, WriteToString);
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_WRITEFUNCTION, WriteToData<Data>);
 			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_WRITEDATA, pPage);
 		}
 
 		if (pHeader)
 		{
 			pHeader->clear();
-			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_HEADERFUNCTION, WriteToString);
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_HEADERFUNCTION, WriteToData<Data>);
 			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_HEADERDATA, pHeader);
 		}
 
-		if (util::is_valid_string(settings.certtype))
+		if (!settings.certtype.empty())
 		{
 			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_SSLCERTTYPE, settings.certtype);
 		}
-		else if (util::is_valid_string(settings.certfile))
+		else if (!settings.certfile.empty())
 		{
 			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_SSL_VERIFYPEER, 1L);
 			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_CAINFO, settings.certfile);
@@ -97,6 +116,15 @@ public:
 		else
 		{
 			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+		}
+
+		if (!settings.httpHeaders.empty())
+		{
+			for (const auto& httpHeader : settings.httpHeaders)
+			{
+				curlHttpHeaders.append(httpHeader.data());
+			}
+			CURL_EASY_SETOPT_WITH_CHECK(curl, CURLOPT_HTTPHEADER, curlHttpHeaders);
 		}
 
 		CURLcode code = curl_easy_perform(curl);
@@ -110,11 +138,16 @@ public:
 		return code;
 	}
 
+	static const char* GetErrorString(CURLcode code)
+	{
+		return curl_easy_strerror(code);
+	}
+
 private:
-	static size_t WriteToString(char* src, size_t size, size_t nmemb, TData* dst)
+	template <class Data>
+	static size_t WriteToData(char* src, size_t size, size_t nmemb, Data* dst)
 	{
 		assert(dst != nullptr);
-
 		dst->append(src, size * nmemb);
 		return size * nmemb;
 	}

@@ -24,11 +24,6 @@ protected:
 	using TAllocatorFunctions = AllocatorFunctions;
 
 private:
-	using TDownloader       = CDownloader<TAllocatorFunctions>;
-	using TData             = typename TDownloader::TData;
-	using TDataAllocator    = typename TDownloader::TDataAllocator;
-	using TDownloadSettings = typename TDownloader::SDownloadSettings;
-	using TDownloadInfo     = typename TDownloader::SDownloadInfo;
 	using TPeriodArray      = TPeriodArray<TAllocatorFunctions>;
 	using TStringA          = TString<char, TAllocatorFunctions>;
 	using TStringAllocatorA = typename TStringA::allocator_type;

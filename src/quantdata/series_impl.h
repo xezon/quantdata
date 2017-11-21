@@ -2,6 +2,7 @@
 #include <common/stl.h>
 #include <quantdata/manager.h>
 #include <quantdata/checks.h>
+#include <common/util_log.h>
 
 // https://quant.stackexchange.com/questions/141/what-data-sources-are-available-online
 
@@ -70,20 +71,27 @@ EQuantDataResult CSeries<AllocatorFunctions>::Download(const TQuantDataDownloadS
 	if (!m_provider.Valid())
 		return EQuantDataResult::InvalidProvider;
 
-	auto header     = TData(TDataAllocator(m_allocFunctions));
-	auto page       = TData(TDataAllocator(m_allocFunctions));
-	auto dlsettings = TDownloadSettings();
-	auto dlinfo     = TDownloadInfo();
+	auto header     = TStringA(TStringAllocatorA(m_allocFunctions));
+	auto page       = TStringA(TStringAllocatorA(m_allocFunctions));
+	auto dlsettings = CDownloader::SDownloadSettings<TStringA>();
+	auto dlinfo     = CDownloader::SDownloadInfo();
 
 	auto url = stl::string_format_t<TStringA>(TStringAllocatorA(m_allocFunctions),
 		"https://www.alphavantage.co/"
 		"query?function=TIME_SERIES_INTRADAY"
 		"&symbol=%s&interval=1min&apikey=demo&datatype=csv", pSettings->symbol);
 
-	dlsettings.url = url.c_str();
-	dlsettings.certtype = m_provider.certtype.c_str();
-	dlsettings.certfile = m_provider.certfile.c_str();
-	CURLcode code = TDownloader::Download(dlsettings, &header, &page, &dlinfo);
+	util::clog("Downloading '%s'", url.c_str());
+
+	dlsettings.url = url;
+	dlsettings.certtype = m_provider.certtype;
+	dlsettings.certfile = m_provider.certfile;
+	CURLcode code = CDownloader::Download(dlsettings, &header, &page, &dlinfo);
+
+	if (code != CURLE_OK)
+	{
+		util::cerr("Download error '%d' : '%s'", static_cast<int>(code), CDownloader::GetErrorString(code));
+	}
 
 	return EQuantDataResult::Success;
 }
