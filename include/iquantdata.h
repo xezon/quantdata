@@ -5,16 +5,16 @@
 #include <common/types.h>
 
 #ifdef QUANTDATA_IGNORE_ZORRO
-typedef struct T1 {} T1;
-typedef struct T2 {} T2;
-typedef struct T6 {} T6;
-typedef struct CONTRACT {} T8;
+typedef struct T1 T1;
+typedef struct T2 T2;
+typedef struct T6 T6;
+typedef struct CONTRACT T8;
 #else
 #include <zorro.h>
 typedef struct CONTRACT T8;
 #endif
 #ifdef QUANTDATA_IGNORE_GENOTICK
-typedef struct SGenotickDataPoint {} TGenotickDataPoint;
+typedef struct SGenotickDataPoint TGenotickDataPoint;
 #else
 #include <igenotick.h>
 #endif
@@ -156,6 +156,7 @@ struct SQuantDataPeriodMeta
 	e( Month    , QuantDataPeriod_Month    , (SQuantDataPeriodMeta( "monthly"  , "M"   , "YES"   , "1mo" , ""    )) ) \
 	e( Quarter  , QuantDataPeriod_Quarter  , (SQuantDataPeriodMeta( "quarterly", ""    , ""      , ""    , ""    )) ) \
 	e( Annual   , QuantDataPeriod_Annual   , (SQuantDataPeriodMeta( "annual"   , ""    , ""      , ""    , ""    )) ) \
+//                                                                  Quandl       Oanda   AV        OE      TrueFx
 
 DEFINE_DATA_FLOAT(TQuantDataPeriod, CQuantDataPeriod, double, QUANTDATA_PERIOD_LIST, SQuantDataPeriodMeta)
 

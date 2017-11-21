@@ -137,6 +137,7 @@
     <ClInclude Include="..\src\quantdata\series.h" />
     <ClInclude Include="..\src\quantdata\series_functions.h" />
     <ClInclude Include="..\src\quantdata\series_impl.h" />
+    <ClInclude Include="..\src\quantdata\symbols.h" />
     <ClInclude Include="..\src\quantdata\types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -11,6 +11,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir).$(Platform)\$(Configuration);..\..\deps\$(Platform)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableModules>true</EnableModules>
       <RuntimeLibrary Condition="'$(Configuration)'=='Debug'">MultiThreadedDebug</RuntimeLibrary>
       <RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>..\include;..\src;..\..\commonlib\include;..\..\gsl\include;..\..\deps\$(Platform)\include;..\..\genotick-cpp\include;..\..\zorro-dll\include;..\..\jsoncons\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

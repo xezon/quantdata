@@ -65,5 +65,8 @@
     <ClInclude Include="..\src\quantdata\downloader.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\quantdata\symbols.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

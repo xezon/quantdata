@@ -2,6 +2,7 @@
 #include "manager.h"
 #include <quantdata/series.h>
 #include <common/util.h>
+#include <algorithm>
 
 namespace quantdata {
 
@@ -10,21 +11,60 @@ using TSeries = CSeriesFunctions<CSeries<AllocatorFunctions>>;
 
 CManager::CManager()
 {
-	BuildProviderInfos();
+	BuildSymbolSources();
+	BuildNativeSymbols();
+	BuildPeriods();
 }
 
-void CManager::BuildProviderInfos()
+template <class Type, size_t Size>
+void CManager::BuildSymbolSourcesFor(const CQuantDataProvider& provider, const Type(&sources)[Size])
+{
+	auto& providerInfo = m_providerInfos[provider.ordinal()];
+	auto& symbolSources = providerInfo.symbolSources;
+	symbolSources.resize(Size);
+	std::copy(sources, sources + Size, symbolSources.begin());
+}
+
+void CManager::BuildSymbolSources()
+{
+	BuildSymbolSourcesFor(CQuantDataProvider::Oanda       , internal::oandaSymbolSources);
+	BuildSymbolSourcesFor(CQuantDataProvider::AlphaVantage, internal::alphaVantageSymbolSources);
+	BuildSymbolSourcesFor(CQuantDataProvider::OpenExchange, internal::openExchangeSymbolSources);
+}
+
+template <class Type, size_t Size>
+void CManager::BuildNativeSymbolsFor(const CQuantDataProvider& provider, const Type(&symbols)[Size])
+{
+	auto& providerInfo = m_providerInfos[provider.ordinal()];
+	auto& nativeSymbols = providerInfo.nativeSymbols;
+	nativeSymbols.emplace_back();
+	auto& newSymbols = nativeSymbols.back();
+	newSymbols.resize(Size);
+	std::copy(symbols, symbols + Size, newSymbols.begin());
+}
+
+void CManager::BuildNativeSymbols()
+{
+	BuildNativeSymbolsFor(CQuantDataProvider::AlphaVantage, internal::alphaVantageDigitalCurrencies);
+	BuildNativeSymbolsFor(CQuantDataProvider::AlphaVantage, internal::alphaVantagePhysicalCurrencies);
+	BuildNativeSymbolsFor(CQuantDataProvider::OpenExchange, internal::openExchangeSymbols);
+	BuildNativeSymbolsFor(CQuantDataProvider::TrueFx      , internal::trueFxSymbols);
+}
+
+void CManager::BuildPeriods()
 {
 	for (CQuantDataProvider provider : CQuantDataProvider())
 	{
-		auto ordinal = provider.ordinal();
+		const auto ordinal = provider.ordinal();
+		auto& providerInfo = m_providerInfos[ordinal];
+
 		for (CQuantDataPeriod period : CQuantDataPeriod())
 		{
-			auto apiName = period.meta().apiNames[ordinal];
+			const auto apiName = period.meta().apiNames[ordinal];
 			if (util::is_valid_string(apiName))
 			{
-				auto value = period.value();
-				m_providerInfos[ordinal].periods.push_back(value);
+				const auto value = period.value();
+				providerInfo.periods.push_back(value);
 			}
 		}
 	}
