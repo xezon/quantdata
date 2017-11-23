@@ -13,28 +13,16 @@ namespace quantdata {
 class CManager
 {
 public:
-	using TStringView = std::string_view;
-
-	struct SSymbolInfo
-	{
-		SSymbolInfo() {}
-		SSymbolInfo(const internal::SSymbolPair& pair)
-			: symbol(pair.symbol)
-			, name(pair.name)
-		{}
-		TStringView symbol = {};
-		TStringView name = {};
-	};
-
+	using TStringView       = std::string_view;
 	using TStringArray      = std::vector<TStringView>;
-	using TSymbolArray      = std::vector<SSymbolInfo>;
+	using TSymbolArray      = std::vector<TQuantDataSymbolInfo>;
 	using TSymbolMultiArray = std::vector<TSymbolArray>;
 	using TPeriodArray      = std::vector<TQuantDataPeriod>;
 
 	struct SProviderInfo
 	{
 		TStringArray      symbolSources;
-		TSymbolMultiArray nativeSymbols;
+		TSymbolMultiArray nativeSymbolsArray;
 		TPeriodArray      periods;
 	};
 

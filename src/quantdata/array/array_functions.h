@@ -3,6 +3,7 @@
 
 #include <quantdata.h>
 #include <common/util.h>
+#include <utility>
 
 namespace quantdata {
 
@@ -14,15 +15,14 @@ class CArrayFunctions : public Implementation
 private:
 	using TThis               = CArrayFunctions;
 	using TImplementation     = Implementation;
-	using TType               = typename TImplementation::TType;
+	using TElement            = typename TImplementation::TElement;
 	using TInterface          = typename TImplementation::TInterface;
-	using TAllocatorFunctions = typename TImplementation::TAllocatorFunctions;
 	using TInterfaceFunctions = typename TInterface::TInterfaceFunctions;
 
 public:
-	template <class Container>
-	CArrayFunctions(const Container& container, const TAllocatorFunctions& allocFunctions)
-		: TImplementation(container, allocFunctions)
+	template <class... Args>
+	CArrayFunctions(Args&&... args)
+		: TImplementation(std::forward<Args>(args)...)
 	{
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);
 		util::nullify_object_debug(mutableFunctions);
@@ -39,7 +39,7 @@ private:
 	UTILS_DELETE_COPY_CONSTRUCTOR(TThis)
 
 private:
-	static const TType* QUANTDATA_CALL Static_Get(TInterface* pThis, TQuantDataSize index) {
+	static const TElement* QUANTDATA_CALL Static_Get(TInterface* pThis, TQuantDataSize index) {
 		return static_cast<TThis*>(pThis)->Get(index);
 	}
 	static TQuantDataSize QUANTDATA_CALL Static_Size(TInterface* pThis) {

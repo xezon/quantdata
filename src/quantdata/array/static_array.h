@@ -6,29 +6,29 @@
 
 namespace quantdata {
 
-template <class Interface, class AllocatorFunctions>
+template <class Interface, class AllocatorFunctions, class Element>
 class CStaticArray : public Interface
 {
 protected:
 	using TInterface          = Interface;
 	using TAllocatorFunctions = AllocatorFunctions;
-	using TType               = typename TInterface::TType;
+	using TElement            = Element;
 
 private:
-	using TFree               = typename AllocatorFunctions::free_type;
+	using TFree = typename TAllocatorFunctions::free_type;
 
 protected:
 	template <class Container>
-	CStaticArray(const Container& container, const TAllocatorFunctions& allocFunctions)
-		: m_pArray(container.data())
+	CStaticArray(const TAllocatorFunctions& allocFunctions, const Container& container)
+		: m_pElements(container.data())
 		, m_size(container.size())
 		, m_free(allocFunctions.free())
 	{
 	}
 
-	const TType* Get(TQuantDataSize index) const
+	const TElement* Get(TQuantDataSize index) const
 	{
-		return &m_pArray[index];
+		return &m_pElements[index];
 	}
 
 	TQuantDataSize Size() const
@@ -42,7 +42,7 @@ protected:
 	}
 
 private:
-	const TType*         m_pArray;
+	const TElement*      m_pElements;
 	const TQuantDataSize m_size;
 	const TFree          m_free;
 };

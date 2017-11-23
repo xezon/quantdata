@@ -35,9 +35,6 @@
     <ClInclude Include="..\src\quantdata\manager.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\quantdata\provider.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\quantdata\types.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
@@ -53,12 +50,6 @@
     <ClInclude Include="..\src\quantdata\array\array_functions.h">
       <Filter>src\quantdata\array</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\quantdata\array\new_array.h">
-      <Filter>src\quantdata\array</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\array\static_array.h">
-      <Filter>src\quantdata\array</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\quantdata\series_impl.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
@@ -66,6 +57,15 @@
       <Filter>src\quantdata</Filter>
     </ClInclude>
     <ClInclude Include="..\src\quantdata\symbols.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\array\static_array.h">
+      <Filter>src\quantdata\array</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\array\new_array.h">
+      <Filter>src\quantdata\array</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\structs.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
   </ItemGroup>

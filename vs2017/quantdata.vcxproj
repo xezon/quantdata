@@ -133,7 +133,7 @@
     <ClInclude Include="..\src\quantdata\checks.h" />
     <ClInclude Include="..\src\quantdata\downloader.h" />
     <ClInclude Include="..\src\quantdata\manager.h" />
-    <ClInclude Include="..\src\quantdata\provider.h" />
+    <ClInclude Include="..\src\quantdata\structs.h" />
     <ClInclude Include="..\src\quantdata\series.h" />
     <ClInclude Include="..\src\quantdata\series_functions.h" />
     <ClInclude Include="..\src\quantdata\series_impl.h" />

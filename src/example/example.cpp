@@ -18,10 +18,10 @@ int main(int argc, char** argv)
 	assert(result == EQuantDataResult::Success);
 
 	IQuantDataSeries* pSeries = nullptr;
-	TQuantDataCreationSettings settings;
-	settings.alloc = mem::alloc;
-	settings.free = mem::free;
-	result = QuantData_CreateSeries(&pSeries, &settings);
+	TQuantDataCreationSettings creationSettings;
+	creationSettings.alloc = mem::alloc;
+	creationSettings.free = mem::free;
+	result = QuantData_CreateSeries(&pSeries, &creationSettings);
 	assert(result == EQuantDataResult::Success);
 
 	TQuantDataLoadSettings loadSettings;
@@ -37,8 +37,20 @@ int main(int argc, char** argv)
 	IQuantDataPeriods* pPeriods;
 	result = pSeries->GetNativePeriods(&pPeriods);
 	assert(result == EQuantDataResult::Success);
-
 	pPeriods->Release();
+
+	TQuantDataSymbolSettings symbolSettings;
+	symbolSettings.download = false;
+	symbolSettings.index = 0;
+	IQuantDataSymbols* pSymbols = nullptr;
+	result = pSeries->GetSupportedSymbols(&pSymbols, &symbolSettings);
+	assert(result == EQuantDataResult::Success);
+	pSymbols->Release();
+
+	symbolSettings.download = true;
+	result = pSeries->GetSupportedSymbols(&pSymbols, &symbolSettings);
+	assert(result == EQuantDataResult::Success);
+	pSymbols->Release();
 
 	TQuantDataDownloadSettings downloadSettings;
 	downloadSettings.symbol = "MSFT";

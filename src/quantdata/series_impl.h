@@ -11,9 +11,9 @@
 namespace quantdata {
 
 template <class AllocatorFunctions>
-CSeries<AllocatorFunctions>::CSeries(const CManager& manager, const TAllocatorFunctions& allocFunctions)
-	: m_manager(manager)
-	, m_allocFunctions(allocFunctions)
+CSeries<AllocatorFunctions>::CSeries(const TAllocatorFunctions& allocFunctions, const CManager& manager)
+	: m_allocFunctions(allocFunctions)
+	, m_manager(manager)
 	, m_provider(allocFunctions)
 {
 }
@@ -37,26 +37,66 @@ EQuantDataResult CSeries<AllocatorFunctions>::GetNativePeriods(IQuantDataPeriods
 	if (!m_provider.Valid())
 		return EQuantDataResult::InvalidProvider;
 
-	auto& providerInfo = m_manager.GetProviderInfo(m_provider.type);
-	auto periodArray = mem::placement_alloc<TPeriodArray>(m_allocFunctions.alloc(), providerInfo.periods, m_allocFunctions);
-	*ppPeriods = periodArray;
-
+	const auto& providerInfo = m_manager.GetProviderInfo(m_provider.type);
+	const auto& pPeriods = mem::placement_alloc<TStaticPeriodArray>(m_allocFunctions.alloc(),
+		m_allocFunctions, providerInfo.periods);
+	*ppPeriods = pPeriods;
 	return EQuantDataResult::Success;
 }
 
 template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::GetSupportedSymbols(TQuantDataSymbols** ppSymbols)
+EQuantDataResult CSeries<AllocatorFunctions>::GetSupportedSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolSettings* pSettings)
 {
-	// https://www.alphavantage.co/physical_currency_list/
-	// https://www.alphavantage.co/digital_currency_list/
-
-	if (!ppSymbols)
+	if (!ppSymbols || !pSettings)
 		return EQuantDataResult::InvalidArgument;
 
 	if (!m_provider.Valid())
 		return EQuantDataResult::InvalidProvider;
 
-	return EQuantDataResult::Success;
+	const auto& providerInfo = m_manager.GetProviderInfo(m_provider.type);
+
+	if (pSettings->download)
+	{
+		const auto& symbolSources = providerInfo.symbolSources;
+		if (!symbolSources.empty())
+		{
+
+			// sample
+
+			const auto& nativeSymbols = providerInfo.nativeSymbolsArray.at(0);
+			auto symbols = TNewSymbolArray::CreateBuffers(m_allocFunctions);
+			auto symbolLinks = TNewSymbolArray::CreateElements(m_allocFunctions);
+			const size_t size = nativeSymbols.size();
+			symbols.resize(size, m_allocFunctions);
+			symbolLinks.resize(size);
+
+			for (size_t i = 0; i < size; ++i)
+			{
+				symbols[i].Set(nativeSymbols[i]);
+				symbolLinks[i] = symbols[i].GetPod();
+			}
+			const auto& pSymbols = mem::placement_alloc<TNewSymbolArray>(m_allocFunctions.alloc(),
+				m_allocFunctions, std::move(symbolLinks), std::move(symbols));
+			*ppSymbols = pSymbols;
+
+			return EQuantDataResult::Success;
+		}
+	}
+	else
+	{
+		const auto& nativeSymbolsArray = providerInfo.nativeSymbolsArray;
+		if (pSettings->index < nativeSymbolsArray.size())
+		{
+			const auto& nativeSymbols = nativeSymbolsArray.at(pSettings->index);
+			const auto& pSymbols = mem::placement_alloc<TStaticSymbolArray>(m_allocFunctions.alloc(),
+				m_allocFunctions, nativeSymbols);
+			*ppSymbols = pSymbols;
+
+			return EQuantDataResult::Success;
+		}
+	}
+	
+	return EQuantDataResult::NoDataAvailable;
 }
 
 template <class AllocatorFunctions>

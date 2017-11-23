@@ -4,38 +4,53 @@
 #include <quantdata/array/array_functions.h>
 #include <quantdata/types.h>
 #include <common/mem.h>
+#include <utility>
 
 namespace quantdata {
 
-template <class Interface, class AllocatorFunctions>
+template <class Interface, class AllocatorFunctions, class Element, class Buffer = Element>
 class CNewArray : public Interface
 {
 protected:
 	using TInterface          = Interface;
 	using TAllocatorFunctions = AllocatorFunctions;
-	using TType               = typename TInterface::TType;
+	using TElement            = Element;
+	using TBuffer             = Buffer;
 
-private:
-	using TFree               = typename TAllocatorFunctions::free_type;
-	using TVector             = TVector<TType, TAllocatorFunctions>;
-	using TVectorAllocator    = typename TVector::allocator_type;
+public:
+	using TElements           = TVector<TElement, TAllocatorFunctions>;
+	using TElementsAllocator  = typename TElements::allocator_type;
+	using TBuffers            = TVector<TBuffer, TAllocatorFunctions>;
+	using TBuffersAllocator   = typename TBuffers::allocator_type;
 
-protected:
-	template <class Container>
-	CNewArray(const Container& container, const TAllocatorFunctions& allocFunctions)
-		: m_vector(container.cbegin(), container.cend(), TVectorAllocator(allocFunctions))
-		, m_free(allocFunctions.free())
+	static TElements CreateElements(const TAllocatorFunctions& allocFunctions)
 	{
+		return TElements(TElementsAllocator(allocFunctions));
 	}
 
-	const TType* Get(TQuantDataSize index) const
+	static TBuffers CreateBuffers(const TAllocatorFunctions& allocFunctions)
 	{
-		return &m_vector[index];
+		return TBuffers(TBuffersAllocator(allocFunctions));
+	}
+	
+private:
+	using TFree = typename TAllocatorFunctions::free_type;
+
+protected:
+	CNewArray(const TAllocatorFunctions& allocFunctions, TElements&& elements, TBuffers&& buffers)
+		: m_elements(std::move(elements))
+		, m_buffers(std::move(buffers))
+		, m_free(allocFunctions.free())
+	{}
+
+	const TElement* Get(TQuantDataSize index) const
+	{
+		return &m_elements[index];
 	}
 
 	TQuantDataSize Size() const
 	{
-		return m_vector.size();
+		return m_elements.size();
 	}
 
 	void Release()
@@ -44,8 +59,9 @@ protected:
 	}
 
 private:
-	const TVector m_vector;
-	const TFree   m_free;
+	const TElements m_elements;
+	const TBuffers  m_buffers;
+	const TFree     m_free;
 };
 
 } // namespace quantdata

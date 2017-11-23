@@ -4,6 +4,7 @@
 #include <quantdata.h>
 #include <quantdata/types.h>
 #include <common/util.h>
+#include <utility>
 
 namespace quantdata {
 
@@ -16,12 +17,12 @@ private:
 	using TThis               = CSeriesFunctions;
 	using TImplementation     = Implementation;
 	using TInterface          = typename TImplementation::TInterface;
-	using TAllocatorFunctions = typename TImplementation::TAllocatorFunctions;
 	using TInterfaceFunctions = typename TInterface::TInterfaceFunctions;
 
 public:
-	CSeriesFunctions(const CManager& manager, const TAllocatorFunctions& allocFunctions)
-		: TImplementation(manager, allocFunctions)
+	template <class... Args>
+	CSeriesFunctions(Args&&... args)
+		: TImplementation(std::forward<Args>(args)...)
 	{
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);
 		util::nullify_object_debug(mutableFunctions);
@@ -58,8 +59,8 @@ private:
 	static EQuantDataResult QUANTDATA_CALL Static_GetNativePeriods(TInterface* pThis, IQuantDataPeriods** ppPeriods) {
 		return static_cast<TThis*>(pThis)->GetNativePeriods(ppPeriods);
 	}
-	static EQuantDataResult QUANTDATA_CALL Static_GetSupportedSymbols(TInterface* pThis, TQuantDataSymbols** ppSymbols) {
-		return static_cast<TThis*>(pThis)->GetSupportedSymbols(ppSymbols);
+	static EQuantDataResult QUANTDATA_CALL Static_GetSupportedSymbols(TInterface* pThis, IQuantDataSymbols** ppSymbols, const TQuantDataSymbolSettings* pSettings) {
+		return static_cast<TThis*>(pThis)->GetSupportedSymbols(ppSymbols, pSettings);
 	}
 	static EQuantDataResult QUANTDATA_CALL Static_Download(TInterface* pThis, const TQuantDataDownloadSettings* pSettings) {
 		return static_cast<TThis*>(pThis)->Download(pSettings);

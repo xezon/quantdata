@@ -3,7 +3,7 @@
 
 #include <quantdata/series_functions.h>
 #include <quantdata/downloader.h>
-#include <quantdata/provider.h>
+#include <quantdata/structs.h>
 #include <quantdata/types.h>
 #include <quantdata/array/new_array.h>
 #include <quantdata/array/static_array.h>
@@ -14,9 +14,6 @@ namespace quantdata {
 class CManager;
 
 template <class AllocatorFunctions>
-using TPeriodArray = CArrayFunctions<CStaticArray<IQuantDataPeriods, AllocatorFunctions>>;
-
-template <class AllocatorFunctions>
 class CSeries : public IQuantDataSeries
 {
 protected:
@@ -24,16 +21,19 @@ protected:
 	using TAllocatorFunctions = AllocatorFunctions;
 
 private:
-	using TPeriodArray      = TPeriodArray<TAllocatorFunctions>;
-	using TStringA          = TString<char, TAllocatorFunctions>;
-	using TStringAllocatorA = typename TStringA::allocator_type;
+	using TStringA            = TStringA<TAllocatorFunctions>;
+	using TStringAllocatorA   = TStringAllocatorA<TAllocatorFunctions>;
+
+	using TStaticPeriodArray  = CArrayFunctions<CStaticArray<IQuantDataPeriods, TAllocatorFunctions, TQuantDataPeriod>>;
+	using TStaticSymbolArray  = CArrayFunctions<CStaticArray<IQuantDataSymbols, TAllocatorFunctions, TQuantDataSymbolInfo>>;
+	using TNewSymbolArray     = CArrayFunctions<CNewArray   <IQuantDataSymbols, TAllocatorFunctions, TQuantDataSymbolInfo, SSymbolInfo<TAllocatorFunctions>>>;
 
 protected:
-	CSeries(const CManager& manager, const TAllocatorFunctions& allocFunctions);
+	CSeries(const TAllocatorFunctions& allocFunctions, const CManager& manager);
 
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings);
 	EQuantDataResult GetNativePeriods(IQuantDataPeriods** ppPeriods);
-	EQuantDataResult GetSupportedSymbols(TQuantDataSymbols** ppSymbols);
+	EQuantDataResult GetSupportedSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolSettings* pSettings);
 	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings);
 	EQuantDataResult Load(const TQuantDataLoadSettings* pSettings);
 	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) const;
@@ -50,8 +50,8 @@ protected:
 	EQuantDataResult Release();
 
 private:
-	const CManager&                m_manager;
 	const TAllocatorFunctions      m_allocFunctions;
+	const CManager&                m_manager;
 	SProvider<TAllocatorFunctions> m_provider;
 };
 

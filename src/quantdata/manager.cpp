@@ -36,7 +36,7 @@ template <class Type, size_t Size>
 void CManager::BuildNativeSymbolsFor(const CQuantDataProvider& provider, const Type(&symbols)[Size])
 {
 	auto& providerInfo = m_providerInfos[provider.ordinal()];
-	auto& nativeSymbols = providerInfo.nativeSymbols;
+	auto& nativeSymbols = providerInfo.nativeSymbolsArray;
 	nativeSymbols.emplace_back();
 	auto& newSymbols = nativeSymbols.back();
 	newSymbols.resize(Size);
@@ -102,18 +102,18 @@ EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries, const TQuan
 	if (!ppSeries || !pSettings)
 		return EQuantDataResult::InvalidArgument;
 
-	auto alloc = pSettings->alloc;
-	auto free = pSettings->free;
+	const auto alloc = pSettings->alloc;
+	const auto free = pSettings->free;
 
 	if (alloc && free)
 	{
-		auto functions = mem::custom_allocator_functions(alloc, free);
-		*ppSeries = mem::placement_alloc<TSeries<decltype(functions)>>(functions.alloc(), *this, functions);
+		const auto functions = mem::custom_allocator_functions(alloc, free);
+		*ppSeries = mem::placement_alloc<TSeries<decltype(functions)>>(functions.alloc(), functions, *this);
 	}
 	else
 	{
-		auto functions = mem::regular_allocator_functions();
-		*ppSeries = mem::placement_alloc<TSeries<decltype(functions)>>(functions.alloc(), *this, functions);
+		const auto functions = mem::regular_allocator_functions();
+		*ppSeries = mem::placement_alloc<TSeries<decltype(functions)>>(functions.alloc(), functions, *this);
 	}
 
 	return EQuantDataResult::Success;

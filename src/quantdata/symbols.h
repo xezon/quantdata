@@ -1,32 +1,28 @@
 
 #pragma once
 
+#include <quantdata.h>
+
 namespace quantdata {
 namespace internal {
 
-struct SSymbolPair
-{
-	const char* const symbol;
-	const char* const name;
-};
-
-const char* const oandaSymbolSources[] =
+constexpr char* const oandaSymbolSources[] =
 {
 	"https://api-fxtrade.oanda.com/v1/instruments",
 };
 
-const char* const alphaVantageSymbolSources[] =
+constexpr char* const alphaVantageSymbolSources[] =
 {
 	"https://www.alphavantage.co/digital_currency_list/",
 	"https://www.alphavantage.co/physical_currency_list/",
 };
 
-const char* const openExchangeSymbolSources[] =
+constexpr char* const openExchangeSymbolSources[] =
 {
 	"https://openexchangerates.org/api/currencies.json",
 };
 
-const SSymbolPair alphaVantageDigitalCurrencies[] =
+constexpr TQuantDataSymbolInfo alphaVantageDigitalCurrencies[] =
 {
 	{"1ST","FirstBlood"},
 	{"2GIVE","GiveCoin"},
@@ -422,7 +418,7 @@ const SSymbolPair alphaVantageDigitalCurrencies[] =
 	{"ZRX","0x"},
 };
 
-const SSymbolPair alphaVantagePhysicalCurrencies[] =
+constexpr TQuantDataSymbolInfo alphaVantagePhysicalCurrencies[] =
 {
 	{"AED","United Arab Emirates Dirham"},
 	{"AFN","Afghan Afghani"},
@@ -594,7 +590,7 @@ const SSymbolPair alphaVantagePhysicalCurrencies[] =
 	{"ZWL","Zimbabwean Dollar"},
 };
 
-const SSymbolPair openExchangeSymbols[] =
+constexpr TQuantDataSymbolInfo openExchangeSymbols[] =
 {
 	{"AED", "United Arab Emirates Dirham"},
 	{"AFN", "Afghan Afghani"},
@@ -766,7 +762,7 @@ const SSymbolPair openExchangeSymbols[] =
 	{"ZWL", "Zimbabwean Dollar"},
 };
 
-const SSymbolPair trueFxSymbols[] =
+constexpr TQuantDataSymbolInfo trueFxSymbols[] =
 {
 	{"EUR/USD", ""},
 	{"USD/JPY", ""},
