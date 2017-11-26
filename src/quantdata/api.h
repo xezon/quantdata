@@ -2,27 +2,177 @@
 #pragma once
 
 #include <quantdata.h>
+#include <common/util.h>
+#include <cpprest/http_client.h>
+#include <utility>
+#include <array>
+#include <vector>
 
 namespace quantdata {
 namespace internal {
 
-constexpr char* const oandaSymbolSources[] =
+using TCharT = utility::char_t;
+using TStringT = const TCharT*;
+
+template <typename Element, size_t Size>
+struct FixedArrayStruct
 {
-	"https://api-fxtrade.oanda.com/v1/instruments",
+	using array_type = ::std::array<Element, Size>;
+	using size_type = typename array_type::size_type;
+	using reference = typename array_type::reference;
+	using const_reference = typename array_type::const_reference;
+	template <class... Args>
+	constexpr FixedArrayStruct(Args&&... args) noexcept
+		: array({std::forward<Args>(args)...})
+	{
+		static_assert(sizeof...(args) == Size,
+			"Argument count must match array count");
+	}
+	const_reference operator[](size_type i) const {
+		return array[i];
+	}
+	const array_type array;
 };
 
-constexpr char* const alphaVantageSymbolSources[] =
+template <typename Element>
+struct FixedVectorStruct
 {
-	"https://www.alphavantage.co/digital_currency_list/",
-	"https://www.alphavantage.co/physical_currency_list/",
+	using array_type = ::std::vector<Element>;
+	using size_type = typename array_type::size_type;
+	using reference = typename array_type::reference;
+	using const_reference = typename array_type::const_reference;
+	template <class... Args>
+	constexpr FixedVectorStruct(Args&&... args) noexcept
+		: array({std::forward<Args>(args)...})
+	{}
+	const_reference operator[](size_type i) const {
+		return array[i];
+	}
+	const array_type array;
 };
 
-constexpr char* const openExchangeSymbolSources[] =
+///////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// PROVIDER URL /////////////////////////////////////////
+
+using TProviderUrls = FixedArrayStruct<TStringT, CQuantDataProvider::count()>;
+
+constexpr TProviderUrls g_providerUrls(
+	/* Quandl       */ U("https://www.quandl.com/"       ),
+	/* Oanda        */ U("https://api-fxtrade.oanda.com/"),
+	/* AlphaVantage */ U("https://www.alphavantage.co/"  ),
+	/* OpenExchange */ U("https://openexchangerates.org/"),
+	/* TrueFx       */ U("https://www.truefx.com/"       )
+);
+
+inline const TProviderUrls& GetProviderUrls()
 {
-	"https://openexchangerates.org/api/currencies.json",
+	return g_providerUrls;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// PERIOD NAMES /////////////////////////////////////////
+
+using TProviderPeriodNamesX = FixedArrayStruct<TStringT, CQuantDataProvider::count()>;
+using TPeriodNamesX         = FixedArrayStruct<TProviderPeriodNamesX, CQuantDataPeriod::count()>;
+
+constexpr TPeriodNamesX g_periodNamesX(
+	/* Finest   */ TProviderPeriodNamesX( U("none"     ) , U("S5" ) , U("1min" ) , U("1m" ) , U("YES") ),
+	/* Second5  */ TProviderPeriodNamesX( U(""         ) , U("S5" ) , U(""     ) , U(""   ) , U(""   ) ),
+	/* Second10 */ TProviderPeriodNamesX( U(""         ) , U("S10") , U(""     ) , U(""   ) , U(""   ) ),
+	/* Second15 */ TProviderPeriodNamesX( U(""         ) , U("S15") , U(""     ) , U(""   ) , U(""   ) ),
+	/* Second30 */ TProviderPeriodNamesX( U(""         ) , U("S30") , U(""     ) , U(""   ) , U(""   ) ),
+	/* Minute   */ TProviderPeriodNamesX( U(""         ) , U("M1" ) , U("1min" ) , U("1m" ) , U(""   ) ),
+	/* Minute2  */ TProviderPeriodNamesX( U(""         ) , U("M2" ) , U(""     ) , U(""   ) , U(""   ) ),
+	/* Minute4  */ TProviderPeriodNamesX( U(""         ) , U("M4" ) , U(""     ) , U(""   ) , U(""   ) ),
+	/* Minute5  */ TProviderPeriodNamesX( U(""         ) , U("M5" ) , U("5min" ) , U("5m" ) , U(""   ) ),
+	/* Minute10 */ TProviderPeriodNamesX( U(""         ) , U("M10") , U(""     ) , U(""   ) , U(""   ) ),
+	/* Minute15 */ TProviderPeriodNamesX( U(""         ) , U("M15") , U("15min") , U("15m") , U(""   ) ),
+	/* Minute30 */ TProviderPeriodNamesX( U(""         ) , U("M30") , U("30min") , U("30m") , U(""   ) ),
+	/* Hour     */ TProviderPeriodNamesX( U(""         ) , U("H1" ) , U("60min") , U("1h" ) , U(""   ) ),
+	/* Hour2    */ TProviderPeriodNamesX( U(""         ) , U("H2" ) , U(""     ) , U(""   ) , U(""   ) ),
+	/* Hour3    */ TProviderPeriodNamesX( U(""         ) , U("H3" ) , U(""     ) , U(""   ) , U(""   ) ),
+	/* Hour4    */ TProviderPeriodNamesX( U(""         ) , U("H4" ) , U(""     ) , U(""   ) , U(""   ) ),
+	/* Hour6    */ TProviderPeriodNamesX( U(""         ) , U("H6" ) , U(""     ) , U(""   ) , U(""   ) ),
+	/* Hour8    */ TProviderPeriodNamesX( U(""         ) , U("H8" ) , U(""     ) , U(""   ) , U(""   ) ),
+	/* Hour12   */ TProviderPeriodNamesX( U(""         ) , U("H12") , U(""     ) , U("12h") , U(""   ) ),
+	/* Day      */ TProviderPeriodNamesX( U("daily"    ) , U("D"  ) , U("YES"  ) , U("1d" ) , U(""   ) ),
+	/* Week     */ TProviderPeriodNamesX( U("weekly"   ) , U("W"  ) , U("YES"  ) , U("1w" ) , U(""   ) ),
+	/* Month    */ TProviderPeriodNamesX( U("monthly"  ) , U("M"  ) , U("YES"  ) , U("1mo") , U(""   ) ),
+	/* Quarter  */ TProviderPeriodNamesX( U("quarterly") , U(""   ) , U(""     ) , U(""   ) , U(""   ) ),
+	/* Annual   */ TProviderPeriodNamesX( U("annual"   ) , U(""   ) , U(""     ) , U(""   ) , U(""   ) )
+);
+
+inline const TPeriodNamesX& GetPeriodNamesX()
+{
+	return g_periodNamesX;
+}
+
+using TPeriods         = std::vector<TQuantDataPeriod>;
+using TProviderPeriods = std::array<TPeriods, CQuantDataProvider::count()>;
+
+inline TProviderPeriods BuildProviderPeriods()
+{
+	TProviderPeriods providerPeriods;
+	for (CQuantDataProvider provider : CQuantDataProvider())
+	{
+		const auto providerOrdinal = provider.ordinal();
+		TPeriods& periods = providerPeriods[providerOrdinal];
+
+		for (CQuantDataPeriod period : CQuantDataPeriod())
+		{
+			const auto periodOrdinal = period.ordinal();
+			TStringT apiName = g_periodNamesX[periodOrdinal][providerOrdinal];
+
+			if (util::is_valid_string(apiName))
+			{
+				const auto value = period.value();
+				periods.push_back(value);
+			}
+		}
+	}
+	return providerPeriods;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// SYMBOL SOURCE ////////////////////////////////////////
+
+enum class ETextFormat { json, csv };
+
+struct SSymbolSource
+{
+	SSymbolSource() noexcept
+		: url(U("")), format(ETextFormat::json)
+	{}
+	SSymbolSource(TStringT url, ETextFormat format) noexcept
+		: url(url), format(format)
+	{}
+	TStringT url;
+	ETextFormat format;
 };
 
-constexpr TQuantDataSymbolInfo alphaVantageDigitalCurrencies[] =
+using TSymbolSources         = std::vector<SSymbolSource>;
+using TProviderSymbolSources = std::array<TSymbolSources, CQuantDataProvider::count()>;
+
+inline void AddSymbolUrls(TProviderSymbolSources& instance, CQuantDataProvider provider, const SSymbolSource& symbolSource)
+{
+	TSymbolSources& symbolSources = instance[provider.ordinal()];
+	symbolSources.resize(symbolSources.size() + 1, symbolSource);
+}
+
+inline TProviderSymbolSources BuildProviderSymbolSources()
+{
+	TProviderSymbolSources instance;
+	AddSymbolUrls(instance, CQuantDataProvider::Oanda       , SSymbolSource(U("v1/instruments/")        , ETextFormat::json));
+	AddSymbolUrls(instance, CQuantDataProvider::AlphaVantage, SSymbolSource(U("digital_currency_list/") , ETextFormat::csv ));
+	AddSymbolUrls(instance, CQuantDataProvider::AlphaVantage, SSymbolSource(U("physical_currency_list/"), ETextFormat::csv ));
+	AddSymbolUrls(instance, CQuantDataProvider::OpenExchange, SSymbolSource(U("api/currencies.json")    , ETextFormat::json));
+	return instance;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////// SYMBOLS //////////////////////////////////////////
+
+constexpr TQuantDataSymbolInfo g_alphaVantageDigitalCurrencies[] =
 {
 	{"1ST","FirstBlood"},
 	{"2GIVE","GiveCoin"},
@@ -418,7 +568,7 @@ constexpr TQuantDataSymbolInfo alphaVantageDigitalCurrencies[] =
 	{"ZRX","0x"},
 };
 
-constexpr TQuantDataSymbolInfo alphaVantagePhysicalCurrencies[] =
+constexpr TQuantDataSymbolInfo g_alphaVantagePhysicalCurrencies[] =
 {
 	{"AED","United Arab Emirates Dirham"},
 	{"AFN","Afghan Afghani"},
@@ -590,7 +740,7 @@ constexpr TQuantDataSymbolInfo alphaVantagePhysicalCurrencies[] =
 	{"ZWL","Zimbabwean Dollar"},
 };
 
-constexpr TQuantDataSymbolInfo openExchangeSymbols[] =
+constexpr TQuantDataSymbolInfo g_openExchangeSymbols[] =
 {
 	{"AED", "United Arab Emirates Dirham"},
 	{"AFN", "Afghan Afghani"},
@@ -762,7 +912,7 @@ constexpr TQuantDataSymbolInfo openExchangeSymbols[] =
 	{"ZWL", "Zimbabwean Dollar"},
 };
 
-constexpr TQuantDataSymbolInfo trueFxSymbols[] =
+constexpr TQuantDataSymbolInfo g_trueFxSymbols[] =
 {
 	{"EUR/USD", ""},
 	{"USD/JPY", ""},
@@ -792,6 +942,31 @@ constexpr TQuantDataSymbolInfo trueFxSymbols[] =
 	{"USD/NOK", ""},
 	{"USD/SEK", ""},
 };
+
+using TSymbols             = std::vector<TQuantDataSymbolInfo>;
+using TSymbolsList         = std::vector<TSymbols>;
+using TProviderSymbolsList = std::array<TSymbolsList, CQuantDataProvider::count()>;
+
+template <class Type, size_t Size>
+inline void AddSymbols(TProviderSymbolsList& instance, CQuantDataProvider provider, const Type(&symbolArray)[Size])
+{
+	TSymbolsList& symbolsList = instance[provider.ordinal()];
+	symbolsList.resize(symbolsList.size() + 1);
+	TSymbols& symbols = symbolsList.back();
+	symbols.resize(Size);
+	std::copy(symbolArray, symbolArray + Size, symbols.begin());
+}
+
+inline TProviderSymbolsList BuildProviderSymbolsList()
+{
+	TProviderSymbolsList instance;
+	AddSymbols(instance, CQuantDataProvider::AlphaVantage, g_alphaVantageDigitalCurrencies);
+	AddSymbols(instance, CQuantDataProvider::AlphaVantage, g_alphaVantagePhysicalCurrencies);
+	AddSymbols(instance, CQuantDataProvider::OpenExchange, g_openExchangeSymbols);
+	AddSymbols(instance, CQuantDataProvider::TrueFx      , g_trueFxSymbols);
+	return instance;
+}
+
 
 } // namespace internal
 } // namespace quantdata

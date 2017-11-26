@@ -56,11 +56,11 @@ typedef free_func   TQuantDataFree;
 
 #define QuantDataResult_Success             0
 #define QuantDataResult_Failure             1
-#define QuantDataResult_NotInitialized      2
-#define QuantDataResult_InvalidArgument     3
+#define QuantDataResult_InvalidArgument     2
 #define QuantDataResult_InvalidProvider   500
 #define QuantDataResult_NoDataAvailable   501
 #define QuantDataResult_RejectedApiKey    502
+#define QuantDataResult_HttpException     503
 #define QuantDataResult_UnsupportedPeriod 600
 #define QuantDataResult_UnsupportedSymbol 601
 #define QuantDataResult_UnsupportedTime   602
@@ -71,30 +71,34 @@ typedef free_func   TQuantDataFree;
 #define QuantDataProvider_OpenExchange 3
 #define QuantDataProvider_TrueFx       4
 
-#define QuantDataPeriod_Finest       0.0
-#define QuantDataPeriod_Second5      1.0 / 12.0
-#define QuantDataPeriod_Second10     1.0 / 6.0
-#define QuantDataPeriod_Second15     1.0 / 4.0
-#define QuantDataPeriod_Second30     1.0 / 2.0
-#define QuantDataPeriod_Minute       1.0
-#define QuantDataPeriod_Minute2      2.0
-#define QuantDataPeriod_Minute4      4.0
-#define QuantDataPeriod_Minute5      5.0
-#define QuantDataPeriod_Minute10    10.0
-#define QuantDataPeriod_Minute15    15.0
-#define QuantDataPeriod_Minute30    30.0
-#define QuantDataPeriod_Hour        60.0
-#define QuantDataPeriod_Hour2      120.0 
-#define QuantDataPeriod_Hour3      180.0
-#define QuantDataPeriod_Hour4      240.0
-#define QuantDataPeriod_Hour6      360.0
-#define QuantDataPeriod_Hour8      480.0
-#define QuantDataPeriod_Hour12     720.0
-#define QuantDataPeriod_Day       1440.0
-#define QuantDataPeriod_Week     10080.0
-#define QuantDataPeriod_Month    43200.0
-#define QuantDataPeriod_Quarter 129600.0
-#define QuantDataPeriod_Annual  525600.0
+#define QuantDataSymbolSource_Default               0
+#define QuantDataSymbolSource_AV_DigitalCurrencies  0
+#define QuantDataSymbolSource_AV_PhysicalCurrencies 1
+
+#define QuantDataPeriod_Finest        0.0
+#define QuantDataPeriod_Second5       1.0 / 12.0
+#define QuantDataPeriod_Second10      1.0 / 6.0
+#define QuantDataPeriod_Second15      1.0 / 4.0
+#define QuantDataPeriod_Second30      1.0 / 2.0
+#define QuantDataPeriod_Minute        1.0
+#define QuantDataPeriod_Minute2       2.0
+#define QuantDataPeriod_Minute4       4.0
+#define QuantDataPeriod_Minute5       5.0
+#define QuantDataPeriod_Minute10     10.0
+#define QuantDataPeriod_Minute15     15.0
+#define QuantDataPeriod_Minute30     30.0
+#define QuantDataPeriod_Hour         60.0
+#define QuantDataPeriod_Hour2       120.0 
+#define QuantDataPeriod_Hour3       180.0
+#define QuantDataPeriod_Hour4       240.0
+#define QuantDataPeriod_Hour6       360.0
+#define QuantDataPeriod_Hour8       480.0
+#define QuantDataPeriod_Hour12      720.0
+#define QuantDataPeriod_Day        1440.0
+#define QuantDataPeriod_Week      10080.0
+#define QuantDataPeriod_Month     43200.0
+#define QuantDataPeriod_Quarter  129600.0
+#define QuantDataPeriod_Annual   525600.0
 
 #define QuantDataFormat_csv    0
 #define QuantDataFormat_json   1
@@ -116,53 +120,44 @@ typedef free_func   TQuantDataFree;
 	e( OpenExchange , = QuantDataProvider_OpenExchange , 0 ) \
 	e( TrueFx       , = QuantDataProvider_TrueFx       , 0 ) \
 
-DEFINE_DATA_ENUM_CLASS(EQuantDataProvider, CQuantDataProvider, int32_t, QUANTDATA_PROVIDER_LIST, int8_t)
-
-struct SQuantDataPeriodMeta
-{
-	using TString = const char* const;
-	using TProviderStrings = ::std::array<TString, CQuantDataProvider::count()>;
-	template <class... Args>
-	constexpr SQuantDataPeriodMeta(Args... args)
-		: apiNames({args...})
-	{
-		static_assert(sizeof...(args) == CQuantDataProvider::count(),
-			"Argument count must match meta data count");
-	}
-	const TProviderStrings apiNames;
-};
+DEFINE_DATA_ENUM_CLASS(EQuantDataProvider, CQuantDataProvider, uint32_t, QUANTDATA_PROVIDER_LIST, int8_t)
+#undef QUANTDATA_PROVIDER_LIST
 
 #define QUANTDATA_PERIOD_LIST(e) \
-	e( Finest   , QuantDataPeriod_Finest   , (SQuantDataPeriodMeta( "none"     , "S5"  , "1min"  , "1m"  , "YES" )) ) \
-	e( Second5  , QuantDataPeriod_Second5  , (SQuantDataPeriodMeta( ""         , "S5"  , ""      , ""    , ""    )) ) \
-	e( Second10 , QuantDataPeriod_Second10 , (SQuantDataPeriodMeta( ""         , "S10" , ""      , ""    , ""    )) ) \
-	e( Second15 , QuantDataPeriod_Second15 , (SQuantDataPeriodMeta( ""         , "S15" , ""      , ""    , ""    )) ) \
-	e( Second30 , QuantDataPeriod_Second30 , (SQuantDataPeriodMeta( ""         , "S30" , ""      , ""    , ""    )) ) \
-	e( Minute   , QuantDataPeriod_Minute   , (SQuantDataPeriodMeta( ""         , "M1"  , "1min"  , "1m"  , ""    )) ) \
-	e( Minute2  , QuantDataPeriod_Minute2  , (SQuantDataPeriodMeta( ""         , "M2"  , ""      , ""    , ""    )) ) \
-	e( Minute4  , QuantDataPeriod_Minute4  , (SQuantDataPeriodMeta( ""         , "M4"  , ""      , ""    , ""    )) ) \
-	e( Minute5  , QuantDataPeriod_Minute5  , (SQuantDataPeriodMeta( ""         , "M5"  , "5min"  , "5m"  , ""    )) ) \
-	e( Minute10 , QuantDataPeriod_Minute10 , (SQuantDataPeriodMeta( ""         , "M10" , ""      , ""    , ""    )) ) \
-	e( Minute15 , QuantDataPeriod_Minute15 , (SQuantDataPeriodMeta( ""         , "M15" , "15min" , "15m" , ""    )) ) \
-	e( Minute30 , QuantDataPeriod_Minute30 , (SQuantDataPeriodMeta( ""         , "M30" , "30min" , "30m" , ""    )) ) \
-	e( Hour     , QuantDataPeriod_Hour     , (SQuantDataPeriodMeta( ""         , "H1"  , "60min" , "1h"  , ""    )) ) \
-	e( Hour2    , QuantDataPeriod_Hour2    , (SQuantDataPeriodMeta( ""         , "H2"  , ""      , ""    , ""    )) ) \
-	e( Hour3    , QuantDataPeriod_Hour3    , (SQuantDataPeriodMeta( ""         , "H3"  , ""      , ""    , ""    )) ) \
-	e( Hour4    , QuantDataPeriod_Hour4    , (SQuantDataPeriodMeta( ""         , "H4"  , ""      , ""    , ""    )) ) \
-	e( Hour6    , QuantDataPeriod_Hour6    , (SQuantDataPeriodMeta( ""         , "H6"  , ""      , ""    , ""    )) ) \
-	e( Hour8    , QuantDataPeriod_Hour8    , (SQuantDataPeriodMeta( ""         , "H8"  , ""      , ""    , ""    )) ) \
-	e( Hour12   , QuantDataPeriod_Hour12   , (SQuantDataPeriodMeta( ""         , "H12" , ""      , "12h" , ""    )) ) \
-	e( Day      , QuantDataPeriod_Day      , (SQuantDataPeriodMeta( "daily"    , "D"   , "YES"   , "1d"  , ""    )) ) \
-	e( Week     , QuantDataPeriod_Week     , (SQuantDataPeriodMeta( "weekly"   , "W"   , "YES"   , "1w"  , ""    )) ) \
-	e( Month    , QuantDataPeriod_Month    , (SQuantDataPeriodMeta( "monthly"  , "M"   , "YES"   , "1mo" , ""    )) ) \
-	e( Quarter  , QuantDataPeriod_Quarter  , (SQuantDataPeriodMeta( "quarterly", ""    , ""      , ""    , ""    )) ) \
-	e( Annual   , QuantDataPeriod_Annual   , (SQuantDataPeriodMeta( "annual"   , ""    , ""      , ""    , ""    )) ) \
-//                                                                  Quandl       Oanda   AV        OE      TrueFx
+	e( Finest   , QuantDataPeriod_Finest   , 0 ) \
+	e( Second5  , QuantDataPeriod_Second5  , 0 ) \
+	e( Second10 , QuantDataPeriod_Second10 , 0 ) \
+	e( Second15 , QuantDataPeriod_Second15 , 0 ) \
+	e( Second30 , QuantDataPeriod_Second30 , 0 ) \
+	e( Minute   , QuantDataPeriod_Minute   , 0 ) \
+	e( Minute2  , QuantDataPeriod_Minute2  , 0 ) \
+	e( Minute4  , QuantDataPeriod_Minute4  , 0 ) \
+	e( Minute5  , QuantDataPeriod_Minute5  , 0 ) \
+	e( Minute10 , QuantDataPeriod_Minute10 , 0 ) \
+	e( Minute15 , QuantDataPeriod_Minute15 , 0 ) \
+	e( Minute30 , QuantDataPeriod_Minute30 , 0 ) \
+	e( Hour     , QuantDataPeriod_Hour     , 0 ) \
+	e( Hour2    , QuantDataPeriod_Hour2    , 0 ) \
+	e( Hour3    , QuantDataPeriod_Hour3    , 0 ) \
+	e( Hour4    , QuantDataPeriod_Hour4    , 0 ) \
+	e( Hour6    , QuantDataPeriod_Hour6    , 0 ) \
+	e( Hour8    , QuantDataPeriod_Hour8    , 0 ) \
+	e( Hour12   , QuantDataPeriod_Hour12   , 0 ) \
+	e( Day      , QuantDataPeriod_Day      , 0 ) \
+	e( Week     , QuantDataPeriod_Week     , 0 ) \
+	e( Month    , QuantDataPeriod_Month    , 0 ) \
+	e( Quarter  , QuantDataPeriod_Quarter  , 0 ) \
+	e( Annual   , QuantDataPeriod_Annual   , 0 ) \
 
-DEFINE_DATA_FLOAT(TQuantDataPeriod, CQuantDataPeriod, double, QUANTDATA_PERIOD_LIST, SQuantDataPeriodMeta)
-
-#undef QUANTDATA_PROVIDER_LIST
+DEFINE_DATA_FLOAT(TQuantDataPeriod, CQuantDataPeriod, double, QUANTDATA_PERIOD_LIST, int8_t)
 #undef QUANTDATA_PERIOD_LIST
+
+enum class EQuantDataSymbolSource : uint32_t
+{
+	Default               = QuantDataSymbolSource_Default,
+	AV_DigitalCurrencies  = QuantDataSymbolSource_AV_DigitalCurrencies,
+	AV_PhysicalCurrencies = QuantDataSymbolSource_AV_PhysicalCurrencies,
+};
 
 enum class EQuantDataFormat : int32_t
 {
@@ -179,11 +174,11 @@ enum class EQuantDataResult : int32_t
 {
 	Success           = QuantDataResult_Success,
 	Failure           = QuantDataResult_Failure,
-	NotInitialized    = QuantDataResult_NotInitialized,
 	InvalidArgument   = QuantDataResult_InvalidArgument,
 	InvalidProvider   = QuantDataResult_InvalidProvider,
 	NoDataAvailable   = QuantDataResult_NoDataAvailable,
 	RejectedApiKey    = QuantDataResult_RejectedApiKey,
+	HttpException     = QuantDataResult_HttpException,
 	UnsupportedPeriod = QuantDataResult_UnsupportedPeriod,
 	UnsupportedSymbol = QuantDataResult_UnsupportedSymbol,
 	UnsupportedTime   = QuantDataResult_UnsupportedTime,
@@ -191,10 +186,11 @@ enum class EQuantDataResult : int32_t
 
 #else
 
-typedef int32_t EQuantDataResult;
-typedef int32_t EQuantDataProvider;
-typedef double  TQuantDataPeriod;
-typedef int32_t EQuantDataFormat;
+typedef uint32_t EQuantDataProvider;
+typedef double   TQuantDataPeriod;
+typedef uint32_t EQuantDataSymbolSource;
+typedef int32_t  EQuantDataFormat;
+typedef int32_t  EQuantDataResult;
 
 #endif // __cplusplus
 
@@ -221,12 +217,12 @@ struct SQuantDataSymbolInfo
 };
 typedef struct SQuantDataSymbolInfo TQuantDataSymbolInfo;
 
-struct SQuantDataSymbolSettings
+struct SQuantDataSymbolsSettings
 {
-	TQuantDataSize     index        ZERO_INIT; // optional, index number to symbol list, provider may provide more than one list
-	TQuantDataBool     download     ZERO_INIT; // optional
+	EQuantDataSymbolSource index    ZERO_INIT; // optional, number to symbol list: provider may provide more than one list
+	TQuantDataBool         download ZERO_INIT; // optional, if set 1: downloads symbol list from provider if available
 };
-typedef struct SQuantDataSymbolSettings TQuantDataSymbolSettings;
+typedef struct SQuantDataSymbolsSettings TQuantDataSymbolsSettings;
 
 struct SQuantDataDownloadSettings
 {
@@ -317,7 +313,7 @@ struct SQuantDataSeriesFunctions
 {
 	EQuantDataResult FPTR(SetProvider)        (FTHIS(SQuantDataSeries), const TQuantDataProviderSettings* pSettings);
 	EQuantDataResult FPTR(GetNativePeriods)   (FTHIS(SQuantDataSeries), IQuantDataPeriods** ppPeriods);
-	EQuantDataResult FPTR(GetSupportedSymbols)(FTHIS(SQuantDataSeries), IQuantDataSymbols** ppSymbols, const TQuantDataSymbolSettings* pSettings);
+	EQuantDataResult FPTR(GetSupportedSymbols)(FTHIS(SQuantDataSeries), IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
 	EQuantDataResult FPTR(Download)           (FTHIS(SQuantDataSeries), const TQuantDataDownloadSettings* pSettings);
 	EQuantDataResult FPTR(Load)               (FTHIS(SQuantDataSeries), const TQuantDataLoadSettings* pSettings);
 	EQuantDataResult FPTR(Save)               (FTHIS(SQuantDataSeries), const TQuantDataSaveSettings* pSettings);
@@ -338,6 +334,8 @@ ITYPE(SQuantDataSeries, IQuantDataSeries)
 #ifdef __cplusplus
 struct SQuantDataPeriods
 {
+	const TQuantDataPeriod* begin() { return Get(0); }
+	const TQuantDataPeriod* end() { return Get(0) + Size(); }
 	const TQuantDataPeriod* Get(TQuantDataSize index) { return m_functions.Get(this, index); }
 	TQuantDataSize Size() { return m_functions.Size(this); }
 	void Release() { return m_functions.Release(this); }
@@ -349,6 +347,8 @@ protected:
 
 struct SQuantDataSymbols
 {
+	const TQuantDataSymbolInfo* begin() { return Get(0); }
+	const TQuantDataSymbolInfo* end() { return Get(0) + Size(); }
 	const TQuantDataSymbolInfo* Get(TQuantDataSize index) { return m_functions.Get(this, index); }
 	TQuantDataSize Size() { return m_functions.Size(this); }
 	void Release() { return m_functions.Release(this); }
@@ -366,7 +366,7 @@ struct SQuantDataSeries
 	EQuantDataResult GetNativePeriods(IQuantDataPeriods** ppPeriods) {
 		return m_functions.GetNativePeriods(this, ppPeriods);
 	}
-	EQuantDataResult GetSupportedSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolSettings* pSettings) {
+	EQuantDataResult GetSupportedSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) {
 		return m_functions.GetSupportedSymbols(this, ppSymbols, pSettings);
 	}
 	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings) {
@@ -422,8 +422,6 @@ protected:
 extern "C" {
 #endif
 
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_Init();
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_Shutdown();
 QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings);
 
 #ifdef __cplusplus

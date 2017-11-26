@@ -2,12 +2,18 @@
 #pragma once
 
 #include <quantdata/series_functions.h>
-#include <quantdata/downloader.h>
 #include <quantdata/structs.h>
 #include <quantdata/types.h>
 #include <quantdata/array/new_array.h>
 #include <quantdata/array/static_array.h>
 #include <common/mem.h>
+#include <vector>
+
+namespace web {
+namespace http {
+class http_response;
+}
+}
 
 namespace quantdata {
 
@@ -21,19 +27,22 @@ protected:
 	using TAllocatorFunctions = AllocatorFunctions;
 
 private:
+	using TProvider           = SProvider<TAllocatorFunctions>;
 	using TStringA            = TStringA<TAllocatorFunctions>;
 	using TStringAllocatorA   = TStringAllocatorA<TAllocatorFunctions>;
+	using TSymbolInfo         = SSymbolInfo<TAllocatorFunctions>;
+	using TSymbolInfos        = TVector<TSymbolInfo, TAllocatorFunctions>;
 
 	using TStaticPeriodArray  = CArrayFunctions<CStaticArray<IQuantDataPeriods, TAllocatorFunctions, TQuantDataPeriod>>;
 	using TStaticSymbolArray  = CArrayFunctions<CStaticArray<IQuantDataSymbols, TAllocatorFunctions, TQuantDataSymbolInfo>>;
-	using TNewSymbolArray     = CArrayFunctions<CNewArray   <IQuantDataSymbols, TAllocatorFunctions, TQuantDataSymbolInfo, SSymbolInfo<TAllocatorFunctions>>>;
+	using TNewSymbolArray     = CArrayFunctions<CNewArray   <IQuantDataSymbols, TAllocatorFunctions, TQuantDataSymbolInfo, TSymbolInfo>>;
 
 protected:
 	CSeries(const TAllocatorFunctions& allocFunctions, const CManager& manager);
 
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings);
 	EQuantDataResult GetNativePeriods(IQuantDataPeriods** ppPeriods);
-	EQuantDataResult GetSupportedSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolSettings* pSettings);
+	EQuantDataResult GetSupportedSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
 	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings);
 	EQuantDataResult Load(const TQuantDataLoadSettings* pSettings);
 	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) const;
@@ -50,9 +59,13 @@ protected:
 	EQuantDataResult Release();
 
 private:
-	const TAllocatorFunctions      m_allocFunctions;
-	const CManager&                m_manager;
-	SProvider<TAllocatorFunctions> m_provider;
+	static EQuantDataResult ExtractJsonSymbols(const web::http::http_response& response, TSymbolInfos& symbolInfos);
+	static EQuantDataResult ExtractCsvSymbols(const web::http::http_response& response, TSymbolInfos& symbolInfos);
+	static EQuantDataResult DownloadSymbols(const SProviderInfo& providerInfo, const size_t symbolListIndex, TSymbolInfos& symbolInfos);
+
+	const TAllocatorFunctions m_allocFunctions;
+	const CManager&           m_manager;
+	TProvider                 m_provider;
 };
 
 } // namespace quantdata

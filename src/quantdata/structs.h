@@ -51,8 +51,8 @@ struct SSymbolInfo
 
 	void Set(const TQuantDataSymbolInfo& symbolInfo)
 	{
-		name = symbolInfo.name;
-		desc = symbolInfo.desc;
+		name = util::get_valid_string(symbolInfo.name);
+		desc = util::get_valid_string(symbolInfo.desc);
 	}
 
 	TQuantDataSymbolInfo GetPod()

@@ -53,12 +53,6 @@
     <ClInclude Include="..\src\quantdata\series_impl.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\quantdata\downloader.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\symbols.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\quantdata\array\static_array.h">
       <Filter>src\quantdata\array</Filter>
     </ClInclude>
@@ -66,6 +60,12 @@
       <Filter>src\quantdata\array</Filter>
     </ClInclude>
     <ClInclude Include="..\src\quantdata\structs.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\exceptions.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\api.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
   </ItemGroup>

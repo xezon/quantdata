@@ -59,7 +59,7 @@ private:
 	static EQuantDataResult QUANTDATA_CALL Static_GetNativePeriods(TInterface* pThis, IQuantDataPeriods** ppPeriods) {
 		return static_cast<TThis*>(pThis)->GetNativePeriods(ppPeriods);
 	}
-	static EQuantDataResult QUANTDATA_CALL Static_GetSupportedSymbols(TInterface* pThis, IQuantDataSymbols** ppSymbols, const TQuantDataSymbolSettings* pSettings) {
+	static EQuantDataResult QUANTDATA_CALL Static_GetSupportedSymbols(TInterface* pThis, IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) {
 		return static_cast<TThis*>(pThis)->GetSupportedSymbols(ppSymbols, pSettings);
 	}
 	static EQuantDataResult QUANTDATA_CALL Static_Download(TInterface* pThis, const TQuantDataDownloadSettings* pSettings) {

@@ -2,7 +2,9 @@
 #include <common/stl.h>
 #include <quantdata/manager.h>
 #include <quantdata/checks.h>
+#include <quantdata/exceptions.h>
 #include <common/util_log.h>
+#include <cpprest/http_client.h>
 
 // https://quant.stackexchange.com/questions/141/what-data-sources-are-available-online
 
@@ -38,14 +40,64 @@ EQuantDataResult CSeries<AllocatorFunctions>::GetNativePeriods(IQuantDataPeriods
 		return EQuantDataResult::InvalidProvider;
 
 	const auto& providerInfo = m_manager.GetProviderInfo(m_provider.type);
-	const auto& pPeriods = mem::placement_alloc<TStaticPeriodArray>(m_allocFunctions.alloc(),
+	const auto pPeriods = mem::placement_alloc<TStaticPeriodArray>(m_allocFunctions.alloc(),
 		m_allocFunctions, providerInfo.periods);
 	*ppPeriods = pPeriods;
 	return EQuantDataResult::Success;
 }
 
 template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::GetSupportedSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolSettings* pSettings)
+EQuantDataResult CSeries<AllocatorFunctions>::ExtractJsonSymbols(
+	const web::http::http_response& response, TSymbolInfos& symbolInfos)
+{
+	try
+	{
+		const web::json::value& json = response.extract_json().get();
+		return EQuantDataResult::Success;
+	}
+	catch (const web::http::http_exception& e)
+	{
+		return HandleHttpException(e);
+	}
+}
+
+template <class AllocatorFunctions>
+EQuantDataResult CSeries<AllocatorFunctions>::ExtractCsvSymbols(
+	const web::http::http_response& response, TSymbolInfos& symbolInfos)
+{
+	return EQuantDataResult::Success;
+}
+
+template <class AllocatorFunctions>
+EQuantDataResult CSeries<AllocatorFunctions>::DownloadSymbols(
+	const SProviderInfo& providerInfo, const size_t symbolListIndex, TSymbolInfos& symbolInfos)
+{
+	const TSymbolSources& symbolSources = providerInfo.symbolSources;
+	if (symbolListIndex < symbolSources.size())
+	{
+		const TSymbolSource& symbolSource = symbolSources[symbolListIndex];
+		web::http::client::http_client client(providerInfo.url);
+		web::http::http_request request(web::http::methods::GET);
+		request.set_request_uri(symbolSource.url);
+		web::http::http_response response = client.request(request).get();
+
+		if (response.status_code() == web::http::status_codes::OK)
+		{
+			switch (symbolSource.format)
+			{
+			case ETextFormat::json: return ExtractJsonSymbols(response, symbolInfos);
+			case ETextFormat::csv: return ExtractCsvSymbols(response, symbolInfos);
+			}
+		}
+		// TODO Handle error status
+	}
+
+	return EQuantDataResult::NoDataAvailable;
+}
+
+template <class AllocatorFunctions>
+EQuantDataResult CSeries<AllocatorFunctions>::GetSupportedSymbols(
+	IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings)
 {
 	if (!ppSymbols || !pSettings)
 		return EQuantDataResult::InvalidArgument;
@@ -53,50 +105,46 @@ EQuantDataResult CSeries<AllocatorFunctions>::GetSupportedSymbols(IQuantDataSymb
 	if (!m_provider.Valid())
 		return EQuantDataResult::InvalidProvider;
 
-	const auto& providerInfo = m_manager.GetProviderInfo(m_provider.type);
+	EQuantDataResult result = EQuantDataResult::NoDataAvailable;
+	const SProviderInfo& providerInfo = m_manager.GetProviderInfo(m_provider.type);
+	const size_t symbolListIndex = static_cast<size_t>(pSettings->index);
 
 	if (pSettings->download)
 	{
-		const auto& symbolSources = providerInfo.symbolSources;
-		if (!symbolSources.empty())
+		auto symbolBuffers = TNewSymbolArray::CreateBufferArray(m_allocFunctions);
+		result = DownloadSymbols(providerInfo, symbolListIndex, symbolBuffers);
+
+		if (result == EQuantDataResult::Success)
 		{
-
-			// sample
-
-			const auto& nativeSymbols = providerInfo.nativeSymbolsArray.at(0);
-			auto symbols = TNewSymbolArray::CreateBuffers(m_allocFunctions);
-			auto symbolLinks = TNewSymbolArray::CreateElements(m_allocFunctions);
-			const size_t size = nativeSymbols.size();
-			symbols.resize(size, m_allocFunctions);
-			symbolLinks.resize(size);
+			const size_t size = symbolBuffers.size();
+			auto symbolElements = TNewSymbolArray::CreateElementArray(m_allocFunctions);
+			symbolElements.resize(size);
 
 			for (size_t i = 0; i < size; ++i)
 			{
-				symbols[i].Set(nativeSymbols[i]);
-				symbolLinks[i] = symbols[i].GetPod();
+				symbolElements[i] = symbolBuffers[i].GetPod();
 			}
-			const auto& pSymbols = mem::placement_alloc<TNewSymbolArray>(m_allocFunctions.alloc(),
-				m_allocFunctions, std::move(symbolLinks), std::move(symbols));
-			*ppSymbols = pSymbols;
 
+			const auto pSymbols = mem::placement_alloc<TNewSymbolArray>(m_allocFunctions.alloc(),
+				m_allocFunctions, std::move(symbolElements), std::move(symbolBuffers));
+			*ppSymbols = pSymbols;
 			return EQuantDataResult::Success;
 		}
 	}
 	else
 	{
-		const auto& nativeSymbolsArray = providerInfo.nativeSymbolsArray;
-		if (pSettings->index < nativeSymbolsArray.size())
+		const auto& symbolsList = providerInfo.symbolsList;
+		if (symbolListIndex < symbolsList.size())
 		{
-			const auto& nativeSymbols = nativeSymbolsArray.at(pSettings->index);
-			const auto& pSymbols = mem::placement_alloc<TStaticSymbolArray>(m_allocFunctions.alloc(),
-				m_allocFunctions, nativeSymbols);
+			const TSymbols& symbols = symbolsList.at(symbolListIndex);
+			const auto pSymbols = mem::placement_alloc<TStaticSymbolArray>(m_allocFunctions.alloc(),
+				m_allocFunctions, symbols);
 			*ppSymbols = pSymbols;
-
 			return EQuantDataResult::Success;
 		}
 	}
 	
-	return EQuantDataResult::NoDataAvailable;
+	return result;
 }
 
 template <class AllocatorFunctions>
@@ -105,33 +153,10 @@ EQuantDataResult CSeries<AllocatorFunctions>::Download(const TQuantDataDownloadS
 	if (!IsValidDownload(pSettings))
 		return EQuantDataResult::InvalidArgument;
 
-	if (!m_manager.IsInitialized())
-		return EQuantDataResult::NotInitialized;
-
 	if (!m_provider.Valid())
 		return EQuantDataResult::InvalidProvider;
 
-	auto header     = TStringA(TStringAllocatorA(m_allocFunctions));
-	auto page       = TStringA(TStringAllocatorA(m_allocFunctions));
-	auto dlsettings = CDownloader::SDownloadSettings<TStringA>();
-	auto dlinfo     = CDownloader::SDownloadInfo();
-
-	auto url = stl::string_format_t<TStringA>(TStringAllocatorA(m_allocFunctions),
-		"https://www.alphavantage.co/"
-		"query?function=TIME_SERIES_INTRADAY"
-		"&symbol=%s&interval=1min&apikey=demo&datatype=csv", pSettings->symbol);
-
-	util::clog("Downloading '%s'", url.c_str());
-
-	dlsettings.url = url;
-	dlsettings.certtype = m_provider.certtype;
-	dlsettings.certfile = m_provider.certfile;
-	CURLcode code = CDownloader::Download(dlsettings, &header, &page, &dlinfo);
-
-	if (code != CURLE_OK)
-	{
-		util::cerr("Download error '%d' : '%s'", static_cast<int>(code), CDownloader::GetErrorString(code));
-	}
+	// Download
 
 	return EQuantDataResult::Success;
 }

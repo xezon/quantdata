@@ -131,13 +131,13 @@
     <ClInclude Include="..\src\quantdata\array\new_array.h" />
     <ClInclude Include="..\src\quantdata\array\static_array.h" />
     <ClInclude Include="..\src\quantdata\checks.h" />
-    <ClInclude Include="..\src\quantdata\downloader.h" />
+    <ClInclude Include="..\src\quantdata\exceptions.h" />
     <ClInclude Include="..\src\quantdata\manager.h" />
     <ClInclude Include="..\src\quantdata\structs.h" />
     <ClInclude Include="..\src\quantdata\series.h" />
     <ClInclude Include="..\src\quantdata\series_functions.h" />
     <ClInclude Include="..\src\quantdata\series_impl.h" />
-    <ClInclude Include="..\src\quantdata\symbols.h" />
+    <ClInclude Include="..\src\quantdata\api.h" />
     <ClInclude Include="..\src\quantdata\types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

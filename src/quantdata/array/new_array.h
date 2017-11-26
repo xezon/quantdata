@@ -23,12 +23,12 @@ public:
 	using TBuffers            = TVector<TBuffer, TAllocatorFunctions>;
 	using TBuffersAllocator   = typename TBuffers::allocator_type;
 
-	static TElements CreateElements(const TAllocatorFunctions& allocFunctions)
+	static TElements CreateElementArray(const TAllocatorFunctions& allocFunctions)
 	{
 		return TElements(TElementsAllocator(allocFunctions));
 	}
 
-	static TBuffers CreateBuffers(const TAllocatorFunctions& allocFunctions)
+	static TBuffers CreateBufferArray(const TAllocatorFunctions& allocFunctions)
 	{
 		return TBuffers(TBuffersAllocator(allocFunctions));
 	}

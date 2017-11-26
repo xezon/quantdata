@@ -3,9 +3,9 @@
 #include <quantdata/manager.h>
 
 #ifdef _DEBUG
-#pragma comment(lib, "libcurl_a_debug.lib")
+#pragma comment(lib, "cpprest141d_2_10.lib")
 #else
-#pragma comment(lib, "libcurl_a.lib")
+#pragma comment(lib, "cpprest141_2_10.lib")
 #endif
 
 quantdata::CManager g_manager;
@@ -17,16 +17,6 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	(void)lpvReserved;
 
 	return TRUE;
-}
-
-EQuantDataResult QUANTDATA_CALL QuantData_Init()
-{
-	return g_manager.Init();
-}
-
-EQuantDataResult QUANTDATA_CALL QuantData_Shutdown()
-{
-	return g_manager.Shutdown();
 }
 
 EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings)

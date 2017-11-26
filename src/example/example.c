@@ -13,9 +13,6 @@ int main(int argc, char** argv)
 
 	EQuantDataResult result;
 
-	result = QuantData_Init();
-	assert(result == QuantDataResult_Success);
-
 	IQuantDataSeries* pSeries = 0;
 	TQuantDataCreationSettings creationSettings = {0};
 	creationSettings.alloc = c_malloc;
@@ -38,9 +35,9 @@ int main(int argc, char** argv)
 	assert(result == QuantDataResult_Success);
 	pPeriods->Release(pPeriods);
 
-	TQuantDataSymbolSettings symbolSettings = {0};
+	TQuantDataSymbolsSettings symbolSettings = {0};
 	symbolSettings.download = 0;
-	symbolSettings.index = 0;
+	symbolSettings.index = QuantDataSymbolSource_Default;
 	IQuantDataSymbols* pSymbols = 0;
 	result = pSeries->GetSupportedSymbols(pSeries, &pSymbols, &symbolSettings);
 	assert(result == QuantDataResult_Success);
@@ -60,9 +57,6 @@ int main(int argc, char** argv)
 	assert(result == QuantDataResult_Success);
 
 	result = pSeries->Release(pSeries);
-	assert(result == QuantDataResult_Success);
-
-	result = QuantData_Shutdown();
 	assert(result == QuantDataResult_Success);
 
 	return 0;
