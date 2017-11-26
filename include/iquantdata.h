@@ -54,18 +54,21 @@ typedef uint8_t     TQuantDataBool;
 typedef alloc_func  TQuantDataAlloc;
 typedef free_func   TQuantDataFree;
 
-#define QuantDataResult_Success               0
-#define QuantDataResult_Failure               1
-#define QuantDataResult_InvalidArgument       2
-#define QuantDataResult_LockedAllocator       3
-#define QuantDataResult_IncompleteAllocator   4
-#define QuantDataResult_InvalidProvider     500
-#define QuantDataResult_NoDataAvailable     501
-#define QuantDataResult_RejectedApiKey      502
-#define QuantDataResult_HttpException       503
-#define QuantDataResult_UnsupportedPeriod   600
-#define QuantDataResult_UnsupportedSymbol   601
-#define QuantDataResult_UnsupportedTime     602
+#define QuantDataResult_Success              0
+#define QuantDataResult_Failure              1
+#define QuantDataResult_InvalidArgument      2
+#define QuantDataResult_LockedAllocator      3
+#define QuantDataResult_IncompleteAllocator  4
+#define QuantDataResult_InvalidProvider     20
+#define QuantDataResult_NoDataAvailable     21
+#define QuantDataResult_RejectedApiKey      22
+#define QuantDataResult_HttpException       23
+#define QuantDataResult_JsonException       24
+#define QuantDataResult_UnsupportedPeriod   40
+#define QuantDataResult_UnsupportedSymbol   41
+#define QuantDataResult_UnsupportedTime     42
+// QuantDataResult values 100 to 600 
+// are reserved for http response codes
 
 #define QuantDataProvider_Quandl       0
 #define QuantDataProvider_Oanda        1
@@ -183,9 +186,16 @@ enum class EQuantDataResult : int32_t
 	NoDataAvailable     = QuantDataResult_NoDataAvailable,
 	RejectedApiKey      = QuantDataResult_RejectedApiKey,
 	HttpException       = QuantDataResult_HttpException,
+	JsonException       = QuantDataResult_JsonException,
 	UnsupportedPeriod   = QuantDataResult_UnsupportedPeriod,
 	UnsupportedSymbol   = QuantDataResult_UnsupportedSymbol,
 	UnsupportedTime     = QuantDataResult_UnsupportedTime,
+#define _PHRASES
+#define DAT(a,b,c) a = b,
+// from Release/include/cpprest/details/http_constants.dat
+#include "http_constants.dat"
+#undef _PHRASES
+#undef DAT
 };
 
 #else

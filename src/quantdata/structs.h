@@ -10,6 +10,14 @@ namespace quantdata {
 
 struct SProvider
 {
+	void Reset()
+	{
+		type = CQuantDataProvider();
+		apikey.clear();
+		certtype.clear();
+		certfile.clear();
+	}
+
 	void Set(const TQuantDataProviderSettings& settings)
 	{
 		type = settings.provider;

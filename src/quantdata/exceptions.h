@@ -12,4 +12,10 @@ inline EQuantDataResult HandleHttpException(const web::http::http_exception& exc
 	return EQuantDataResult::HttpException;
 }
 
+inline EQuantDataResult HandleJsonException(const web::json::json_exception& exception)
+{
+	std::cout << exception.what() << std::endl;
+	return EQuantDataResult::HttpException;
+}
+
 } // namespace quantdata

@@ -5,6 +5,7 @@
 #include <quantdata/exceptions.h>
 #include <common/stl.h>
 #include <common/util_log.h>
+#include <common/utf8.h>
 #include <cpprest/http_client.h>
 
 // https://quant.stackexchange.com/questions/141/what-data-sources-are-available-online
@@ -21,11 +22,14 @@ CSeries::CSeries(const CManager& manager)
 
 EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSettings)
 {
-	if (!IsValidProvider(pSettings))
-		return EQuantDataResult::InvalidProvider;
+	if (IsValidProvider(pSettings))
+	{
+		m_provider.Set(*pSettings);
+		return EQuantDataResult::Success;
+	}
 
-	m_provider.Set(*pSettings);
-	return EQuantDataResult::Success;
+	m_provider.Reset();
+	return EQuantDataResult::InvalidProvider;
 }
 
 EQuantDataResult CSeries::GetNativePeriods(IQuantDataPeriods** ppPeriods)
@@ -47,17 +51,37 @@ EQuantDataResult CSeries::ExtractJsonSymbols(
 {
 	try
 	{
-		const web::json::value& json = response.extract_json().get();
+		const web::json::value& value = response.extract_json().get();
+		const web::json::object& object = value.as_object();
+
+		const size_t size = object.size();
+		symbolInfos.resize(size);
+
+		size_t index = 0;
+		for (const auto& it : object)
+		{
+			const utility::string_t& webSymbolName = it.first;
+			const utility::string_t& webSymbolDesc = it.second.as_string();
+
+			SSymbolInfo& symbolInfo = symbolInfos[index++];
+			symbolInfo.name = std::move(utf8::to_utf8(webSymbolName));
+			symbolInfo.desc = std::move(utf8::to_utf8(webSymbolDesc));
+		}
+
 		return EQuantDataResult::Success;
 	}
 	catch (const web::http::http_exception& e)
 	{
 		return HandleHttpException(e);
 	}
+	catch (const web::json::json_exception& e)
+	{
+		return HandleJsonException(e);
+	}
 }
 
 EQuantDataResult CSeries::ExtractCsvSymbols(
-	const web::http::http_response& response, TSymbolInfos& symbolInfos)
+const web::http::http_response& response, TSymbolInfos& symbolInfos)
 {
 	return EQuantDataResult::Success;
 }
@@ -73,8 +97,9 @@ EQuantDataResult CSeries::DownloadSymbols(
 		web::http::http_request request(web::http::methods::GET);
 		request.set_request_uri(symbolSource.url);
 		web::http::http_response response = client.request(request).get();
+		web::http::status_code code = response.status_code();
 
-		if (response.status_code() == web::http::status_codes::OK)
+		if (code == web::http::status_codes::OK)
 		{
 			switch (symbolSource.format)
 			{
@@ -82,7 +107,8 @@ EQuantDataResult CSeries::DownloadSymbols(
 			case ETextFormat::csv: return ExtractCsvSymbols(response, symbolInfos);
 			}
 		}
-		// TODO Handle error status
+
+		return static_cast<EQuantDataResult>(code);
 	}
 
 	return EQuantDataResult::NoDataAvailable;

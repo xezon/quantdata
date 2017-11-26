@@ -46,6 +46,9 @@ int main(int argc, char** argv)
 	assert(result == QuantDataResult_Success);
 	pSymbols->Release(pSymbols);
 
+	providerSettings.provider = QuantDataProvider_OpenExchange;
+	providerSettings.apikey = "test";
+	result = pSeries->SetProvider(pSeries, &providerSettings);
 	symbolSettings.download = 1;
 	result = pSeries->GetSupportedSymbols(pSeries, &pSymbols, &symbolSettings);
 	assert(result == QuantDataResult_Success);

@@ -54,12 +54,12 @@ protected:
 	EQuantDataResult Release();
 
 private:
-	static EQuantDataResult ExtractJsonSymbols(const web::http::http_response& response, TSymbolInfos& symbolInfos);
-	static EQuantDataResult ExtractCsvSymbols(const web::http::http_response& response, TSymbolInfos& symbolInfos);
-	static EQuantDataResult DownloadSymbols(const SProviderInfo& providerInfo, const size_t symbolListIndex, TSymbolInfos& symbolInfos);
+	EQuantDataResult ExtractJsonSymbols(const web::http::http_response& response, TSymbolInfos& symbolInfos);
+	EQuantDataResult ExtractCsvSymbols(const web::http::http_response& response, TSymbolInfos& symbolInfos);
+	EQuantDataResult DownloadSymbols(const SProviderInfo& providerInfo, const size_t symbolListIndex, TSymbolInfos& symbolInfos);
 
-	const CManager&           m_manager;
-	SProvider                 m_provider;
+	const CManager&  m_manager;
+	SProvider        m_provider;
 };
 
 } // namespace quantdata

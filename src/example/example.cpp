@@ -47,6 +47,9 @@ int main(int argc, char** argv)
 	assert(result == EQuantDataResult::Success);
 	pSymbols->Release();
 
+	providerSettings.provider = EQuantDataProvider::OpenExchange;
+	providerSettings.apikey = "test";
+	result = pSeries->SetProvider(&providerSettings);
 	symbolSettings.download = true;
 	result = pSeries->GetSupportedSymbols(&pSymbols, &symbolSettings);
 	assert(result == EQuantDataResult::Success);
