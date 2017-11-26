@@ -122,6 +122,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\dllmain.cpp" />
     <ClCompile Include="..\src\quantdata\manager.cpp" />
+    <ClCompile Include="..\src\quantdata\series.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iquantdata.h" />
@@ -136,7 +137,6 @@
     <ClInclude Include="..\src\quantdata\structs.h" />
     <ClInclude Include="..\src\quantdata\series.h" />
     <ClInclude Include="..\src\quantdata\series_functions.h" />
-    <ClInclude Include="..\src\quantdata\series_impl.h" />
     <ClInclude Include="..\src\quantdata\api.h" />
     <ClInclude Include="..\src\quantdata\types.h" />
   </ItemGroup>

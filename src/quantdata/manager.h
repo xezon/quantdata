@@ -31,7 +31,8 @@ private:
 public:
 	CManager();
 
-	EQuantDataResult CreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings);
+	EQuantDataResult SetAllocator(const TQuantDataAllocatorSettings* pSettings);
+	EQuantDataResult CreateSeries(IQuantDataSeries** ppSeries);
 
 	inline const SProviderInfo& GetProviderInfo(CQuantDataProvider provider) const
 	{
@@ -40,6 +41,7 @@ public:
 
 private:	
 	TProviderInfos m_providerInfos;
+	bool m_allocatorInUse = false;
 };
 
 } // namespace quantdata

@@ -19,7 +19,12 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	return TRUE;
 }
 
-EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings)
+EQuantDataResult QUANTDATA_CALL QuantData_SetAllocator(const TQuantDataAllocatorSettings* pSettings)
 {
-	return g_manager.CreateSeries(ppSeries, pSettings);
+	return g_manager.SetAllocator(pSettings);
+}
+
+EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries)
+{
+	return g_manager.CreateSeries(ppSeries);
 }

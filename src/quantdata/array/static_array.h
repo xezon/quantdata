@@ -6,23 +6,18 @@
 
 namespace quantdata {
 
-template <class Interface, class AllocatorFunctions, class Element>
+template <class Interface, class Element>
 class CStaticArray : public Interface
 {
 protected:
 	using TInterface          = Interface;
-	using TAllocatorFunctions = AllocatorFunctions;
 	using TElement            = Element;
-
-private:
-	using TFree = typename TAllocatorFunctions::free_type;
 
 protected:
 	template <class Container>
-	CStaticArray(const TAllocatorFunctions& allocFunctions, const Container& container)
+	CStaticArray(const Container& container)
 		: m_pElements(container.data())
 		, m_size(container.size())
-		, m_free(allocFunctions.free())
 	{
 	}
 
@@ -38,13 +33,12 @@ protected:
 
 	void Release()
 	{
-		mem::placement_free(this, m_free.free());
+		mem::placement_g_free(this);
 	}
 
 private:
 	const TElement*      m_pElements;
 	const TQuantDataSize m_size;
-	const TFree          m_free;
 };
 
 } // namespace quantdata

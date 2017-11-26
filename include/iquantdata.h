@@ -54,16 +54,18 @@ typedef uint8_t     TQuantDataBool;
 typedef alloc_func  TQuantDataAlloc;
 typedef free_func   TQuantDataFree;
 
-#define QuantDataResult_Success             0
-#define QuantDataResult_Failure             1
-#define QuantDataResult_InvalidArgument     2
-#define QuantDataResult_InvalidProvider   500
-#define QuantDataResult_NoDataAvailable   501
-#define QuantDataResult_RejectedApiKey    502
-#define QuantDataResult_HttpException     503
-#define QuantDataResult_UnsupportedPeriod 600
-#define QuantDataResult_UnsupportedSymbol 601
-#define QuantDataResult_UnsupportedTime   602
+#define QuantDataResult_Success               0
+#define QuantDataResult_Failure               1
+#define QuantDataResult_InvalidArgument       2
+#define QuantDataResult_LockedAllocator       3
+#define QuantDataResult_IncompleteAllocator   4
+#define QuantDataResult_InvalidProvider     500
+#define QuantDataResult_NoDataAvailable     501
+#define QuantDataResult_RejectedApiKey      502
+#define QuantDataResult_HttpException       503
+#define QuantDataResult_UnsupportedPeriod   600
+#define QuantDataResult_UnsupportedSymbol   601
+#define QuantDataResult_UnsupportedTime     602
 
 #define QuantDataProvider_Quandl       0
 #define QuantDataProvider_Oanda        1
@@ -172,16 +174,18 @@ enum class EQuantDataFormat : int32_t
 
 enum class EQuantDataResult : int32_t
 {
-	Success           = QuantDataResult_Success,
-	Failure           = QuantDataResult_Failure,
-	InvalidArgument   = QuantDataResult_InvalidArgument,
-	InvalidProvider   = QuantDataResult_InvalidProvider,
-	NoDataAvailable   = QuantDataResult_NoDataAvailable,
-	RejectedApiKey    = QuantDataResult_RejectedApiKey,
-	HttpException     = QuantDataResult_HttpException,
-	UnsupportedPeriod = QuantDataResult_UnsupportedPeriod,
-	UnsupportedSymbol = QuantDataResult_UnsupportedSymbol,
-	UnsupportedTime   = QuantDataResult_UnsupportedTime,
+	Success             = QuantDataResult_Success,
+	Failure             = QuantDataResult_Failure,
+	InvalidArgument     = QuantDataResult_InvalidArgument,
+	LockedAllocator     = QuantDataResult_LockedAllocator,
+	IncompleteAllocator = QuantDataResult_IncompleteAllocator,
+	InvalidProvider     = QuantDataResult_InvalidProvider,
+	NoDataAvailable     = QuantDataResult_NoDataAvailable,
+	RejectedApiKey      = QuantDataResult_RejectedApiKey,
+	HttpException       = QuantDataResult_HttpException,
+	UnsupportedPeriod   = QuantDataResult_UnsupportedPeriod,
+	UnsupportedSymbol   = QuantDataResult_UnsupportedSymbol,
+	UnsupportedTime     = QuantDataResult_UnsupportedTime,
 };
 
 #else
@@ -194,12 +198,12 @@ typedef int32_t  EQuantDataResult;
 
 #endif // __cplusplus
 
-struct SQuantDataCreationSettings
+struct SQuantDataAllocatorSettings
 {
-	TQuantDataAlloc    alloc        ZERO_INIT; // optional
-	TQuantDataFree     free         ZERO_INIT; // optional
+	TQuantDataAlloc    alloc        ZERO_INIT; // mandatory
+	TQuantDataFree     free         ZERO_INIT; // mandatory
 };
-typedef struct SQuantDataCreationSettings TQuantDataCreationSettings;
+typedef struct SQuantDataAllocatorSettings TQuantDataAllocatorSettings;
 
 struct SQuantDataProviderSettings
 {
@@ -422,7 +426,8 @@ protected:
 extern "C" {
 #endif
 
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_SetAllocator(const TQuantDataAllocatorSettings* pSettings);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries);
 
 #ifdef __cplusplus
 }

@@ -8,18 +8,8 @@
 
 namespace quantdata {
 
-template <class AllocatorFunctions>
 struct SProvider
 {
-	using TAllocatorFunctions = AllocatorFunctions;
-
-	SProvider(const TAllocatorFunctions& allocFunctions)
-		: type()
-		, apikey(TStringAllocatorA<TAllocatorFunctions>(allocFunctions))
-		, certtype(TStringAllocatorA<TAllocatorFunctions>(allocFunctions))
-		, certfile(TStringAllocatorA<TAllocatorFunctions>(allocFunctions))
-	{}
-
 	void Set(const TQuantDataProviderSettings& settings)
 	{
 		type = settings.provider;
@@ -34,21 +24,13 @@ struct SProvider
 	}
 
 	CQuantDataProvider type;
-	TStringA<TAllocatorFunctions> apikey;
-	TStringA<TAllocatorFunctions> certtype;
-	TStringA<TAllocatorFunctions> certfile;
+	string apikey;
+	string certtype;
+	string certfile;
 };
 
-template <class AllocatorFunctions>
 struct SSymbolInfo
 {
-	using TAllocatorFunctions = AllocatorFunctions;
-
-	SSymbolInfo(const TAllocatorFunctions& allocFunctions)
-		: name(TStringAllocatorA<TAllocatorFunctions>(allocFunctions))
-		, desc(TStringAllocatorA<TAllocatorFunctions>(allocFunctions))
-	{}
-
 	void Set(const TQuantDataSymbolInfo& symbolInfo)
 	{
 		name = util::get_valid_string(symbolInfo.name);
@@ -63,8 +45,8 @@ struct SSymbolInfo
 		return obj;
 	}
 
-	TStringA<TAllocatorFunctions> name;
-	TStringA<TAllocatorFunctions> desc;
+	string name;
+	string desc;
 };
 
 } // namespace quantdata

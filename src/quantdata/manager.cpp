@@ -2,7 +2,9 @@
 #include "manager.h"
 #include <quantdata/series.h>
 #include <common/util.h>
-#include <algorithm>
+#include <common/mem.h>
+
+DEFINE_GLOBAL_ALLOC_FUNCTIONS
 
 namespace quantdata {
 
@@ -24,27 +26,29 @@ CManager::CManager()
 	}
 }
 
-template <class AllocatorFunctions>
-using TSeries = CSeriesFunctions<CSeries<AllocatorFunctions>>;
-
-EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries, const TQuantDataCreationSettings* pSettings)
+EQuantDataResult CManager::SetAllocator(const TQuantDataAllocatorSettings* pSettings)
 {
-	if (!ppSeries || !pSettings)
+	if (m_allocatorInUse)
+		return EQuantDataResult::LockedAllocator;
+
+	if (!pSettings->alloc || !pSettings->free)
+		return EQuantDataResult::IncompleteAllocator;
+
+	mem::g_alloc = pSettings->alloc;
+	mem::g_free = pSettings->free;
+
+	return EQuantDataResult::Success;
+}
+
+using TSeries = CSeriesFunctions<CSeries>;
+
+EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries)
+{
+	if (!ppSeries)
 		return EQuantDataResult::InvalidArgument;
 
-	const auto alloc = pSettings->alloc;
-	const auto free = pSettings->free;
-
-	if (alloc && free)
-	{
-		mem::custom_allocator_functions functions(alloc, free);
-		*ppSeries = mem::placement_alloc<TSeries<decltype(functions)>>(functions.alloc(), functions, *this);
-	}
-	else
-	{
-		mem::regular_allocator_functions functions;
-		*ppSeries = mem::placement_alloc<TSeries<decltype(functions)>>(functions.alloc(), functions, *this);
-	}
+	m_allocatorInUse = true;
+	*ppSeries = mem::placement_g_alloc<TSeries>(*this);
 
 	return EQuantDataResult::Success;
 }

@@ -1,8 +1,9 @@
 
-#include <common/stl.h>
+#include <quantdata/series.h>
 #include <quantdata/manager.h>
 #include <quantdata/checks.h>
 #include <quantdata/exceptions.h>
+#include <common/stl.h>
 #include <common/util_log.h>
 #include <cpprest/http_client.h>
 
@@ -12,16 +13,13 @@
 
 namespace quantdata {
 
-template <class AllocatorFunctions>
-CSeries<AllocatorFunctions>::CSeries(const TAllocatorFunctions& allocFunctions, const CManager& manager)
-	: m_allocFunctions(allocFunctions)
-	, m_manager(manager)
-	, m_provider(allocFunctions)
+
+CSeries::CSeries(const CManager& manager)
+	: m_manager(manager)
 {
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::SetProvider(const TQuantDataProviderSettings* pSettings)
+EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSettings)
 {
 	if (!IsValidProvider(pSettings))
 		return EQuantDataResult::InvalidProvider;
@@ -30,8 +28,7 @@ EQuantDataResult CSeries<AllocatorFunctions>::SetProvider(const TQuantDataProvid
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::GetNativePeriods(IQuantDataPeriods** ppPeriods)
+EQuantDataResult CSeries::GetNativePeriods(IQuantDataPeriods** ppPeriods)
 {
 	if (!ppPeriods)
 		return EQuantDataResult::InvalidArgument;
@@ -40,14 +37,12 @@ EQuantDataResult CSeries<AllocatorFunctions>::GetNativePeriods(IQuantDataPeriods
 		return EQuantDataResult::InvalidProvider;
 
 	const auto& providerInfo = m_manager.GetProviderInfo(m_provider.type);
-	const auto pPeriods = mem::placement_alloc<TStaticPeriodArray>(m_allocFunctions.alloc(),
-		m_allocFunctions, providerInfo.periods);
+	const auto pPeriods = mem::placement_g_alloc<TStaticPeriodArray>(providerInfo.periods);
 	*ppPeriods = pPeriods;
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::ExtractJsonSymbols(
+EQuantDataResult CSeries::ExtractJsonSymbols(
 	const web::http::http_response& response, TSymbolInfos& symbolInfos)
 {
 	try
@@ -61,15 +56,13 @@ EQuantDataResult CSeries<AllocatorFunctions>::ExtractJsonSymbols(
 	}
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::ExtractCsvSymbols(
+EQuantDataResult CSeries::ExtractCsvSymbols(
 	const web::http::http_response& response, TSymbolInfos& symbolInfos)
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::DownloadSymbols(
+EQuantDataResult CSeries::DownloadSymbols(
 	const SProviderInfo& providerInfo, const size_t symbolListIndex, TSymbolInfos& symbolInfos)
 {
 	const TSymbolSources& symbolSources = providerInfo.symbolSources;
@@ -95,8 +88,7 @@ EQuantDataResult CSeries<AllocatorFunctions>::DownloadSymbols(
 	return EQuantDataResult::NoDataAvailable;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::GetSupportedSymbols(
+EQuantDataResult CSeries::GetSupportedSymbols(
 	IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings)
 {
 	if (!ppSymbols || !pSettings)
@@ -111,13 +103,13 @@ EQuantDataResult CSeries<AllocatorFunctions>::GetSupportedSymbols(
 
 	if (pSettings->download)
 	{
-		auto symbolBuffers = TNewSymbolArray::CreateBufferArray(m_allocFunctions);
+		typename TNewSymbolArray::TBuffers symbolBuffers;
 		result = DownloadSymbols(providerInfo, symbolListIndex, symbolBuffers);
 
 		if (result == EQuantDataResult::Success)
 		{
 			const size_t size = symbolBuffers.size();
-			auto symbolElements = TNewSymbolArray::CreateElementArray(m_allocFunctions);
+			typename TNewSymbolArray::TElements symbolElements;
 			symbolElements.resize(size);
 
 			for (size_t i = 0; i < size; ++i)
@@ -125,8 +117,8 @@ EQuantDataResult CSeries<AllocatorFunctions>::GetSupportedSymbols(
 				symbolElements[i] = symbolBuffers[i].GetPod();
 			}
 
-			const auto pSymbols = mem::placement_alloc<TNewSymbolArray>(m_allocFunctions.alloc(),
-				m_allocFunctions, std::move(symbolElements), std::move(symbolBuffers));
+			const auto pSymbols = mem::placement_g_alloc<TNewSymbolArray>(
+				std::move(symbolElements), std::move(symbolBuffers));
 			*ppSymbols = pSymbols;
 			return EQuantDataResult::Success;
 		}
@@ -137,8 +129,7 @@ EQuantDataResult CSeries<AllocatorFunctions>::GetSupportedSymbols(
 		if (symbolListIndex < symbolsList.size())
 		{
 			const TSymbols& symbols = symbolsList.at(symbolListIndex);
-			const auto pSymbols = mem::placement_alloc<TStaticSymbolArray>(m_allocFunctions.alloc(),
-				m_allocFunctions, symbols);
+			const auto pSymbols = mem::placement_g_alloc<TStaticSymbolArray>(symbols);
 			*ppSymbols = pSymbols;
 			return EQuantDataResult::Success;
 		}
@@ -147,8 +138,7 @@ EQuantDataResult CSeries<AllocatorFunctions>::GetSupportedSymbols(
 	return result;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::Download(const TQuantDataDownloadSettings* pSettings)
+EQuantDataResult CSeries::Download(const TQuantDataDownloadSettings* pSettings)
 {
 	if (!IsValidDownload(pSettings))
 		return EQuantDataResult::InvalidArgument;
@@ -161,82 +151,69 @@ EQuantDataResult CSeries<AllocatorFunctions>::Download(const TQuantDataDownloadS
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::Load(const TQuantDataLoadSettings* pSettings)
+EQuantDataResult CSeries::Load(const TQuantDataLoadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::Save(const TQuantDataSaveSettings* pSettings) const
+EQuantDataResult CSeries::Save(const TQuantDataSaveSettings* pSettings) const
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::GetT1(TQuantDataT1s** ppData) const
+EQuantDataResult CSeries::GetT1(TQuantDataT1s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::GetT2(TQuantDataT2s** ppData) const
+EQuantDataResult CSeries::GetT2(TQuantDataT2s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::GetT6(TQuantDataT6s** ppData) const
+EQuantDataResult CSeries::GetT6(TQuantDataT6s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::GetT8(TQuantDataT8s** ppData) const
+EQuantDataResult CSeries::GetT8(TQuantDataT8s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::GetGtick(TQuantDataGtDataPoints** ppData) const
+EQuantDataResult CSeries::GetGtick(TQuantDataGtDataPoints** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::SetT1(TQuantDataT1s* pData)
+EQuantDataResult CSeries::SetT1(TQuantDataT1s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::SetT2(TQuantDataT2s* pData)
+EQuantDataResult CSeries::SetT2(TQuantDataT2s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::SetT6(TQuantDataT6s* pData)
+EQuantDataResult CSeries::SetT6(TQuantDataT6s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::SetT8(TQuantDataT8s* pData)
+EQuantDataResult CSeries::SetT8(TQuantDataT8s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::SetGtick(TQuantDataGtDataPoints* pData)
+EQuantDataResult CSeries::SetGtick(TQuantDataGtDataPoints* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-template <class AllocatorFunctions>
-EQuantDataResult CSeries<AllocatorFunctions>::Release()
+EQuantDataResult CSeries::Release()
 {
-	mem::placement_free(this, m_allocFunctions.free());
+	mem::placement_g_free(this);
 	return EQuantDataResult::Success;
 }
 

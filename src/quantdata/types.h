@@ -7,19 +7,13 @@
 
 namespace quantdata {
 
-template <class Type, class AllocatorFunctions>
-using TAllocator = mem::custom_allocator<Type, AllocatorFunctions>;
+template <class Type>
+using allocator = mem::globalf_allocator<Type>;
 
-template <class Type, class AllocatorFunctions>
-using TString = std::basic_string<Type, std::char_traits<Type>, TAllocator<Type, AllocatorFunctions>>;
+using string = std::basic_string<char, std::char_traits<char>, allocator<char>>;
+using wstring = std::basic_string<wchar_t, std::char_traits<wchar_t>, allocator<wchar_t>>;
 
-template <class AllocatorFunctions>
-using TStringA = TString<char, AllocatorFunctions>;
-
-template <class AllocatorFunctions>
-using TStringAllocatorA = TAllocator<char, AllocatorFunctions>;
-
-template <class Type, class AllocatorFunctions>
-using TVector = std::vector<Type, TAllocator<Type, AllocatorFunctions>>;
+template <class Type>
+using vector = std::vector<Type, allocator<Type>>;
 
 } // namespace quantdata

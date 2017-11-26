@@ -13,11 +13,14 @@ int main(int argc, char** argv)
 
 	EQuantDataResult result;
 
+	TQuantDataAllocatorSettings allocatorSettings;
+	allocatorSettings.alloc = c_malloc;
+	allocatorSettings.free = c_free;
+	result = QuantData_SetAllocator(&allocatorSettings);
+	assert(result == QuantDataResult_Success);
+
 	IQuantDataSeries* pSeries = 0;
-	TQuantDataCreationSettings creationSettings = {0};
-	creationSettings.alloc = c_malloc;
-	creationSettings.free = c_free;
-	result = QuantData_CreateSeries(&pSeries, &creationSettings);
+	result = QuantData_CreateSeries(&pSeries);
 	assert(result == QuantDataResult_Success);
 
 	TQuantDataLoadSettings loadSettings = {0};
@@ -52,7 +55,6 @@ int main(int argc, char** argv)
 	downloadSettings.symbol = "MSFT";
 	downloadSettings.period = QuantDataPeriod_Minute;
 	downloadSettings.adjusted = 0;
-
 	result = pSeries->Download(pSeries, &downloadSettings);
 	assert(result == QuantDataResult_Success);
 
