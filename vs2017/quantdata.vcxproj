@@ -125,6 +125,34 @@
     <ClCompile Include="..\src\quantdata\series.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\detail\jsoncons_config.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\detail\osequencestream.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\detail\type_traits_helper.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\detail\unicode_traits.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\jsoncons_utilities.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_decoder.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_deserializer.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_error_category.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_exception.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_filter.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_input_handler.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_output_handler.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_parser.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_reader.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_serializer.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_structures.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_type_traits.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\parse_error_handler.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\serialization_options.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\serialization_traits.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\version.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_error_category.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_input_options.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_parameters.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_parser.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_reader.hpp" />
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_serializer.hpp" />
     <ClInclude Include="..\include\iquantdata.h" />
     <ClInclude Include="..\src\apikey.h" />
     <ClInclude Include="..\src\quantdata.h" />

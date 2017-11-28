@@ -13,6 +13,18 @@
     <Filter Include="src\quantdata\array">
       <UniqueIdentifier>{caec26fc-9da4-4099-b623-23f40e9c57ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\jsoncons">
+      <UniqueIdentifier>{b9880c77-ed5b-4b75-a39c-1a10d5c3eced}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\jsoncons\detail">
+      <UniqueIdentifier>{9b6bdd86-a91f-4860-8112-4a2490acf5fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\jsoncons_ext">
+      <UniqueIdentifier>{574eab95-ae6a-409a-9f66-c04eab43452a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\jsoncons_ext\csv">
+      <UniqueIdentifier>{6398b1ed-0cba-4e92-8c75-2d15b05bcf7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dllmain.cpp">
@@ -67,6 +79,90 @@
     </ClInclude>
     <ClInclude Include="..\src\quantdata\api.h">
       <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_decoder.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_deserializer.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_error_category.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_exception.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_filter.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_input_handler.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_output_handler.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_parser.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_reader.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_serializer.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_structures.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\json_type_traits.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\jsoncons_utilities.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\parse_error_handler.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\serialization_options.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\serialization_traits.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\version.hpp">
+      <Filter>src\jsoncons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\detail\jsoncons_config.hpp">
+      <Filter>src\jsoncons\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\detail\osequencestream.hpp">
+      <Filter>src\jsoncons\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\detail\type_traits_helper.hpp">
+      <Filter>src\jsoncons\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons\detail\unicode_traits.hpp">
+      <Filter>src\jsoncons\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_error_category.hpp">
+      <Filter>src\jsoncons_ext\csv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_input_options.hpp">
+      <Filter>src\jsoncons_ext\csv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_parameters.hpp">
+      <Filter>src\jsoncons_ext\csv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_parser.hpp">
+      <Filter>src\jsoncons_ext\csv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_reader.hpp">
+      <Filter>src\jsoncons_ext\csv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_serializer.hpp">
+      <Filter>src\jsoncons_ext\csv</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
