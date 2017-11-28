@@ -1,6 +1,6 @@
 
 #include "manager.h"
-#include <quantdata/series.h>
+#include <quantdata/hub.h>
 #include <common/util.h>
 #include <common/mem.h>
 
@@ -40,15 +40,15 @@ EQuantDataResult CManager::SetAllocator(const TQuantDataAllocatorSettings* pSett
 	return EQuantDataResult::Success;
 }
 
-using TSeries = CSeriesFunctions<CSeries>;
+using THub = CHubFunctions<CHub>;
 
-EQuantDataResult CManager::CreateSeries(IQuantDataSeries** ppSeries)
+EQuantDataResult CManager::CreateHub(IQuantDataHub** ppHub)
 {
-	if (!ppSeries)
+	if (!ppHub)
 		return EQuantDataResult::InvalidArgument;
 
 	m_allocatorInUse = true;
-	*ppSeries = mem::placement_g_alloc<TSeries>(*this);
+	*ppHub = mem::placement_g_alloc<THub>(*this);
 
 	return EQuantDataResult::Success;
 }

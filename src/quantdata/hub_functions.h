@@ -11,17 +11,17 @@ namespace quantdata {
 class CManager;
 
 template <class Implementation>
-class CSeriesFunctions : public Implementation
+class CHubFunctions : public Implementation
 {
 private:
-	using TThis               = CSeriesFunctions;
+	using TThis               = CHubFunctions;
 	using TImplementation     = Implementation;
 	using TInterface          = typename TImplementation::TInterface;
 	using TInterfaceFunctions = typename TInterface::TInterfaceFunctions;
 
 public:
 	template <class... Args>
-	CSeriesFunctions(Args&&... args)
+	CHubFunctions(Args&&... args)
 		: TImplementation(std::forward<Args>(args)...)
 	{
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);

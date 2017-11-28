@@ -32,7 +32,7 @@ public:
 	CManager();
 
 	EQuantDataResult SetAllocator(const TQuantDataAllocatorSettings* pSettings);
-	EQuantDataResult CreateSeries(IQuantDataSeries** ppSeries);
+	EQuantDataResult CreateHub(IQuantDataHub** ppHub);
 
 	inline const SProviderInfo& GetProviderInfo(CQuantDataProvider provider) const
 	{

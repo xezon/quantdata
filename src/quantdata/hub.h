@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <quantdata/series_functions.h>
+#include <quantdata/hub_functions.h>
 #include <quantdata/structs.h>
 #include <quantdata/types.h>
 #include <quantdata/array/new_array.h>
@@ -20,10 +20,10 @@ namespace quantdata {
 class CManager;
 struct SProviderInfo;
 
-class CSeries : public IQuantDataSeries
+class CHub : public IQuantDataHub
 {
 protected:
-	using TInterface          = IQuantDataSeries;
+	using TInterface          = IQuantDataHub;
 
 private:
 	using TSymbolInfos        = vector<SSymbolInfo>;
@@ -33,7 +33,7 @@ private:
 	using TNewSymbolArray     = CArrayFunctions<CNewArray   <IQuantDataSymbols, TQuantDataSymbolInfo, SSymbolInfo>>;
 
 protected:
-	CSeries(const CManager& manager);
+	CHub(const CManager& manager);
 
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings);
 	EQuantDataResult GetPeriods(IQuantDataPeriods** ppPeriods);

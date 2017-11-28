@@ -323,33 +323,33 @@ struct SQuantDataSymbolsFunctions
 };
 ITYPE(SQuantDataSymbols, IQuantDataSymbols)
 
-struct SQuantDataSeriesFunctions
+struct SQuantDataHubFunctions
 {
 	// Sets the desired data provider.
-	EQuantDataResult FPTR(SetProvider) (FTHIS(SQuantDataSeries), const TQuantDataProviderSettings* pSettings);
+	EQuantDataResult FPTR(SetProvider) (FTHIS(SQuantDataHub), const TQuantDataProviderSettings* pSettings);
 
 	// Returns an array of native periods supported of the selected data provider.
-	EQuantDataResult FPTR(GetPeriods)  (FTHIS(SQuantDataSeries), IQuantDataPeriods** ppPeriods);
+	EQuantDataResult FPTR(GetPeriods)  (FTHIS(SQuantDataHub), IQuantDataPeriods** ppPeriods);
 
 	// Returns an array of supported symbols by the selected data provider.
 	// The provider may return less symbols than it actually supports.
-	EQuantDataResult FPTR(GetSymbols)  (FTHIS(SQuantDataSeries), IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
-	EQuantDataResult FPTR(Download)    (FTHIS(SQuantDataSeries), const TQuantDataDownloadSettings* pSettings);
-	EQuantDataResult FPTR(Load)        (FTHIS(SQuantDataSeries), const TQuantDataLoadSettings* pSettings);
-	EQuantDataResult FPTR(Save)        (FTHIS(SQuantDataSeries), const TQuantDataSaveSettings* pSettings);
-	EQuantDataResult FPTR(GetT1)       (FTHIS(SQuantDataSeries), TQuantDataT1s** ppData);
-	EQuantDataResult FPTR(GetT2)       (FTHIS(SQuantDataSeries), TQuantDataT2s** ppData);
-	EQuantDataResult FPTR(GetT6)       (FTHIS(SQuantDataSeries), TQuantDataT6s** ppData);
-	EQuantDataResult FPTR(GetT8)       (FTHIS(SQuantDataSeries), TQuantDataT8s** ppData);
-	EQuantDataResult FPTR(GetGtick)    (FTHIS(SQuantDataSeries), TQuantDataGtDataPoints** ppData);
-	EQuantDataResult FPTR(SetT1)       (FTHIS(SQuantDataSeries), TQuantDataT1s* pData);
-	EQuantDataResult FPTR(SetT2)       (FTHIS(SQuantDataSeries), TQuantDataT2s* pData);
-	EQuantDataResult FPTR(SetT6)       (FTHIS(SQuantDataSeries), TQuantDataT6s* pData);
-	EQuantDataResult FPTR(SetT8)       (FTHIS(SQuantDataSeries), TQuantDataT8s* pData);
-	EQuantDataResult FPTR(SetGtick)    (FTHIS(SQuantDataSeries), TQuantDataGtDataPoints* pData);
-	EQuantDataResult FPTR(Release)     (FTHIS(SQuantDataSeries));
+	EQuantDataResult FPTR(GetSymbols)  (FTHIS(SQuantDataHub), IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
+	EQuantDataResult FPTR(Download)    (FTHIS(SQuantDataHub), const TQuantDataDownloadSettings* pSettings);
+	EQuantDataResult FPTR(Load)        (FTHIS(SQuantDataHub), const TQuantDataLoadSettings* pSettings);
+	EQuantDataResult FPTR(Save)        (FTHIS(SQuantDataHub), const TQuantDataSaveSettings* pSettings);
+	EQuantDataResult FPTR(GetT1)       (FTHIS(SQuantDataHub), TQuantDataT1s** ppData);
+	EQuantDataResult FPTR(GetT2)       (FTHIS(SQuantDataHub), TQuantDataT2s** ppData);
+	EQuantDataResult FPTR(GetT6)       (FTHIS(SQuantDataHub), TQuantDataT6s** ppData);
+	EQuantDataResult FPTR(GetT8)       (FTHIS(SQuantDataHub), TQuantDataT8s** ppData);
+	EQuantDataResult FPTR(GetGtick)    (FTHIS(SQuantDataHub), TQuantDataGtDataPoints** ppData);
+	EQuantDataResult FPTR(SetT1)       (FTHIS(SQuantDataHub), TQuantDataT1s* pData);
+	EQuantDataResult FPTR(SetT2)       (FTHIS(SQuantDataHub), TQuantDataT2s* pData);
+	EQuantDataResult FPTR(SetT6)       (FTHIS(SQuantDataHub), TQuantDataT6s* pData);
+	EQuantDataResult FPTR(SetT8)       (FTHIS(SQuantDataHub), TQuantDataT8s* pData);
+	EQuantDataResult FPTR(SetGtick)    (FTHIS(SQuantDataHub), TQuantDataGtDataPoints* pData);
+	EQuantDataResult FPTR(Release)     (FTHIS(SQuantDataHub));
 };
-ITYPE(SQuantDataSeries, IQuantDataSeries)
+ITYPE(SQuantDataHub, IQuantDataHub)
 
 #ifdef __cplusplus
 struct SQuantDataPeriods
@@ -378,7 +378,7 @@ protected:
 	const TInterfaceFunctions m_functions ZERO_INIT;
 };
 
-struct SQuantDataSeries
+struct SQuantDataHub
 {
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings) {
 		return m_functions.SetProvider(this, pSettings);
@@ -431,8 +431,8 @@ struct SQuantDataSeries
 		return m_functions.Release(this);
 	}
 protected:
-	~SQuantDataSeries() {}
-	typedef struct SQuantDataSeriesFunctions TInterfaceFunctions;
+	~SQuantDataHub() {}
+	typedef struct SQuantDataHubFunctions TInterfaceFunctions;
 	const TInterfaceFunctions m_functions ZERO_INIT;
 };
 
@@ -443,7 +443,7 @@ extern "C" {
 #endif
 
 QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_SetAllocator(const TQuantDataAllocatorSettings* pSettings);
-QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries);
+QUANTDATA_IMPORT_EXPORT EQuantDataResult QUANTDATA_CALL QuantData_CreateHub(IQuantDataHub** ppHub);
 
 #ifdef __cplusplus
 }

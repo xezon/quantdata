@@ -20,22 +20,22 @@ int main(int argc, char** argv)
 	result = QuantData_SetAllocator(&allocatorSettings);
 	assert(result == EQuantDataResult::Success);
 
-	IQuantDataSeries* pSeries = nullptr;
-	result = QuantData_CreateSeries(&pSeries);
+	IQuantDataHub* pHub = nullptr;
+	result = QuantData_CreateHub(&pHub);
 	assert(result == EQuantDataResult::Success);
 
 	TQuantDataLoadSettings loadSettings;
-	result = pSeries->Load(&loadSettings);
+	result = pHub->Load(&loadSettings);
 	assert(result == EQuantDataResult::Success);
 
 	TQuantDataProviderSettings providerSettings;
 	providerSettings.provider = EQuantDataProvider::AlphaVantage;
 	providerSettings.apikey = apikey_alphavantage;
-	result = pSeries->SetProvider(&providerSettings);
+	result = pHub->SetProvider(&providerSettings);
 	assert(result == EQuantDataResult::Success);
 
 	IQuantDataPeriods* pPeriods;
-	result = pSeries->GetPeriods(&pPeriods);
+	result = pHub->GetPeriods(&pPeriods);
 	assert(result == EQuantDataResult::Success);
 	pPeriods->Release();
 
@@ -43,15 +43,15 @@ int main(int argc, char** argv)
 	symbolSettings.download = false;
 	symbolSettings.index = EQuantDataSymbolSource::Default;
 	IQuantDataSymbols* pSymbols = nullptr;
-	result = pSeries->GetSymbols(&pSymbols, &symbolSettings);
+	result = pHub->GetSymbols(&pSymbols, &symbolSettings);
 	assert(result == EQuantDataResult::Success);
 	pSymbols->Release();
 
 	providerSettings.provider = EQuantDataProvider::OpenExchange;
 	providerSettings.apikey = "test";
-	result = pSeries->SetProvider(&providerSettings);
+	result = pHub->SetProvider(&providerSettings);
 	symbolSettings.download = true;
-	result = pSeries->GetSymbols(&pSymbols, &symbolSettings);
+	result = pHub->GetSymbols(&pSymbols, &symbolSettings);
 	assert(result == EQuantDataResult::Success);
 	pSymbols->Release();
 
@@ -59,10 +59,10 @@ int main(int argc, char** argv)
 	downloadSettings.symbol = "MSFT";
 	downloadSettings.period = CQuantDataPeriod::Minute;
 	downloadSettings.adjusted = false;
-	result = pSeries->Download(&downloadSettings);
+	result = pHub->Download(&downloadSettings);
 	assert(result == EQuantDataResult::Success);
 
-	result = pSeries->Release();
+	result = pHub->Release();
 	assert(result == EQuantDataResult::Success);
 
 	return 0;

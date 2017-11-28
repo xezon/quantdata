@@ -19,22 +19,22 @@ int main(int argc, char** argv)
 	result = QuantData_SetAllocator(&allocatorSettings);
 	assert(result == QuantDataResult_Success);
 
-	IQuantDataSeries* pSeries = 0;
-	result = QuantData_CreateSeries(&pSeries);
+	IQuantDataHub* pHub = 0;
+	result = QuantData_CreateHub(&pHub);
 	assert(result == QuantDataResult_Success);
 
 	TQuantDataLoadSettings loadSettings = {0};
-	result = pSeries->Load(pSeries, &loadSettings);
+	result = pHub->Load(pHub, &loadSettings);
 	assert(result == QuantDataResult_Success);
 
 	TQuantDataProviderSettings providerSettings = {0};
 	providerSettings.provider = QuantDataProvider_AlphaVantage;
 	providerSettings.apikey = apikey_alphavantage;
-	result = pSeries->SetProvider(pSeries, &providerSettings);
+	result = pHub->SetProvider(pHub, &providerSettings);
 	assert(result == QuantDataResult_Success);
 
 	IQuantDataPeriods* pPeriods = 0;
-	result = pSeries->GetPeriods(pSeries, &pPeriods);
+	result = pHub->GetPeriods(pHub, &pPeriods);
 	assert(result == QuantDataResult_Success);
 	pPeriods->Release(pPeriods);
 
@@ -42,15 +42,15 @@ int main(int argc, char** argv)
 	symbolSettings.download = 0;
 	symbolSettings.index = QuantDataSymbolSource_Default;
 	IQuantDataSymbols* pSymbols = 0;
-	result = pSeries->GetSymbols(pSeries, &pSymbols, &symbolSettings);
+	result = pHub->GetSymbols(pHub, &pSymbols, &symbolSettings);
 	assert(result == QuantDataResult_Success);
 	pSymbols->Release(pSymbols);
 
 	providerSettings.provider = QuantDataProvider_OpenExchange;
 	providerSettings.apikey = "test";
-	result = pSeries->SetProvider(pSeries, &providerSettings);
+	result = pHub->SetProvider(pHub, &providerSettings);
 	symbolSettings.download = 1;
-	result = pSeries->GetSymbols(pSeries, &pSymbols, &symbolSettings);
+	result = pHub->GetSymbols(pHub, &pSymbols, &symbolSettings);
 	assert(result == QuantDataResult_Success);
 	pSymbols->Release(pSymbols);
 
@@ -58,10 +58,10 @@ int main(int argc, char** argv)
 	downloadSettings.symbol = "MSFT";
 	downloadSettings.period = QuantDataPeriod_Minute;
 	downloadSettings.adjusted = 0;
-	result = pSeries->Download(pSeries, &downloadSettings);
+	result = pHub->Download(pHub, &downloadSettings);
 	assert(result == QuantDataResult_Success);
 
-	result = pSeries->Release(pSeries);
+	result = pHub->Release(pHub);
 	assert(result == QuantDataResult_Success);
 
 	return 0;

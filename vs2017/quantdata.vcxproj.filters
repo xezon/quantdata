@@ -33,7 +33,7 @@
     <ClCompile Include="..\src\quantdata\manager.cpp">
       <Filter>src\quantdata</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\quantdata\series.cpp">
+    <ClCompile Include="..\src\quantdata\hub.cpp">
       <Filter>src\quantdata</Filter>
     </ClCompile>
   </ItemGroup>
@@ -54,12 +54,6 @@
       <Filter>src\quantdata</Filter>
     </ClInclude>
     <ClInclude Include="..\src\quantdata\checks.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\series.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\series_functions.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
     <ClInclude Include="..\src\quantdata\array\array_functions.h">
@@ -163,6 +157,12 @@
     </ClInclude>
     <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_serializer.hpp">
       <Filter>src\jsoncons_ext\csv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\hub_functions.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\hub.h">
+      <Filter>src\quantdata</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

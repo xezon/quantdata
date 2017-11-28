@@ -24,7 +24,7 @@ EQuantDataResult QUANTDATA_CALL QuantData_SetAllocator(const TQuantDataAllocator
 	return g_manager.SetAllocator(pSettings);
 }
 
-EQuantDataResult QUANTDATA_CALL QuantData_CreateSeries(IQuantDataSeries** ppSeries)
+EQuantDataResult QUANTDATA_CALL QuantData_CreateHub(IQuantDataHub** ppHub)
 {
-	return g_manager.CreateSeries(ppSeries);
+	return g_manager.CreateHub(ppHub);
 }

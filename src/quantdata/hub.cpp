@@ -1,5 +1,5 @@
 
-#include <quantdata/series.h>
+#include <quantdata/hub.h>
 #include <quantdata/manager.h>
 #include <quantdata/checks.h>
 #include <quantdata/exceptions.h>
@@ -15,12 +15,12 @@
 namespace quantdata {
 
 
-CSeries::CSeries(const CManager& manager)
+CHub::CHub(const CManager& manager)
 	: m_manager(manager)
 {
 }
 
-EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSettings)
+EQuantDataResult CHub::SetProvider(const TQuantDataProviderSettings* pSettings)
 {
 	if (IsValidProvider(pSettings))
 	{
@@ -32,7 +32,7 @@ EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSetting
 	return EQuantDataResult::InvalidProvider;
 }
 
-EQuantDataResult CSeries::GetPeriods(IQuantDataPeriods** ppPeriods)
+EQuantDataResult CHub::GetPeriods(IQuantDataPeriods** ppPeriods)
 {
 	if (!ppPeriods)
 		return EQuantDataResult::InvalidArgument;
@@ -46,7 +46,7 @@ EQuantDataResult CSeries::GetPeriods(IQuantDataPeriods** ppPeriods)
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::ExtractJsonSymbols(
+EQuantDataResult CHub::ExtractJsonSymbols(
 	const web::http::http_response& response, TSymbolInfos& symbolInfos)
 {
 	try
@@ -81,13 +81,13 @@ EQuantDataResult CSeries::ExtractJsonSymbols(
 	}
 }
 
-EQuantDataResult CSeries::ExtractCsvSymbols(
+EQuantDataResult CHub::ExtractCsvSymbols(
 	const web::http::http_response& response, TSymbolInfos& symbolInfos)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::DownloadSymbols(
+EQuantDataResult CHub::DownloadSymbols(
 	const SProviderInfo& providerInfo, const size_t symbolListIndex, TSymbolInfos& symbolInfos)
 {
 	const TSymbolSources& symbolSources = providerInfo.symbolSources;
@@ -115,7 +115,7 @@ EQuantDataResult CSeries::DownloadSymbols(
 	return EQuantDataResult::NoDataAvailable;
 }
 
-EQuantDataResult CSeries::GetSymbols(
+EQuantDataResult CHub::GetSymbols(
 	IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings)
 {
 	if (!ppSymbols || !pSettings)
@@ -165,7 +165,7 @@ EQuantDataResult CSeries::GetSymbols(
 	return result;
 }
 
-EQuantDataResult CSeries::Download(const TQuantDataDownloadSettings* pSettings)
+EQuantDataResult CHub::Download(const TQuantDataDownloadSettings* pSettings)
 {
 	if (!IsValidDownload(pSettings))
 		return EQuantDataResult::InvalidArgument;
@@ -178,67 +178,67 @@ EQuantDataResult CSeries::Download(const TQuantDataDownloadSettings* pSettings)
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::Load(const TQuantDataLoadSettings* pSettings)
+EQuantDataResult CHub::Load(const TQuantDataLoadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::Save(const TQuantDataSaveSettings* pSettings) const
+EQuantDataResult CHub::Save(const TQuantDataSaveSettings* pSettings) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetT1(TQuantDataT1s** ppData) const
+EQuantDataResult CHub::GetT1(TQuantDataT1s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetT2(TQuantDataT2s** ppData) const
+EQuantDataResult CHub::GetT2(TQuantDataT2s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetT6(TQuantDataT6s** ppData) const
+EQuantDataResult CHub::GetT6(TQuantDataT6s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetT8(TQuantDataT8s** ppData) const
+EQuantDataResult CHub::GetT8(TQuantDataT8s** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::GetGtick(TQuantDataGtDataPoints** ppData) const
+EQuantDataResult CHub::GetGtick(TQuantDataGtDataPoints** ppData) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::SetT1(TQuantDataT1s* pData)
+EQuantDataResult CHub::SetT1(TQuantDataT1s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::SetT2(TQuantDataT2s* pData)
+EQuantDataResult CHub::SetT2(TQuantDataT2s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::SetT6(TQuantDataT6s* pData)
+EQuantDataResult CHub::SetT6(TQuantDataT6s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::SetT8(TQuantDataT8s* pData)
+EQuantDataResult CHub::SetT8(TQuantDataT8s* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::SetGtick(TQuantDataGtDataPoints* pData)
+EQuantDataResult CHub::SetGtick(TQuantDataGtDataPoints* pData)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CSeries::Release()
+EQuantDataResult CHub::Release()
 {
 	mem::placement_g_free(this);
 	return EQuantDataResult::Success;
