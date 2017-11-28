@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 	assert(result == QuantDataResult_Success);
 
 	IQuantDataPeriods* pPeriods = 0;
-	result = pSeries->GetNativePeriods(pSeries, &pPeriods);
+	result = pSeries->GetPeriods(pSeries, &pPeriods);
 	assert(result == QuantDataResult_Success);
 	pPeriods->Release(pPeriods);
 
@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 	symbolSettings.download = 0;
 	symbolSettings.index = QuantDataSymbolSource_Default;
 	IQuantDataSymbols* pSymbols = 0;
-	result = pSeries->GetSupportedSymbols(pSeries, &pSymbols, &symbolSettings);
+	result = pSeries->GetSymbols(pSeries, &pSymbols, &symbolSettings);
 	assert(result == QuantDataResult_Success);
 	pSymbols->Release(pSymbols);
 
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 	providerSettings.apikey = "test";
 	result = pSeries->SetProvider(pSeries, &providerSettings);
 	symbolSettings.download = 1;
-	result = pSeries->GetSupportedSymbols(pSeries, &pSymbols, &symbolSettings);
+	result = pSeries->GetSymbols(pSeries, &pSymbols, &symbolSettings);
 	assert(result == QuantDataResult_Success);
 	pSymbols->Release(pSymbols);
 

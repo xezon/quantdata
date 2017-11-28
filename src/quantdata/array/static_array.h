@@ -10,8 +10,8 @@ template <class Interface, class Element>
 class CStaticArray : public Interface
 {
 protected:
-	using TInterface          = Interface;
-	using TElement            = Element;
+	using TInterface = Interface;
+	using TElement   = Element;
 
 protected:
 	template <class Container>

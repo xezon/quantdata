@@ -36,8 +36,8 @@ protected:
 	CSeries(const CManager& manager);
 
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings);
-	EQuantDataResult GetNativePeriods(IQuantDataPeriods** ppPeriods);
-	EQuantDataResult GetSupportedSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
+	EQuantDataResult GetPeriods(IQuantDataPeriods** ppPeriods);
+	EQuantDataResult GetSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
 	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings);
 	EQuantDataResult Load(const TQuantDataLoadSettings* pSettings);
 	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) const;

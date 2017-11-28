@@ -27,23 +27,23 @@ public:
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);
 		util::nullify_object_debug(mutableFunctions);
 
-		mutableFunctions.SetProvider         = Static_SetProvider;
-		mutableFunctions.GetNativePeriods    = Static_GetNativePeriods;
-		mutableFunctions.GetSupportedSymbols = Static_GetSupportedSymbols;
-		mutableFunctions.Download            = Static_Download;
-		mutableFunctions.Load                = Static_Load;
-		mutableFunctions.Save                = Static_Save;
-		mutableFunctions.GetT1               = Static_GetT1;
-		mutableFunctions.GetT2               = Static_GetT2;
-		mutableFunctions.GetT6               = Static_GetT6;
-		mutableFunctions.GetT8               = Static_GetT8;
-		mutableFunctions.GetGtick            = Static_GetGtick;
-		mutableFunctions.SetT1               = Static_SetT1;
-		mutableFunctions.SetT2               = Static_SetT2;
-		mutableFunctions.SetT6               = Static_SetT6;
-		mutableFunctions.SetT8               = Static_SetT8;
-		mutableFunctions.SetGtick            = Static_SetGtick;
-		mutableFunctions.Release             = Static_Release;
+		mutableFunctions.SetProvider = Static_SetProvider;
+		mutableFunctions.GetPeriods  = Static_GetPeriods;
+		mutableFunctions.GetSymbols  = Static_GetSymbols;
+		mutableFunctions.Download    = Static_Download;
+		mutableFunctions.Load        = Static_Load;
+		mutableFunctions.Save        = Static_Save;
+		mutableFunctions.GetT1       = Static_GetT1;
+		mutableFunctions.GetT2       = Static_GetT2;
+		mutableFunctions.GetT6       = Static_GetT6;
+		mutableFunctions.GetT8       = Static_GetT8;
+		mutableFunctions.GetGtick    = Static_GetGtick;
+		mutableFunctions.SetT1       = Static_SetT1;
+		mutableFunctions.SetT2       = Static_SetT2;
+		mutableFunctions.SetT6       = Static_SetT6;
+		mutableFunctions.SetT8       = Static_SetT8;
+		mutableFunctions.SetGtick    = Static_SetGtick;
+		mutableFunctions.Release     = Static_Release;
 
 		util::verify_initialized_pointers_debug(m_functions);
 		util::verify_equal_pointers_debug(&m_functions, static_cast<TInterface*>(this));
@@ -56,11 +56,11 @@ private:
 	static EQuantDataResult QUANTDATA_CALL Static_SetProvider(TInterface* pThis, const TQuantDataProviderSettings* pSettings) {
 		return static_cast<TThis*>(pThis)->SetProvider(pSettings);
 	}
-	static EQuantDataResult QUANTDATA_CALL Static_GetNativePeriods(TInterface* pThis, IQuantDataPeriods** ppPeriods) {
-		return static_cast<TThis*>(pThis)->GetNativePeriods(ppPeriods);
+	static EQuantDataResult QUANTDATA_CALL Static_GetPeriods(TInterface* pThis, IQuantDataPeriods** ppPeriods) {
+		return static_cast<TThis*>(pThis)->GetPeriods(ppPeriods);
 	}
-	static EQuantDataResult QUANTDATA_CALL Static_GetSupportedSymbols(TInterface* pThis, IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) {
-		return static_cast<TThis*>(pThis)->GetSupportedSymbols(ppSymbols, pSettings);
+	static EQuantDataResult QUANTDATA_CALL Static_GetSymbols(TInterface* pThis, IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) {
+		return static_cast<TThis*>(pThis)->GetSymbols(ppSymbols, pSettings);
 	}
 	static EQuantDataResult QUANTDATA_CALL Static_Download(TInterface* pThis, const TQuantDataDownloadSettings* pSettings) {
 		return static_cast<TThis*>(pThis)->Download(pSettings);

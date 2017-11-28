@@ -12,13 +12,13 @@ template <class Interface, class Element, class Buffer = Element>
 class CNewArray : public Interface
 {
 protected:
-	using TInterface          = Interface;
-	using TElement            = Element;
-	using TBuffer             = Buffer;
+	using TInterface = Interface;
+	using TElement   = Element;
+	using TBuffer    = Buffer;
 
 public:
-	using TElements           = vector<TElement>;
-	using TBuffers            = vector<TBuffer>;
+	using TElements  = vector<TElement>;
+	using TBuffers   = vector<TBuffer>;
 
 protected:
 	CNewArray(TElements&& elements, TBuffers&& buffers)

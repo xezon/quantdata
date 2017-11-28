@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 	assert(result == EQuantDataResult::Success);
 
 	IQuantDataPeriods* pPeriods;
-	result = pSeries->GetNativePeriods(&pPeriods);
+	result = pSeries->GetPeriods(&pPeriods);
 	assert(result == EQuantDataResult::Success);
 	pPeriods->Release();
 
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
 	symbolSettings.download = false;
 	symbolSettings.index = EQuantDataSymbolSource::Default;
 	IQuantDataSymbols* pSymbols = nullptr;
-	result = pSeries->GetSupportedSymbols(&pSymbols, &symbolSettings);
+	result = pSeries->GetSymbols(&pSymbols, &symbolSettings);
 	assert(result == EQuantDataResult::Success);
 	pSymbols->Release();
 
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 	providerSettings.apikey = "test";
 	result = pSeries->SetProvider(&providerSettings);
 	symbolSettings.download = true;
-	result = pSeries->GetSupportedSymbols(&pSymbols, &symbolSettings);
+	result = pSeries->GetSymbols(&pSymbols, &symbolSettings);
 	assert(result == EQuantDataResult::Success);
 	pSymbols->Release();
 

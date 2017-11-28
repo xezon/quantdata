@@ -325,23 +325,29 @@ ITYPE(SQuantDataSymbols, IQuantDataSymbols)
 
 struct SQuantDataSeriesFunctions
 {
-	EQuantDataResult FPTR(SetProvider)        (FTHIS(SQuantDataSeries), const TQuantDataProviderSettings* pSettings);
-	EQuantDataResult FPTR(GetNativePeriods)   (FTHIS(SQuantDataSeries), IQuantDataPeriods** ppPeriods);
-	EQuantDataResult FPTR(GetSupportedSymbols)(FTHIS(SQuantDataSeries), IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
-	EQuantDataResult FPTR(Download)           (FTHIS(SQuantDataSeries), const TQuantDataDownloadSettings* pSettings);
-	EQuantDataResult FPTR(Load)               (FTHIS(SQuantDataSeries), const TQuantDataLoadSettings* pSettings);
-	EQuantDataResult FPTR(Save)               (FTHIS(SQuantDataSeries), const TQuantDataSaveSettings* pSettings);
-	EQuantDataResult FPTR(GetT1)              (FTHIS(SQuantDataSeries), TQuantDataT1s** ppData);
-	EQuantDataResult FPTR(GetT2)              (FTHIS(SQuantDataSeries), TQuantDataT2s** ppData);
-	EQuantDataResult FPTR(GetT6)              (FTHIS(SQuantDataSeries), TQuantDataT6s** ppData);
-	EQuantDataResult FPTR(GetT8)              (FTHIS(SQuantDataSeries), TQuantDataT8s** ppData);
-	EQuantDataResult FPTR(GetGtick)           (FTHIS(SQuantDataSeries), TQuantDataGtDataPoints** ppData);
-	EQuantDataResult FPTR(SetT1)              (FTHIS(SQuantDataSeries), TQuantDataT1s* pData);
-	EQuantDataResult FPTR(SetT2)              (FTHIS(SQuantDataSeries), TQuantDataT2s* pData);
-	EQuantDataResult FPTR(SetT6)              (FTHIS(SQuantDataSeries), TQuantDataT6s* pData);
-	EQuantDataResult FPTR(SetT8)              (FTHIS(SQuantDataSeries), TQuantDataT8s* pData);
-	EQuantDataResult FPTR(SetGtick)           (FTHIS(SQuantDataSeries), TQuantDataGtDataPoints* pData);
-	EQuantDataResult FPTR(Release)            (FTHIS(SQuantDataSeries));
+	// Sets the desired data provider.
+	EQuantDataResult FPTR(SetProvider) (FTHIS(SQuantDataSeries), const TQuantDataProviderSettings* pSettings);
+
+	// Returns an array of native periods supported of the selected data provider.
+	EQuantDataResult FPTR(GetPeriods)  (FTHIS(SQuantDataSeries), IQuantDataPeriods** ppPeriods);
+
+	// Returns an array of supported symbols by the selected data provider.
+	// The provider may return less symbols than it actually supports.
+	EQuantDataResult FPTR(GetSymbols)  (FTHIS(SQuantDataSeries), IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
+	EQuantDataResult FPTR(Download)    (FTHIS(SQuantDataSeries), const TQuantDataDownloadSettings* pSettings);
+	EQuantDataResult FPTR(Load)        (FTHIS(SQuantDataSeries), const TQuantDataLoadSettings* pSettings);
+	EQuantDataResult FPTR(Save)        (FTHIS(SQuantDataSeries), const TQuantDataSaveSettings* pSettings);
+	EQuantDataResult FPTR(GetT1)       (FTHIS(SQuantDataSeries), TQuantDataT1s** ppData);
+	EQuantDataResult FPTR(GetT2)       (FTHIS(SQuantDataSeries), TQuantDataT2s** ppData);
+	EQuantDataResult FPTR(GetT6)       (FTHIS(SQuantDataSeries), TQuantDataT6s** ppData);
+	EQuantDataResult FPTR(GetT8)       (FTHIS(SQuantDataSeries), TQuantDataT8s** ppData);
+	EQuantDataResult FPTR(GetGtick)    (FTHIS(SQuantDataSeries), TQuantDataGtDataPoints** ppData);
+	EQuantDataResult FPTR(SetT1)       (FTHIS(SQuantDataSeries), TQuantDataT1s* pData);
+	EQuantDataResult FPTR(SetT2)       (FTHIS(SQuantDataSeries), TQuantDataT2s* pData);
+	EQuantDataResult FPTR(SetT6)       (FTHIS(SQuantDataSeries), TQuantDataT6s* pData);
+	EQuantDataResult FPTR(SetT8)       (FTHIS(SQuantDataSeries), TQuantDataT8s* pData);
+	EQuantDataResult FPTR(SetGtick)    (FTHIS(SQuantDataSeries), TQuantDataGtDataPoints* pData);
+	EQuantDataResult FPTR(Release)     (FTHIS(SQuantDataSeries));
 };
 ITYPE(SQuantDataSeries, IQuantDataSeries)
 
@@ -377,11 +383,11 @@ struct SQuantDataSeries
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings) {
 		return m_functions.SetProvider(this, pSettings);
 	}
-	EQuantDataResult GetNativePeriods(IQuantDataPeriods** ppPeriods) {
-		return m_functions.GetNativePeriods(this, ppPeriods);
+	EQuantDataResult GetPeriods(IQuantDataPeriods** ppPeriods) {
+		return m_functions.GetPeriods(this, ppPeriods);
 	}
-	EQuantDataResult GetSupportedSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) {
-		return m_functions.GetSupportedSymbols(this, ppSymbols, pSettings);
+	EQuantDataResult GetSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) {
+		return m_functions.GetSymbols(this, ppSymbols, pSettings);
 	}
 	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings) {
 		return m_functions.Download(this, pSettings);

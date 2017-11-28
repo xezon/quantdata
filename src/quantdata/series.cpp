@@ -32,7 +32,7 @@ EQuantDataResult CSeries::SetProvider(const TQuantDataProviderSettings* pSetting
 	return EQuantDataResult::InvalidProvider;
 }
 
-EQuantDataResult CSeries::GetNativePeriods(IQuantDataPeriods** ppPeriods)
+EQuantDataResult CSeries::GetPeriods(IQuantDataPeriods** ppPeriods)
 {
 	if (!ppPeriods)
 		return EQuantDataResult::InvalidArgument;
@@ -60,6 +60,7 @@ EQuantDataResult CSeries::ExtractJsonSymbols(
 		size_t index = 0;
 		for (const auto& it : object)
 		{
+			// "USD" : "US Dollar"
 			const utility::string_t& webSymbolName = it.first;
 			const utility::string_t& webSymbolDesc = it.second.as_string();
 
@@ -81,7 +82,7 @@ EQuantDataResult CSeries::ExtractJsonSymbols(
 }
 
 EQuantDataResult CSeries::ExtractCsvSymbols(
-const web::http::http_response& response, TSymbolInfos& symbolInfos)
+	const web::http::http_response& response, TSymbolInfos& symbolInfos)
 {
 	return EQuantDataResult::Success;
 }
@@ -114,7 +115,7 @@ EQuantDataResult CSeries::DownloadSymbols(
 	return EQuantDataResult::NoDataAvailable;
 }
 
-EQuantDataResult CSeries::GetSupportedSymbols(
+EQuantDataResult CSeries::GetSymbols(
 	IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings)
 {
 	if (!ppSymbols || !pSettings)
