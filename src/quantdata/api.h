@@ -2,6 +2,7 @@
 #pragma once
 
 #include <quantdata.h>
+#include <quantdata/types.h>
 #include <common/util.h>
 #include <cpprest/http_client.h>
 #include <utility>
@@ -141,13 +142,17 @@ enum class ETextFormat { json, csv };
 struct SSymbolSource
 {
 	SSymbolSource() noexcept
-		: url(U("")), format(ETextFormat::json)
+		: url(U("")), format(ETextFormat::json), csv()
 	{}
-	SSymbolSource(TStringT url, ETextFormat format) noexcept
+	template <class Function>
+	SSymbolSource(TStringT url, ETextFormat format, Function function) noexcept
 		: url(url), format(format)
-	{}
+	{
+		function(*this);
+	}
 	TStringT url;
 	ETextFormat format;
+	json::csv_parameters csv;
 };
 
 using TSymbolSources         = std::vector<SSymbolSource>;
@@ -162,10 +167,44 @@ inline void AddSymbolUrls(TProviderSymbolSources& instance, CQuantDataProvider p
 inline TProviderSymbolSources BuildProviderSymbolSources()
 {
 	TProviderSymbolSources instance;
-	AddSymbolUrls(instance, CQuantDataProvider::Oanda       , SSymbolSource(U("v1/instruments/")        , ETextFormat::json));
-	AddSymbolUrls(instance, CQuantDataProvider::AlphaVantage, SSymbolSource(U("digital_currency_list/") , ETextFormat::csv ));
-	AddSymbolUrls(instance, CQuantDataProvider::AlphaVantage, SSymbolSource(U("physical_currency_list/"), ETextFormat::csv ));
-	AddSymbolUrls(instance, CQuantDataProvider::OpenExchange, SSymbolSource(U("api/currencies.json")    , ETextFormat::json));
+	AddSymbolUrls(instance,
+		CQuantDataProvider::Oanda,
+		SSymbolSource(U("v1/instruments/"),
+			ETextFormat::json,
+			[](SSymbolSource&) {}
+		)
+	);
+	AddSymbolUrls(instance,
+		CQuantDataProvider::AlphaVantage,
+		SSymbolSource(U("digital_currency_list/"),
+			ETextFormat::csv,
+			[](SSymbolSource& obj) {
+				obj.csv
+				.column_types("string,string")
+				.column_names("name,desc")
+				.header_lines(1)
+				.assume_header(true); }
+		)
+	);
+	AddSymbolUrls(instance,
+		CQuantDataProvider::AlphaVantage,
+		SSymbolSource(U("physical_currency_list/"),
+			ETextFormat::csv,
+			[](SSymbolSource& obj) {
+				obj.csv
+				.column_types("string,string")
+				.column_names("name,desc")
+				.header_lines(1)
+				.assume_header(true); }
+		)
+	);
+	AddSymbolUrls(instance,
+		CQuantDataProvider::OpenExchange,
+		SSymbolSource(U("api/currencies.json"),
+			ETextFormat::json,
+			[](SSymbolSource&) {}
+		)
+	);
 	return instance;
 }
 

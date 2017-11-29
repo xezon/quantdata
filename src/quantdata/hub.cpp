@@ -47,7 +47,8 @@ EQuantDataResult CHub::GetPeriods(IQuantDataPeriods** ppPeriods)
 }
 
 EQuantDataResult CHub::ExtractJsonSymbols(
-	const web::http::http_response& response, TSymbolInfos& symbolInfos)
+	const web::http::http_response& response,
+	TSymbolInfos& symbolInfos)
 {
 	try
 	{
@@ -82,7 +83,9 @@ EQuantDataResult CHub::ExtractJsonSymbols(
 }
 
 EQuantDataResult CHub::ExtractCsvSymbols(
-	const web::http::http_response& response, TSymbolInfos& symbolInfos)
+	const web::http::http_response& response,
+	TSymbolInfos& symbolInfos,
+	const json::csv_parameters& csv)
 {
 	std::string utf8string;
 
@@ -98,18 +101,10 @@ EQuantDataResult CHub::ExtractCsvSymbols(
 	istringstream utf8stream(utf8string.c_str());
 	stl::clear_mem(utf8string);
 	
-	json::csv_parameters params;
-	params.column_types("string,string");
-	params.column_names("name,desc");
-	params.header_lines(1);
-	params.assume_header(true);
-	params.ignore_empty_values(true);
-	params.unquoted_empty_value_is_null(true);
-
 	try
 	{
 		json::json_decoder<json::json> decoder;
-		json::csv_reader reader(utf8stream, decoder, params);
+		json::csv_reader reader(utf8stream, decoder, csv);
 		reader.read();
 
 		json::json json = decoder.get_result();
@@ -126,7 +121,9 @@ EQuantDataResult CHub::ExtractCsvSymbols(
 }
 
 EQuantDataResult CHub::DownloadSymbols(
-	const SProviderInfo& providerInfo, const size_t symbolListIndex, TSymbolInfos& symbolInfos)
+	const SProviderInfo& providerInfo,
+	const size_t symbolListIndex,
+	TSymbolInfos& symbolInfos)
 {
 	const TSymbolSources& symbolSources = providerInfo.symbolSources;
 	if (symbolListIndex < symbolSources.size())
@@ -143,7 +140,7 @@ EQuantDataResult CHub::DownloadSymbols(
 			switch (symbolSource.format)
 			{
 			case ETextFormat::json: return ExtractJsonSymbols(response, symbolInfos);
-			case ETextFormat::csv: return ExtractCsvSymbols(response, symbolInfos);
+			case ETextFormat::csv: return ExtractCsvSymbols(response, symbolInfos, symbolSource.csv);
 			}
 		}
 

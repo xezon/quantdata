@@ -82,8 +82,8 @@ struct json_type_traits <Json, quantdata::SSymbolInfo>
 	static quantdata::SSymbolInfo as(const Json& json)
 	{
 		quantdata::SSymbolInfo symbolInfo;
-		symbolInfo.name = json.at(0).as<string>();
-		symbolInfo.desc = json.at(1).as<string>();
+		symbolInfo.name = std::move(json.at(0).as<string>());
+		symbolInfo.desc = std::move(json.at(1).as<string>());
 		return symbolInfo;
 	}
 
