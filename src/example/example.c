@@ -41,10 +41,15 @@ int main(int argc, char** argv)
 	TQuantDataSymbolsSettings symbolSettings = {0};
 	symbolSettings.download = 0;
 	symbolSettings.index = QuantDataSymbolSource_Default;
+
 	IQuantDataSymbols* pSymbols = 0;
 	result = pHub->GetSymbols(pHub, &pSymbols, &symbolSettings);
 	assert(result == QuantDataResult_Success);
-	pSymbols->Release(pSymbols);
+	SAFE_RELEASE(pSymbols);
+
+	symbolSettings.download = 1;
+	result = pHub->GetSymbols(pHub, &pSymbols, &symbolSettings);
+	SAFE_RELEASE(pSymbols);
 
 	providerSettings.provider = QuantDataProvider_OpenExchange;
 	providerSettings.apikey = "test";
@@ -52,7 +57,7 @@ int main(int argc, char** argv)
 	symbolSettings.download = 1;
 	result = pHub->GetSymbols(pHub, &pSymbols, &symbolSettings);
 	assert(result == QuantDataResult_Success);
-	pSymbols->Release(pSymbols);
+	SAFE_RELEASE(pSymbols);
 
 	TQuantDataDownloadSettings downloadSettings = {0};
 	downloadSettings.symbol = "MSFT";
@@ -61,8 +66,7 @@ int main(int argc, char** argv)
 	result = pHub->Download(pHub, &downloadSettings);
 	assert(result == QuantDataResult_Success);
 
-	result = pHub->Release(pHub);
-	assert(result == QuantDataResult_Success);
+	SAFE_RELEASE(pHub);
 
 	return 0;
 }

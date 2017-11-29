@@ -5,6 +5,7 @@
 #include <quantdata/types.h>
 #include <common/util.h>
 #include <common/mem.h>
+#include <utility>
 
 namespace quantdata {
 
@@ -57,4 +58,39 @@ struct SSymbolInfo
 	string desc;
 };
 
+using TSymbolInfos = vector<SSymbolInfo>;
+
 } // namespace quantdata
+
+namespace jsoncons {
+
+template <class Json>
+struct json_type_traits <Json, quantdata::SSymbolInfo>
+{
+	static const bool is_assignable = true;
+
+	static bool is(const Json& json) noexcept
+	{
+		if (json.is_object())
+			if (json.size() == 2)
+				if (json.at(0).is_string())
+					if (json.at(1).is_string())
+						return true;
+		return false;
+	}
+
+	static quantdata::SSymbolInfo as(const Json& json)
+	{
+		quantdata::SSymbolInfo symbolInfo;
+		symbolInfo.name = json.at(0).as<string>();
+		symbolInfo.desc = json.at(1).as<string>();
+		return symbolInfo;
+	}
+
+	static Json to_json(const quantdata::SSymbolInfo& symbolInfo)
+	{
+		return Json::make_array({symbolInfo.name, symbolInfo.desc});
+	}
+};
+
+} // namespace jsoncons

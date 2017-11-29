@@ -42,10 +42,15 @@ int main(int argc, char** argv)
 	TQuantDataSymbolsSettings symbolSettings;
 	symbolSettings.download = false;
 	symbolSettings.index = EQuantDataSymbolSource::Default;
+
 	IQuantDataSymbols* pSymbols = nullptr;
 	result = pHub->GetSymbols(&pSymbols, &symbolSettings);
 	assert(result == EQuantDataResult::Success);
-	pSymbols->Release();
+	util::SafeRelease(pSymbols);
+
+	symbolSettings.download = true;
+	result = pHub->GetSymbols(&pSymbols, &symbolSettings);
+	util::SafeRelease(pSymbols);
 
 	providerSettings.provider = EQuantDataProvider::OpenExchange;
 	providerSettings.apikey = "test";
@@ -53,7 +58,7 @@ int main(int argc, char** argv)
 	symbolSettings.download = true;
 	result = pHub->GetSymbols(&pSymbols, &symbolSettings);
 	assert(result == EQuantDataResult::Success);
-	pSymbols->Release();
+	util::SafeRelease(pSymbols);
 
 	TQuantDataDownloadSettings downloadSettings;
 	downloadSettings.symbol = "MSFT";
@@ -62,8 +67,7 @@ int main(int argc, char** argv)
 	result = pHub->Download(&downloadSettings);
 	assert(result == EQuantDataResult::Success);
 
-	result = pHub->Release();
-	assert(result == EQuantDataResult::Success);
+	util::SafeRelease(pHub);
 
 	return 0;
 }

@@ -6,8 +6,6 @@
 #include <quantdata/types.h>
 #include <quantdata/array/new_array.h>
 #include <quantdata/array/static_array.h>
-#include <common/mem.h>
-#include <vector>
 
 namespace web {
 namespace http {
@@ -26,8 +24,6 @@ protected:
 	using TInterface          = IQuantDataHub;
 
 private:
-	using TSymbolInfos        = vector<SSymbolInfo>;
-
 	using TStaticPeriodArray  = CArrayFunctions<CStaticArray<IQuantDataPeriods, TQuantDataPeriod>>;
 	using TStaticSymbolArray  = CArrayFunctions<CStaticArray<IQuantDataSymbols, TQuantDataSymbolInfo>>;
 	using TNewSymbolArray     = CArrayFunctions<CNewArray   <IQuantDataSymbols, TQuantDataSymbolInfo, SSymbolInfo>>;

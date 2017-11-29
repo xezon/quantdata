@@ -73,17 +73,55 @@ EQuantDataResult CHub::ExtractJsonSymbols(
 	}
 	catch (const web::http::http_exception& e)
 	{
-		return HandleHttpException(e);
+		return HandleException(e);
 	}
 	catch (const web::json::json_exception& e)
 	{
-		return HandleJsonException(e);
+		return HandleException(e);
 	}
 }
 
 EQuantDataResult CHub::ExtractCsvSymbols(
 	const web::http::http_response& response, TSymbolInfos& symbolInfos)
 {
+	std::string utf8string;
+
+	try
+	{
+		utf8string = response.extract_utf8string(true).get();
+	}
+	catch (const web::http::http_exception& e)
+	{
+		return HandleException(e);
+	}
+
+	istringstream utf8stream(utf8string.c_str());
+	stl::clear_mem(utf8string);
+	
+	json::csv_parameters params;
+	params.column_types("string,string");
+	params.column_names("name,desc");
+	params.header_lines(1);
+	params.assume_header(true);
+	params.ignore_empty_values(true);
+	params.unquoted_empty_value_is_null(true);
+
+	try
+	{
+		json::json_decoder<json::json> decoder;
+		json::csv_reader reader(utf8stream, decoder, params);
+		reader.read();
+
+		json::json json = decoder.get_result();
+		stl::clear_mem(utf8stream);
+
+		symbolInfos = json.as<TSymbolInfos>();
+	}
+	catch (const json::json_exception& e)
+	{
+		return HandleException(e);
+	}
+
 	return EQuantDataResult::Success;
 }
 

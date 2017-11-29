@@ -16,7 +16,7 @@
       <EnableModules>true</EnableModules>
       <RuntimeLibrary Condition="'$(Configuration)'=='Debug'">MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\include;..\src;..\..\commonlib\include;..\..\gsl\include;..\..\cpprestsdk\Release\include;..\..\genotick-cpp\include;..\..\zorro-dll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\src;..\..\commonlib\include;..\..\gsl\include;..\..\cpprestsdk\Release\include;..\..\jsoncons\include;..\..\genotick-cpp\include;..\..\zorro-dll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
