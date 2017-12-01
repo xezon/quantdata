@@ -183,7 +183,8 @@ inline TProviderSymbolSources BuildProviderSymbolSources()
 				.column_types("string,string")
 				.column_names("name,desc")
 				.header_lines(1)
-				.assume_header(true); }
+				.assume_header(true)
+				.ignore_empty_lines(true); }
 		)
 	);
 	AddSymbolUrls(instance,
@@ -195,7 +196,8 @@ inline TProviderSymbolSources BuildProviderSymbolSources()
 				.column_types("string,string")
 				.column_names("name,desc")
 				.header_lines(1)
-				.assume_header(true); }
+				.assume_header(true)
+				.ignore_empty_lines(true); }
 		)
 	);
 	AddSymbolUrls(instance,

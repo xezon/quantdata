@@ -49,7 +49,7 @@ typedef struct SGenotickDataPoint TGenotickDataPoint;
 typedef const char* TQuantDataString;
 typedef double      TQuantDataOletime;
 typedef int64_t     TQuantDataUnixtime;
-typedef uint32_t    TQuantDataSize;
+typedef size_t      TQuantDataSize;
 typedef uint8_t     TQuantDataBool;
 typedef alloc_func  TQuantDataAlloc;
 typedef free_func   TQuantDataFree;
