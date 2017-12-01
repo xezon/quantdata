@@ -8,17 +8,17 @@
 
 namespace quantdata {
 
-template <class Interface, class Element, class Buffer = Element>
+template <class Interface, class Elements, class Buffers>
 class CNewArray : public Interface
 {
 protected:
 	using TInterface = Interface;
-	using TElement   = Element;
-	using TBuffer    = Buffer;
 
 public:
-	using TElements  = vector<TElement>;
-	using TBuffers   = vector<TBuffer>;
+	using TElements  = Elements;
+	using TBuffers   = Buffers;
+	using TElement   = typename TElements::value_type;
+	using TBuffer    = typename TBuffers::value_type;
 
 protected:
 	CNewArray(TElements&& elements, TBuffers&& buffers)
