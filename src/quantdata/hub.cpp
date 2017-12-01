@@ -50,36 +50,38 @@ EQuantDataResult CHub::ExtractJsonSymbols(
 	const web::http::http_response& response,
 	TSymbolInfos& symbolInfos)
 {
+	std::string utf8string;
+
 	try
 	{
-		const web::json::value& value = response.extract_json().get();
-		const web::json::object& object = value.as_object();
-
-		const size_t size = object.size();
-		symbolInfos.resize(size);
-
-		size_t index = 0;
-		for (const auto& it : object)
-		{
-			// "USD" : "US Dollar"
-			const utility::string_t& webSymbolName = it.first;
-			const utility::string_t& webSymbolDesc = it.second.as_string();
-
-			SSymbolInfo& symbolInfo = symbolInfos[index++];
-			symbolInfo.name = std::move(utf8::to_utf8(webSymbolName));
-			symbolInfo.desc = std::move(utf8::to_utf8(webSymbolDesc));
-		}
-
-		return EQuantDataResult::Success;
+		utf8string = response.extract_utf8string(false).get();
 	}
 	catch (const web::http::http_exception& e)
 	{
 		return HandleException(e);
 	}
-	catch (const web::json::json_exception& e)
+
+	try
+	{
+		json::json json = json::json::parse(utf8string);
+		stl::clear_mem(utf8string);
+		const size_t size = json.size();
+		symbolInfos.resize(size);
+
+		size_t index = 0;
+		for (const auto& obj : json.object_range())
+		{
+			SSymbolInfo& symbolInfo = symbolInfos[index++];
+			symbolInfo.name = obj.key();
+			symbolInfo.desc = obj.value().as_string();
+		}
+	}
+	catch (const json::json_exception& e)
 	{
 		return HandleException(e);
 	}
+
+	return EQuantDataResult::Success;
 }
 
 EQuantDataResult CHub::ExtractCsvSymbols(
@@ -98,18 +100,10 @@ EQuantDataResult CHub::ExtractCsvSymbols(
 		return HandleException(e);
 	}
 
-	istringstream utf8stream(utf8string.c_str());
-	stl::clear_mem(utf8string);
-	
 	try
 	{
-		json::json_decoder<json::json> decoder;
-		json::csv_reader reader(utf8stream, decoder, csv);
-		reader.read();
-
-		json::json json = decoder.get_result();
-		stl::clear_mem(utf8stream);
-
+		json::json json = jsoncons::csv::decode_csv<json::json>(utf8string, csv);
+		stl::clear_mem(utf8string);
 		symbolInfos = json.as<TSymbolInfos>();
 	}
 	catch (const json::json_exception& e)
@@ -132,7 +126,17 @@ EQuantDataResult CHub::DownloadSymbols(
 		web::http::client::http_client client(providerInfo.url);
 		web::http::http_request request(web::http::methods::GET);
 		request.set_request_uri(symbolSource.url);
-		web::http::http_response response = client.request(request).get();
+		web::http::http_response response;
+		
+		try
+		{
+			response = client.request(request).get();
+		}
+		catch (const web::http::http_exception& e)
+		{
+			return HandleException(e);
+		}
+		
 		web::http::status_code code = response.status_code();
 
 		if (code == web::http::status_codes::OK)

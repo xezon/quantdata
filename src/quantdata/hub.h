@@ -21,14 +21,14 @@ struct SProviderInfo;
 class CHub : public IQuantDataHub
 {
 protected:
-	using TInterface          = IQuantDataHub;
+	using TInterface = IQuantDataHub;
 
 private:
 	using TQuantDataSymbolInfos = std::vector<TQuantDataSymbolInfo>;
 
-	using TStaticPeriodArray  = CArrayFunctions<CStaticArray<IQuantDataPeriods, TQuantDataPeriod>>;
-	using TStaticSymbolArray  = CArrayFunctions<CStaticArray<IQuantDataSymbols, TQuantDataSymbolInfo>>;
-	using TNewSymbolArray     = CArrayFunctions<CNewArray   <IQuantDataSymbols, TQuantDataSymbolInfos, TSymbolInfos>>;
+	using TStaticPeriodArray = CArrayFunctions<CStaticArray<IQuantDataPeriods, TQuantDataPeriod>>;
+	using TStaticSymbolArray = CArrayFunctions<CStaticArray<IQuantDataSymbols, TQuantDataSymbolInfo>>;
+	using TNewSymbolArray    = CArrayFunctions<CNewArray   <IQuantDataSymbols, TQuantDataSymbolInfos, TSymbolInfos>>;
 
 protected:
 	CHub(const CManager& manager);
