@@ -70,11 +70,12 @@ typedef free_func   TQuantDataFree;
 // QuantDataResult values 100 to 600 
 // are reserved for http response codes
 
-#define QuantDataProvider_Quandl       0
-#define QuantDataProvider_Oanda        1
-#define QuantDataProvider_AlphaVantage 2
-#define QuantDataProvider_OpenExchange 3
-#define QuantDataProvider_TrueFx       4
+#define QuantDataProvider_Quandl        0
+#define QuantDataProvider_Oanda         1
+#define QuantDataProvider_OandaPractice 2
+#define QuantDataProvider_AlphaVantage  3
+#define QuantDataProvider_OpenExchange  4
+#define QuantDataProvider_TrueFx        5
 
 #define QuantDataSymbolSource_Default               0
 #define QuantDataSymbolSource_AV_DigitalCurrencies  0
@@ -119,11 +120,12 @@ typedef free_func   TQuantDataFree;
 #include <array>
 
 #define QUANTDATA_PROVIDER_LIST(e) \
-	e( Quandl       , = QuantDataProvider_Quandl       , 0 ) \
-	e( Oanda        , = QuantDataProvider_Oanda        , 0 ) \
-	e( AlphaVantage , = QuantDataProvider_AlphaVantage , 0 ) \
-	e( OpenExchange , = QuantDataProvider_OpenExchange , 0 ) \
-	e( TrueFx       , = QuantDataProvider_TrueFx       , 0 ) \
+	e( Quandl        , = QuantDataProvider_Quandl        , 0 ) \
+	e( Oanda         , = QuantDataProvider_Oanda         , 0 ) \
+	e( OandaPractice , = QuantDataProvider_OandaPractice , 0 ) \
+	e( AlphaVantage  , = QuantDataProvider_AlphaVantage  , 0 ) \
+	e( OpenExchange  , = QuantDataProvider_OpenExchange  , 0 ) \
+	e( TrueFx        , = QuantDataProvider_TrueFx        , 0 ) \
 
 DEFINE_DATA_ENUM_CLASS(EQuantDataProvider, CQuantDataProvider, uint32_t, QUANTDATA_PROVIDER_LIST, int8_t)
 #undef QUANTDATA_PROVIDER_LIST

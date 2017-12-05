@@ -7,13 +7,14 @@
 
 namespace quantdata {
 
-using TStringT       = internal::TStringT;
-using TPeriods       = internal::TPeriods;
-using TSymbolSource  = internal::SSymbolSource;
-using TSymbolSources = internal::TSymbolSources;
-using TSymbols       = internal::TSymbols;
-using TSymbolsList   = internal::TSymbolsList;
-using ETextFormat    = internal::ETextFormat;
+using TStringT            = internal::TStringT;
+using TPeriods            = internal::TPeriods;
+using ESymbolSourceFormat = internal::ESymbolSourceFormat;
+using ESymbolSourceFlags  = internal::ESymbolSourceFlags;
+using SSymbolSource       = internal::SSymbolSource;
+using TSymbolSources      = internal::TSymbolSources;
+using TSymbols            = internal::TSymbols;
+using TSymbolsList        = internal::TSymbolsList;
 
 struct SProviderInfo
 {

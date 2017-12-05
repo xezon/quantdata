@@ -122,10 +122,10 @@ EQuantDataResult CHub::DownloadSymbols(
 	const TSymbolSources& symbolSources = providerInfo.symbolSources;
 	if (symbolListIndex < symbolSources.size())
 	{
-		const TSymbolSource& symbolSource = symbolSources[symbolListIndex];
+		const SSymbolSource& symbolSource = symbolSources[symbolListIndex];
 		web::http::client::http_client client(providerInfo.url);
 		web::http::http_request request(web::http::methods::GET);
-		request.set_request_uri(symbolSource.url);
+		request.set_request_uri(symbolSource.query);
 		web::http::http_response response;
 		
 		try
@@ -143,8 +143,8 @@ EQuantDataResult CHub::DownloadSymbols(
 		{
 			switch (symbolSource.format)
 			{
-			case ETextFormat::json: return ExtractJsonSymbols(response, symbolInfos);
-			case ETextFormat::csv: return ExtractCsvSymbols(response, symbolInfos, symbolSource.csv);
+			case ESymbolSourceFormat::json: return ExtractJsonSymbols(response, symbolInfos);
+			case ESymbolSourceFormat::csv: return ExtractCsvSymbols(response, symbolInfos, symbolSource.csv);
 			}
 		}
 
