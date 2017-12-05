@@ -10,7 +10,8 @@
 
 // https://quant.stackexchange.com/questions/141/what-data-sources-are-available-online
 
-#pragma warning(disable:4100 4189)
+#pragma warning(push)
+#pragma warning(disable : 4100 4189)
 
 namespace quantdata {
 
@@ -204,7 +205,7 @@ EQuantDataResult CHub::GetSymbols(
 	return result;
 }
 
-EQuantDataResult CHub::Download(const TQuantDataDownloadSettings* pSettings)
+EQuantDataResult CHub::DownloadOhlc(IQuantDataOhlc** ppOhlc, const TQuantDataDownloadSettings* pSettings)
 {
 	if (!IsValidDownload(pSettings))
 		return EQuantDataResult::InvalidArgument;
@@ -217,62 +218,17 @@ EQuantDataResult CHub::Download(const TQuantDataDownloadSettings* pSettings)
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CHub::Load(const TQuantDataLoadSettings* pSettings)
+EQuantDataResult CHub::DownloadTick(IQuantDataTick** ppTick, const TQuantDataDownloadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CHub::Save(const TQuantDataSaveSettings* pSettings) const
+EQuantDataResult CHub::LoadOhlc(IQuantDataOhlc** ppOhlc, const TQuantDataLoadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CHub::GetT1(TQuantDataT1s** ppData) const
-{
-	return EQuantDataResult::Success;
-}
-
-EQuantDataResult CHub::GetT2(TQuantDataT2s** ppData) const
-{
-	return EQuantDataResult::Success;
-}
-
-EQuantDataResult CHub::GetT6(TQuantDataT6s** ppData) const
-{
-	return EQuantDataResult::Success;
-}
-
-EQuantDataResult CHub::GetT8(TQuantDataT8s** ppData) const
-{
-	return EQuantDataResult::Success;
-}
-
-EQuantDataResult CHub::GetGtick(TQuantDataGtDataPoints** ppData) const
-{
-	return EQuantDataResult::Success;
-}
-
-EQuantDataResult CHub::SetT1(TQuantDataT1s* pData)
-{
-	return EQuantDataResult::Success;
-}
-
-EQuantDataResult CHub::SetT2(TQuantDataT2s* pData)
-{
-	return EQuantDataResult::Success;
-}
-
-EQuantDataResult CHub::SetT6(TQuantDataT6s* pData)
-{
-	return EQuantDataResult::Success;
-}
-
-EQuantDataResult CHub::SetT8(TQuantDataT8s* pData)
-{
-	return EQuantDataResult::Success;
-}
-
-EQuantDataResult CHub::SetGtick(TQuantDataGtDataPoints* pData)
+EQuantDataResult CHub::LoadTick(IQuantDataTick** ppTick, const TQuantDataLoadSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
@@ -285,4 +241,4 @@ EQuantDataResult CHub::Release()
 
 } // namespace quantdata
 
-#pragma warning(default:4100 4189)
+#pragma warning(pop)

@@ -23,10 +23,6 @@ int main(int argc, char** argv)
 	result = QuantData_CreateHub(&pHub);
 	assert(result == QuantDataResult_Success);
 
-	TQuantDataLoadSettings loadSettings = {0};
-	result = pHub->Load(pHub, &loadSettings);
-	assert(result == QuantDataResult_Success);
-
 	TQuantDataProviderSettings providerSettings = {0};
 	providerSettings.provider = QuantDataProvider_AlphaVantage;
 	providerSettings.apikey = apikey_alphavantage;
@@ -63,8 +59,6 @@ int main(int argc, char** argv)
 	downloadSettings.symbol = "MSFT";
 	downloadSettings.period = QuantDataPeriod_Minute;
 	downloadSettings.adjusted = 0;
-	result = pHub->Download(pHub, &downloadSettings);
-	assert(result == QuantDataResult_Success);
 
 	SAFE_RELEASE(pHub);
 

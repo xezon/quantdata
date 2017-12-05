@@ -317,6 +317,7 @@ struct SQuantDataPeriodsFunctions
 };
 ITYPE(SQuantDataPeriods, IQuantDataPeriods)
 
+
 struct SQuantDataSymbolsFunctions
 {
 	const TQuantDataSymbolInfo* FPTR(Get)     (FTHIS(SQuantDataSymbols), TQuantDataSize index);
@@ -325,33 +326,52 @@ struct SQuantDataSymbolsFunctions
 };
 ITYPE(SQuantDataSymbols, IQuantDataSymbols)
 
+
+struct SQuantDataOhlcFunctions
+{
+	EQuantDataResult FPTR(Save) (FTHIS(SQuantDataOhlc), const TQuantDataSaveSettings* pSettings);
+	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataOhlc));
+};
+ITYPE(SQuantDataOhlc, IQuantDataOhlc)
+
+
+struct SQuantDataTickFunctions
+{
+	EQuantDataResult FPTR(Save) (FTHIS(SQuantDataTick), const TQuantDataSaveSettings* pSettings);
+	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataTick));
+};
+ITYPE(SQuantDataTick, IQuantDataTick)
+
+
 struct SQuantDataHubFunctions
 {
 	// Sets the desired data provider.
 	EQuantDataResult FPTR(SetProvider) (FTHIS(SQuantDataHub), const TQuantDataProviderSettings* pSettings);
 
 	// Returns an array of native periods supported of the selected data provider.
-	EQuantDataResult FPTR(GetPeriods)  (FTHIS(SQuantDataHub), IQuantDataPeriods** ppPeriods);
+	EQuantDataResult FPTR(GetPeriods) (FTHIS(SQuantDataHub), IQuantDataPeriods** ppPeriods);
 
 	// Returns an array of supported symbols by the selected data provider.
 	// The provider may return less symbols than it actually supports.
-	EQuantDataResult FPTR(GetSymbols)  (FTHIS(SQuantDataHub), IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
-	EQuantDataResult FPTR(Download)    (FTHIS(SQuantDataHub), const TQuantDataDownloadSettings* pSettings);
-	EQuantDataResult FPTR(Load)        (FTHIS(SQuantDataHub), const TQuantDataLoadSettings* pSettings);
-	EQuantDataResult FPTR(Save)        (FTHIS(SQuantDataHub), const TQuantDataSaveSettings* pSettings);
-	EQuantDataResult FPTR(GetT1)       (FTHIS(SQuantDataHub), TQuantDataT1s** ppData);
-	EQuantDataResult FPTR(GetT2)       (FTHIS(SQuantDataHub), TQuantDataT2s** ppData);
-	EQuantDataResult FPTR(GetT6)       (FTHIS(SQuantDataHub), TQuantDataT6s** ppData);
-	EQuantDataResult FPTR(GetT8)       (FTHIS(SQuantDataHub), TQuantDataT8s** ppData);
-	EQuantDataResult FPTR(GetGtick)    (FTHIS(SQuantDataHub), TQuantDataGtDataPoints** ppData);
-	EQuantDataResult FPTR(SetT1)       (FTHIS(SQuantDataHub), TQuantDataT1s* pData);
-	EQuantDataResult FPTR(SetT2)       (FTHIS(SQuantDataHub), TQuantDataT2s* pData);
-	EQuantDataResult FPTR(SetT6)       (FTHIS(SQuantDataHub), TQuantDataT6s* pData);
-	EQuantDataResult FPTR(SetT8)       (FTHIS(SQuantDataHub), TQuantDataT8s* pData);
-	EQuantDataResult FPTR(SetGtick)    (FTHIS(SQuantDataHub), TQuantDataGtDataPoints* pData);
-	EQuantDataResult FPTR(Release)     (FTHIS(SQuantDataHub));
+	EQuantDataResult FPTR(GetSymbols) (FTHIS(SQuantDataHub), IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
+
+	// Downloads ohlc data (with timestamp) from the selected provider if available.
+	EQuantDataResult FPTR(DownloadOhlc) (FTHIS(SQuantDataHub), IQuantDataOhlc** ppOhlc, const TQuantDataDownloadSettings* pSettings);
+
+	// Downloads tick data (with timestamp) from the selected provider if available.
+	EQuantDataResult FPTR(DownloadTick) (FTHIS(SQuantDataHub), IQuantDataTick** ppTick, const TQuantDataDownloadSettings* pSettings);
+
+	// Opens ohlc data (with timestamp) from a given file.
+	EQuantDataResult FPTR(LoadOhlc) (FTHIS(SQuantDataHub), IQuantDataOhlc** ppOhlc, const TQuantDataLoadSettings* pSettings);
+
+	// Opens tick data (with timestamp) from a given file.
+	EQuantDataResult FPTR(LoadTick) (FTHIS(SQuantDataHub), IQuantDataTick** ppTick, const TQuantDataLoadSettings* pSettings);
+
+	// Deletes this object. This function must be called exactly once and the callee object can no longer be used afterwards.
+	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataHub));
 };
 ITYPE(SQuantDataHub, IQuantDataHub)
+
 
 #ifdef __cplusplus
 struct SQuantDataPeriods
@@ -380,6 +400,35 @@ protected:
 	const TInterfaceFunctions m_functions ZERO_INIT;
 };
 
+struct SQuantDataOhlc
+{
+	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) {
+		return m_functions.Save(this, pSettings);
+	}
+	EQuantDataResult Release() {
+		return m_functions.Release(this);
+	}
+protected:
+	~SQuantDataOhlc() {}
+	typedef struct SQuantDataOhlcFunctions TInterfaceFunctions;
+	const TInterfaceFunctions m_functions ZERO_INIT;
+};
+
+
+struct SQuantDataTick
+{
+	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) {
+		return m_functions.Save(this, pSettings);
+	}
+	EQuantDataResult Release() {
+		return m_functions.Release(this);
+	}
+protected:
+	~SQuantDataTick() {}
+	typedef struct SQuantDataTickFunctions TInterfaceFunctions;
+	const TInterfaceFunctions m_functions ZERO_INIT;
+};
+
 struct SQuantDataHub
 {
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings) {
@@ -391,43 +440,17 @@ struct SQuantDataHub
 	EQuantDataResult GetSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) {
 		return m_functions.GetSymbols(this, ppSymbols, pSettings);
 	}
-	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings) {
-		return m_functions.Download(this, pSettings);
+	EQuantDataResult DownloadOhlc(IQuantDataOhlc** ppOhlc, const TQuantDataDownloadSettings* pSettings) {
+		return m_functions.DownloadOhlc(this, ppOhlc, pSettings);
 	}
-	EQuantDataResult Load(const TQuantDataLoadSettings* pSettings) {
-		return m_functions.Load(this, pSettings);
+	EQuantDataResult DownloadTick(IQuantDataTick** ppTick, const TQuantDataDownloadSettings* pSettings) {
+		return m_functions.DownloadTick(this, ppTick, pSettings);
 	}
-	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) {
-		return m_functions.Save(this, pSettings);
+	EQuantDataResult LoadOhlc(IQuantDataOhlc** ppOhlc, const TQuantDataLoadSettings* pSettings) {
+		return m_functions.LoadOhlc(this, ppOhlc, pSettings);
 	}
-	EQuantDataResult GetT1(TQuantDataT1s** ppData) {
-		return m_functions.GetT1(this, ppData);
-	}
-	EQuantDataResult GetT2(TQuantDataT2s** ppData) {
-		return m_functions.GetT2(this, ppData); }
-	EQuantDataResult GetT6(TQuantDataT6s** ppData) {
-		return m_functions.GetT6(this, ppData);
-	}
-	EQuantDataResult GetT8(TQuantDataT8s** ppData) {
-		return m_functions.GetT8(this, ppData);
-	}
-	EQuantDataResult GetGtick(TQuantDataGtDataPoints** ppData) {
-		return m_functions.GetGtick(this, ppData);
-	}
-	EQuantDataResult SetT1(TQuantDataT1s* pData) {
-		return m_functions.SetT1(this, pData);
-	}
-	EQuantDataResult SetT2(TQuantDataT2s* pData) {
-		return m_functions.SetT2(this, pData);
-	}
-	EQuantDataResult SetT6(TQuantDataT6s* pData) {
-		return m_functions.SetT6(this, pData);
-	}
-	EQuantDataResult SetT8(TQuantDataT8s* pData) {
-		return m_functions.SetT8(this, pData);
-	}
-	EQuantDataResult SetGtick(TQuantDataGtDataPoints* pData) {
-		return m_functions.SetGtick(this, pData);
+	EQuantDataResult LoadTick(IQuantDataTick** ppTick, const TQuantDataLoadSettings* pSettings) {
+		return m_functions.LoadTick(this, ppTick, pSettings);
 	}
 	EQuantDataResult Release() {
 		return m_functions.Release(this);

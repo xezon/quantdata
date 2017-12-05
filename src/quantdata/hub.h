@@ -36,19 +36,10 @@ protected:
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings);
 	EQuantDataResult GetPeriods(IQuantDataPeriods** ppPeriods);
 	EQuantDataResult GetSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
-	EQuantDataResult Download(const TQuantDataDownloadSettings* pSettings);
-	EQuantDataResult Load(const TQuantDataLoadSettings* pSettings);
-	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) const;
-	EQuantDataResult GetT1(TQuantDataT1s** ppData) const;
-	EQuantDataResult GetT2(TQuantDataT2s** ppData) const;
-	EQuantDataResult GetT6(TQuantDataT6s** ppData) const;
-	EQuantDataResult GetT8(TQuantDataT8s** ppData) const;
-	EQuantDataResult GetGtick(TQuantDataGtDataPoints** ppData) const;
-	EQuantDataResult SetT1(TQuantDataT1s* pData);
-	EQuantDataResult SetT2(TQuantDataT2s* pData);
-	EQuantDataResult SetT6(TQuantDataT6s* pData);
-	EQuantDataResult SetT8(TQuantDataT8s* pData);
-	EQuantDataResult SetGtick(TQuantDataGtDataPoints* pData);
+	EQuantDataResult DownloadOhlc(IQuantDataOhlc** ppOhlc, const TQuantDataDownloadSettings* pSettings);
+	EQuantDataResult DownloadTick(IQuantDataTick** ppTick, const TQuantDataDownloadSettings* pSettings);
+	EQuantDataResult LoadOhlc(IQuantDataOhlc** ppOhlc, const TQuantDataLoadSettings* pSettings);
+	EQuantDataResult LoadTick(IQuantDataTick** ppTick, const TQuantDataLoadSettings* pSettings);
 	EQuantDataResult Release();
 
 private:

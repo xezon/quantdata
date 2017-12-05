@@ -123,6 +123,8 @@
     <ClCompile Include="..\src\dllmain.cpp" />
     <ClCompile Include="..\src\quantdata\manager.cpp" />
     <ClCompile Include="..\src\quantdata\hub.cpp" />
+    <ClCompile Include="..\src\quantdata\ohlc.cpp" />
+    <ClCompile Include="..\src\quantdata\tick.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\jsoncons\include\jsoncons\detail\jsoncons_config.hpp" />
@@ -162,10 +164,14 @@
     <ClInclude Include="..\src\quantdata\checks.h" />
     <ClInclude Include="..\src\quantdata\exceptions.h" />
     <ClInclude Include="..\src\quantdata\manager.h" />
+    <ClInclude Include="..\src\quantdata\ohlc.h" />
+    <ClInclude Include="..\src\quantdata\ohlc_functions.h" />
     <ClInclude Include="..\src\quantdata\structs.h" />
     <ClInclude Include="..\src\quantdata\hub.h" />
     <ClInclude Include="..\src\quantdata\hub_functions.h" />
     <ClInclude Include="..\src\quantdata\api.h" />
+    <ClInclude Include="..\src\quantdata\tick.h" />
+    <ClInclude Include="..\src\quantdata\tick_functions.h" />
     <ClInclude Include="..\src\quantdata\types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
