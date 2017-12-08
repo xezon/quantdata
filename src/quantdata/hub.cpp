@@ -463,10 +463,9 @@ EQuantDataResult CHub::LoadTick(IQuantDataTickBucket** ppTick, const TQuantDataL
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CHub::Release()
+void CHub::Release()
 {
 	mem::placement_g_free(this);
-	return EQuantDataResult::Success;
 }
 
 EQuantDataResult CHub::Download(http_client& client, const http_request& request, http_response& response)

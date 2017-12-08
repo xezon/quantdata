@@ -28,7 +28,7 @@ protected:
 
 	const TElement* Get(TQuantDataSize index) const
 	{
-		return &m_elements[index];
+		return &m_elements.at(index);
 	}
 
 	TQuantDataSize Size() const

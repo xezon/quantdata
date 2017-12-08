@@ -30,7 +30,7 @@ public:
 			return static_cast<TThis*>(pThis)->Save(pSettings);
 		};
 		mutableFunctions.Release = [](TInterface* pThis) {
-			return static_cast<TThis*>(pThis)->Release();
+			static_cast<TThis*>(pThis)->Release();
 		};
 
 		util::verify_initialized_pointers_debug(m_functions);

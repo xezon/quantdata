@@ -61,7 +61,7 @@ protected:
 	EQuantDataResult DownloadTick(IQuantDataTickBucket** ppTick, const TQuantDataDownloadSettings* pSettings);
 	EQuantDataResult LoadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataLoadSettings* pSettings);
 	EQuantDataResult LoadTick(IQuantDataTickBucket** ppTick, const TQuantDataLoadSettings* pSettings);
-	EQuantDataResult Release();
+	void             Release();
 
 private:
 	EQuantDataResult ExtractJsonSymbols(const http_response& response, TSymbolInfos& symbolInfos);

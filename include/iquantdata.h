@@ -303,16 +303,21 @@ ITYPE(SQuantDataSymbols, IQuantDataSymbols)
 
 struct SQuantDataOhlcBucketFunctions
 {
-	EQuantDataResult FPTR(Save) (FTHIS(SQuantDataOhlcBucket), const TQuantDataSaveSettings* pSettings);
-	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataOhlcBucket));
+	const TQuantDataOhlc* FPTR(Get)         (FTHIS(SQuantDataOhlcBucket), TQuantDataSize index);
+	TQuantDataSize        FPTR(Size)        (FTHIS(SQuantDataOhlcBucket));
+	EQuantDataProvider    FPTR(GetProvider) (FTHIS(SQuantDataOhlcBucket));
+	TQuantDataPeriod      FPTR(GetPeriod)   (FTHIS(SQuantDataOhlcBucket));
+	EQuantDataTimezone    FPTR(GetTimezone) (FTHIS(SQuantDataOhlcBucket));
+	EQuantDataResult      FPTR(Save)        (FTHIS(SQuantDataOhlcBucket), const TQuantDataSaveSettings* pSettings);
+	void                  FPTR(Release)     (FTHIS(SQuantDataOhlcBucket));
 };
 ITYPE(SQuantDataOhlcBucket, IQuantDataOhlcBucket)
 
 
 struct SQuantDataTickBucketFunctions
 {
-	EQuantDataResult FPTR(Save) (FTHIS(SQuantDataTickBucket), const TQuantDataSaveSettings* pSettings);
-	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataTickBucket));
+	EQuantDataResult FPTR(Save)    (FTHIS(SQuantDataTickBucket), const TQuantDataSaveSettings* pSettings);
+	void             FPTR(Release) (FTHIS(SQuantDataTickBucket));
 };
 ITYPE(SQuantDataTickBucket, IQuantDataTickBucket)
 
@@ -342,7 +347,7 @@ struct SQuantDataHubFunctions
 	EQuantDataResult FPTR(LoadTick) (FTHIS(SQuantDataHub), IQuantDataTickBucket** ppTick, const TQuantDataLoadSettings* pSettings);
 
 	// Deletes this object. This function must be called exactly once and the callee object can no longer be used afterwards.
-	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataHub));
+	void             FPTR(Release) (FTHIS(SQuantDataHub));
 };
 ITYPE(SQuantDataHub, IQuantDataHub)
 
@@ -376,11 +381,26 @@ protected:
 
 struct SQuantDataOhlcBucket
 {
+	const TQuantDataOhlc* Get(TQuantDataSize index) {
+		return m_functions.Get(this, index);
+	}
+	TQuantDataSize Size() {
+		return m_functions.Size(this);
+	}
+	EQuantDataProvider GetProvider() {
+		return m_functions.GetProvider(this);
+	}
+	TQuantDataPeriod GetPeriod() {
+		return m_functions.GetPeriod(this);
+	}
+	EQuantDataTimezone GetTimezone() {
+		return m_functions.GetTimezone(this);
+	}
 	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) {
 		return m_functions.Save(this, pSettings);
 	}
-	EQuantDataResult Release() {
-		return m_functions.Release(this);
+	void Release() {
+		m_functions.Release(this);
 	}
 protected:
 	~SQuantDataOhlcBucket() {}
@@ -394,8 +414,8 @@ struct SQuantDataTickBucket
 	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) {
 		return m_functions.Save(this, pSettings);
 	}
-	EQuantDataResult Release() {
-		return m_functions.Release(this);
+	void Release() {
+		m_functions.Release(this);
 	}
 protected:
 	~SQuantDataTickBucket() {}
@@ -426,8 +446,8 @@ struct SQuantDataHub
 	EQuantDataResult LoadTick(IQuantDataTickBucket** ppTick, const TQuantDataLoadSettings* pSettings) {
 		return m_functions.LoadTick(this, ppTick, pSettings);
 	}
-	EQuantDataResult Release() {
-		return m_functions.Release(this);
+	void Release() {
+		m_functions.Release(this);
 	}
 protected:
 	~SQuantDataHub() {}

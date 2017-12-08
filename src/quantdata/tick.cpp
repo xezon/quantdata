@@ -11,11 +11,6 @@ EQuantDataResult CTickBucket::Save(const TQuantDataSaveSettings* pSettings)
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CTickBucket::Release()
-{
-	return EQuantDataResult::Success;
-}
-
 } // namespace quantdata
 
 #pragma warning(pop)

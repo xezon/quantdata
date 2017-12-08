@@ -2,6 +2,7 @@
 #pragma once
 
 #include <quantdata/tick_functions.h>
+#include <common/mem.h>
 
 namespace quantdata {
 
@@ -14,7 +15,11 @@ protected:
 	CTickBucket() {};
 
 	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings);
-	EQuantDataResult Release();
+
+	void Release()
+	{
+		mem::placement_g_free(this);
+	}
 
 private:
 
