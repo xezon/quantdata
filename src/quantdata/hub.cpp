@@ -53,7 +53,7 @@ EQuantDataResult CHub::GetPeriods(IQuantDataPeriods** ppPeriods)
 		return EQuantDataResult::InvalidProvider;
 
 	const auto& providerInfo = m_manager.GetProviderInfo(m_provider.type);
-	const auto pPeriods = mem::placement_g_alloc<TStaticPeriodArray>(providerInfo.supportedPeriods);
+	const auto pPeriods = mem::placement_g_alloc<TPeriodArrayView>(providerInfo.supportedPeriods);
 	*ppPeriods = pPeriods;
 	return EQuantDataResult::Success;
 }
@@ -170,13 +170,13 @@ EQuantDataResult CHub::GetSymbols(
 
 	if (pSettings->download)
 	{
-		typename TNewSymbolArray::TBuffers symbolBuffers;
+		typename TSymbolArrayBuf::TBuffers symbolBuffers;
 		result = DownloadSymbols(providerInfo, symbolListIndex, symbolBuffers);
 
 		if (result == EQuantDataResult::Success)
 		{
 			const size_t size = symbolBuffers.size();
-			typename TNewSymbolArray::TElements symbolElements;
+			typename TSymbolArrayBuf::TElements symbolElements;
 			symbolElements.resize(size);
 
 			for (size_t i = 0; i < size; ++i)
@@ -184,7 +184,7 @@ EQuantDataResult CHub::GetSymbols(
 				symbolElements[i] = symbolBuffers[i].GetPod();
 			}
 
-			const auto pSymbols = mem::placement_g_alloc<TNewSymbolArray>(
+			const auto pSymbols = mem::placement_g_alloc<TSymbolArrayBuf>(
 				std::move(symbolElements), std::move(symbolBuffers));
 			*ppSymbols = pSymbols;
 			return EQuantDataResult::Success;
@@ -196,7 +196,7 @@ EQuantDataResult CHub::GetSymbols(
 		if (symbolListIndex < symbolsList.size())
 		{
 			const TSymbols& symbols = symbolsList.at(symbolListIndex);
-			const auto pSymbols = mem::placement_g_alloc<TStaticSymbolArray>(symbols);
+			const auto pSymbols = mem::placement_g_alloc<TSymbolArrayView>(symbols);
 			*ppSymbols = pSymbols;
 			return EQuantDataResult::Success;
 		}

@@ -3,8 +3,8 @@
 
 #include <quantdata/hub_functions.h>
 #include <quantdata/types.h>
-#include <quantdata/array/new_array.h>
-#include <quantdata/array/static_array.h>
+#include <quantdata/array_buf.h>
+#include <quantdata/array_view.h>
 #include <quantdata/ohlc.h>
 #include <quantdata/tick.h>
 #include <variant>
@@ -22,10 +22,10 @@ protected:
 private:
 	using TQuantDataSymbolInfos = std::vector<TQuantDataSymbolInfo>;
 
-	using TStaticPeriodArray = CArrayFunctions<CStaticArray<IQuantDataPeriods, TQuantDataPeriod>>;
-	using TStaticSymbolArray = CArrayFunctions<CStaticArray<IQuantDataSymbols, TQuantDataSymbolInfo>>;
-	using TNewSymbolArray    = CArrayFunctions<CNewArray   <IQuantDataSymbols, TQuantDataSymbolInfos, TSymbolInfos>>;
-	using TOhlcBucket        = COhlcBucketFunctions<COhlcBucket>;
+	using TPeriodArrayView = CArrayFunctions<CArrayView<IQuantDataPeriods, TQuantDataPeriod>>;
+	using TSymbolArrayView = CArrayFunctions<CArrayView<IQuantDataSymbols, TQuantDataSymbolInfo>>;
+	using TSymbolArrayBuf  = CArrayFunctions<CArrayBuf<IQuantDataSymbols, TQuantDataSymbolInfos, TSymbolInfos>>;
+	using TOhlcBucket      = COhlcBucketFunctions<COhlcBucket>;
 
 private:
 	struct SOhlcResponse

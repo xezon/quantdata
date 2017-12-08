@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <quantdata/array/array_functions.h>
+#include <quantdata/array_functions.h>
 #include <quantdata/types.h>
 #include <common/mem.h>
 #include <utility>
@@ -9,7 +9,7 @@
 namespace quantdata {
 
 template <class Interface, class Elements, class Buffers>
-class CNewArray : public Interface
+class CArrayBuf : public Interface
 {
 protected:
 	using TInterface = Interface;
@@ -21,7 +21,7 @@ public:
 	using TBuffer    = typename TBuffers::value_type;
 
 protected:
-	CNewArray(TElements&& elements, TBuffers&& buffers)
+	CArrayBuf(TElements&& elements, TBuffers&& buffers)
 		: m_elements(std::move(elements))
 		, m_buffers(std::move(buffers))
 	{}

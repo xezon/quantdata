@@ -10,9 +10,6 @@
     <Filter Include="src\quantdata">
       <UniqueIdentifier>{2f4bb4bf-af29-417a-9ec3-1cc5de4462ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\quantdata\array">
-      <UniqueIdentifier>{caec26fc-9da4-4099-b623-23f40e9c57ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\jsoncons">
       <UniqueIdentifier>{b9880c77-ed5b-4b75-a39c-1a10d5c3eced}</UniqueIdentifier>
     </Filter>
@@ -52,15 +49,6 @@
     </ClInclude>
     <ClInclude Include="..\src\apikey.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\array\array_functions.h">
-      <Filter>src\quantdata\array</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\array\static_array.h">
-      <Filter>src\quantdata\array</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\array\new_array.h">
-      <Filter>src\quantdata\array</Filter>
     </ClInclude>
     <ClInclude Include="..\..\jsoncons\include\jsoncons\json.hpp">
       <Filter>src\jsoncons</Filter>
@@ -180,6 +168,15 @@
       <Filter>src\quantdata</Filter>
     </ClInclude>
     <ClInclude Include="..\src\quantdata\ohlc_functions.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\array_buf.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\array_functions.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\array_view.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
   </ItemGroup>

@@ -159,9 +159,9 @@
     <ClInclude Include="..\src\apikey.h" />
     <ClInclude Include="..\src\quantdata.h" />
     <ClInclude Include="..\src\quantdata\api.h" />
-    <ClInclude Include="..\src\quantdata\array\array_functions.h" />
-    <ClInclude Include="..\src\quantdata\array\new_array.h" />
-    <ClInclude Include="..\src\quantdata\array\static_array.h" />
+    <ClInclude Include="..\src\quantdata\array_buf.h" />
+    <ClInclude Include="..\src\quantdata\array_functions.h" />
+    <ClInclude Include="..\src\quantdata\array_view.h" />
     <ClInclude Include="..\src\quantdata\checks.h" />
     <ClInclude Include="..\src\quantdata\exceptions.h" />
     <ClInclude Include="..\src\quantdata\hub.h" />

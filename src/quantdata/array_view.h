@@ -1,13 +1,13 @@
 
 #pragma once
 
-#include <quantdata/array/array_functions.h>
+#include <quantdata/array_functions.h>
 #include <common/mem.h>
 
 namespace quantdata {
 
 template <class Interface, class Element>
-class CStaticArray : public Interface
+class CArrayView : public Interface
 {
 protected:
 	using TInterface = Interface;
@@ -15,7 +15,7 @@ protected:
 
 protected:
 	template <class Container>
-	CStaticArray(const Container& container)
+	CArrayView(const Container& container)
 		: m_pElements(container.data())
 		, m_size(container.size())
 	{
