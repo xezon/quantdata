@@ -5,13 +5,13 @@
 
 namespace quantdata {
 
-class CTick : public IQuantDataTickBucket
+class CTickBucket : public IQuantDataTickBucket
 {
 protected:
 	using TInterface = IQuantDataTickBucket;
 
 protected:
-	CTick() {};
+	CTickBucket() {};
 
 	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings);
 	EQuantDataResult Release();

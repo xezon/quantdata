@@ -6,12 +6,12 @@
 
 namespace quantdata {
 
-EQuantDataResult CTick::Save(const TQuantDataSaveSettings* pSettings)
+EQuantDataResult CTickBucket::Save(const TQuantDataSaveSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CTick::Release()
+EQuantDataResult CTickBucket::Release()
 {
 	return EQuantDataResult::Success;
 }

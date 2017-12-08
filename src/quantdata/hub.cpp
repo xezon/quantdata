@@ -254,7 +254,7 @@ EQuantDataResult CHub::DownloadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantD
 
 EQuantDataResult CHub::SOhlcTasksForAlphaVantage::BuildRequest(
 	const TQuantDataDownloadSettings& settings,
-	const SProvider& provider,
+	const SProviderSettings& provider,
 	const SProviderInfo& providerInfo,
 	http_request& request)
 {

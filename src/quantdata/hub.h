@@ -3,7 +3,6 @@
 
 #include <quantdata/hub_functions.h>
 #include <quantdata/types.h>
-#include <quantdata/structs.h>
 #include <quantdata/array/new_array.h>
 #include <quantdata/array/static_array.h>
 #include <quantdata/ohlc.h>
@@ -38,7 +37,7 @@ private:
 
 	struct IOhlcTasks
 	{
-		virtual EQuantDataResult BuildRequest(const TQuantDataDownloadSettings& settings, const SProvider& provider, const SProviderInfo& providerInfo, http_request& request) = 0;
+		virtual EQuantDataResult BuildRequest(const TQuantDataDownloadSettings& settings, const SProviderSettings& provider, const SProviderInfo& providerInfo, http_request& request) = 0;
 		virtual EQuantDataResult ParseResponse(const TQuantDataDownloadSettings& settings, const SProviderInfo& providerInfo, const http_response& response, SOhlcResponse& ohlcResponse) = 0;
 	protected:
 		~IOhlcTasks() {};
@@ -46,7 +45,7 @@ private:
 
 	struct SOhlcTasksForAlphaVantage : public IOhlcTasks
 	{
-		virtual EQuantDataResult BuildRequest(const TQuantDataDownloadSettings& settings, const SProvider& provider, const SProviderInfo& providerInfo, http_request& request) override;
+		virtual EQuantDataResult BuildRequest(const TQuantDataDownloadSettings& settings, const SProviderSettings& provider, const SProviderInfo& providerInfo, http_request& request) override;
 		virtual EQuantDataResult ParseResponse(const TQuantDataDownloadSettings& settings, const SProviderInfo& providerInfo, const http_response& response, SOhlcResponse& ohlcResponse) override;
 	};
 
@@ -71,7 +70,7 @@ private:
 	static EQuantDataResult Download(http_client& client, const http_request& request, http_response& response);
 
 	const CManager&   m_manager;
-	SProvider         m_provider;
+	SProviderSettings m_provider;
 	IOhlcTasks*       m_pOhlcTasks;
 	TOhlcTasksVariant m_ohlcTasksVariant;
 };

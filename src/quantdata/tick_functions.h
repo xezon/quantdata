@@ -10,17 +10,17 @@ namespace quantdata {
 class CManager;
 
 template <class Implementation>
-class CTickFunctions : public Implementation
+class CTickBucketFunctions : public Implementation
 {
 private:
-	using TThis               = CTickFunctions;
+	using TThis               = CTickBucketFunctions;
 	using TImplementation     = Implementation;
 	using TInterface          = typename TImplementation::TInterface;
 	using TInterfaceFunctions = typename TInterface::TInterfaceFunctions;
 
 public:
 	template <class... Args>
-	CTickFunctions(Args&&... args)
+	CTickBucketFunctions(Args&&... args)
 		: TImplementation(std::forward<Args>(args)...)
 	{
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);
