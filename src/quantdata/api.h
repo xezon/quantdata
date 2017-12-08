@@ -5,7 +5,7 @@
 #include <quantdata/types.h>
 #include <common/enum.h>
 #include <common/util.h>
-#include <cpprest/http_client.h>
+#include <common/utf8.h>
 #include <utility>
 #include <array>
 #include <vector>
@@ -13,8 +13,10 @@
 namespace quantdata {
 namespace internal {
 
-using TCharT = utility::char_t;
-using TStringT = const TCharT*;
+using Tchar = utility::char_t;
+using TWebString = const Tchar*;
+using TStringA = std::string;
+using TStringW = std::wstring;
 
 template <typename Element, size_t Size>
 struct FixedArrayStruct
@@ -56,7 +58,7 @@ struct FixedVectorStruct
 ///////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// PROVIDER URL /////////////////////////////////////////
 
-using TProviderUrls = FixedArrayStruct<TStringT, CQuantDataProvider::count()>;
+using TProviderUrls = FixedArrayStruct<TWebString, CQuantDataProvider::count()>;
 
 constexpr TProviderUrls g_providerUrls(
 	/* Quandl        */ U("https://www.quandl.com/"          ),
@@ -75,34 +77,35 @@ inline const TProviderUrls& GetProviderUrls()
 ///////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// PERIOD NAMES /////////////////////////////////////////
 
-using TProviderPeriodNamesX = FixedArrayStruct<TStringT, CQuantDataProvider::count()>;
+using TProviderPeriodNamesX = FixedArrayStruct<TWebString, CQuantDataProvider::count()>;
 using TPeriodNamesX         = FixedArrayStruct<TProviderPeriodNamesX, CQuantDataPeriod::count()>;
 
+constexpr TWebString UnnamedPeriod = U("!");
 constexpr TPeriodNamesX g_periodNamesX(
-	/* Finest   */ TProviderPeriodNamesX( U("none"     ) , U("S5" ), U("S5" ) , U("1min" ) , U("1m" ) , U("YES") ),
-	/* Second5  */ TProviderPeriodNamesX( U(""         ) , U("S5" ), U("S5" ) , U(""     ) , U(""   ) , U(""   ) ),
-	/* Second10 */ TProviderPeriodNamesX( U(""         ) , U("S10"), U("S10") , U(""     ) , U(""   ) , U(""   ) ),
-	/* Second15 */ TProviderPeriodNamesX( U(""         ) , U("S15"), U("S15") , U(""     ) , U(""   ) , U(""   ) ),
-	/* Second30 */ TProviderPeriodNamesX( U(""         ) , U("S30"), U("S30") , U(""     ) , U(""   ) , U(""   ) ),
-	/* Minute   */ TProviderPeriodNamesX( U(""         ) , U("M1" ), U("M1" ) , U("1min" ) , U("1m" ) , U(""   ) ),
-	/* Minute2  */ TProviderPeriodNamesX( U(""         ) , U("M2" ), U("M2" ) , U(""     ) , U(""   ) , U(""   ) ),
-	/* Minute4  */ TProviderPeriodNamesX( U(""         ) , U("M4" ), U("M4" ) , U(""     ) , U(""   ) , U(""   ) ),
-	/* Minute5  */ TProviderPeriodNamesX( U(""         ) , U("M5" ), U("M5" ) , U("5min" ) , U("5m" ) , U(""   ) ),
-	/* Minute10 */ TProviderPeriodNamesX( U(""         ) , U("M10"), U("M10") , U(""     ) , U(""   ) , U(""   ) ),
-	/* Minute15 */ TProviderPeriodNamesX( U(""         ) , U("M15"), U("M15") , U("15min") , U("15m") , U(""   ) ),
-	/* Minute30 */ TProviderPeriodNamesX( U(""         ) , U("M30"), U("M30") , U("30min") , U("30m") , U(""   ) ),
-	/* Hour     */ TProviderPeriodNamesX( U(""         ) , U("H1" ), U("H1" ) , U("60min") , U("1h" ) , U(""   ) ),
-	/* Hour2    */ TProviderPeriodNamesX( U(""         ) , U("H2" ), U("H2" ) , U(""     ) , U(""   ) , U(""   ) ),
-	/* Hour3    */ TProviderPeriodNamesX( U(""         ) , U("H3" ), U("H3" ) , U(""     ) , U(""   ) , U(""   ) ),
-	/* Hour4    */ TProviderPeriodNamesX( U(""         ) , U("H4" ), U("H4" ) , U(""     ) , U(""   ) , U(""   ) ),
-	/* Hour6    */ TProviderPeriodNamesX( U(""         ) , U("H6" ), U("H6" ) , U(""     ) , U(""   ) , U(""   ) ),
-	/* Hour8    */ TProviderPeriodNamesX( U(""         ) , U("H8" ), U("H8" ) , U(""     ) , U(""   ) , U(""   ) ),
-	/* Hour12   */ TProviderPeriodNamesX( U(""         ) , U("H12"), U("H12") , U(""     ) , U("12h") , U(""   ) ),
-	/* Day      */ TProviderPeriodNamesX( U("daily"    ) , U("D"  ), U("D"  ) , U("YES"  ) , U("1d" ) , U(""   ) ),
-	/* Week     */ TProviderPeriodNamesX( U("weekly"   ) , U("W"  ), U("W"  ) , U("YES"  ) , U("1w" ) , U(""   ) ),
-	/* Month    */ TProviderPeriodNamesX( U("monthly"  ) , U("M"  ), U("M"  ) , U("YES"  ) , U("1mo") , U(""   ) ),
-	/* Quarter  */ TProviderPeriodNamesX( U("quarterly") , U(""   ), U(""   ) , U(""     ) , U(""   ) , U(""   ) ),
-	/* Annual   */ TProviderPeriodNamesX( U("annual"   ) , U(""   ), U(""   ) , U(""     ) , U(""   ) , U(""   ) )
+	/* Finest   */ TProviderPeriodNamesX( U("none"     ) , U("S5" ), U("S5" ) , U("1min"    ) , U("1m" ) , UnnamedPeriod ),
+	/* Second5  */ TProviderPeriodNamesX( U(""         ) , U("S5" ), U("S5" ) , U(""        ) , U(""   ) , U(""        ) ),
+	/* Second10 */ TProviderPeriodNamesX( U(""         ) , U("S10"), U("S10") , U(""        ) , U(""   ) , U(""        ) ),
+	/* Second15 */ TProviderPeriodNamesX( U(""         ) , U("S15"), U("S15") , U(""        ) , U(""   ) , U(""        ) ),
+	/* Second30 */ TProviderPeriodNamesX( U(""         ) , U("S30"), U("S30") , U(""        ) , U(""   ) , U(""        ) ),
+	/* Minute   */ TProviderPeriodNamesX( U(""         ) , U("M1" ), U("M1" ) , U("1min"    ) , U("1m" ) , U(""        ) ),
+	/* Minute2  */ TProviderPeriodNamesX( U(""         ) , U("M2" ), U("M2" ) , U(""        ) , U(""   ) , U(""        ) ),
+	/* Minute4  */ TProviderPeriodNamesX( U(""         ) , U("M4" ), U("M4" ) , U(""        ) , U(""   ) , U(""        ) ),
+	/* Minute5  */ TProviderPeriodNamesX( U(""         ) , U("M5" ), U("M5" ) , U("5min"    ) , U("5m" ) , U(""        ) ),
+	/* Minute10 */ TProviderPeriodNamesX( U(""         ) , U("M10"), U("M10") , U(""        ) , U(""   ) , U(""        ) ),
+	/* Minute15 */ TProviderPeriodNamesX( U(""         ) , U("M15"), U("M15") , U("15min"   ) , U("15m") , U(""        ) ),
+	/* Minute30 */ TProviderPeriodNamesX( U(""         ) , U("M30"), U("M30") , U("30min"   ) , U("30m") , U(""        ) ),
+	/* Hour     */ TProviderPeriodNamesX( U(""         ) , U("H1" ), U("H1" ) , U("60min"   ) , U("1h" ) , U(""        ) ),
+	/* Hour2    */ TProviderPeriodNamesX( U(""         ) , U("H2" ), U("H2" ) , U(""        ) , U(""   ) , U(""        ) ),
+	/* Hour3    */ TProviderPeriodNamesX( U(""         ) , U("H3" ), U("H3" ) , U(""        ) , U(""   ) , U(""        ) ),
+	/* Hour4    */ TProviderPeriodNamesX( U(""         ) , U("H4" ), U("H4" ) , U(""        ) , U(""   ) , U(""        ) ),
+	/* Hour6    */ TProviderPeriodNamesX( U(""         ) , U("H6" ), U("H6" ) , U(""        ) , U(""   ) , U(""        ) ),
+	/* Hour8    */ TProviderPeriodNamesX( U(""         ) , U("H8" ), U("H8" ) , U(""        ) , U(""   ) , U(""        ) ),
+	/* Hour12   */ TProviderPeriodNamesX( U(""         ) , U("H12"), U("H12") , U(""        ) , U("12h") , U(""        ) ),
+	/* Day      */ TProviderPeriodNamesX( U("daily"    ) , U("D"  ), U("D"  ) , UnnamedPeriod , U("1d" ) , U(""        ) ),
+	/* Week     */ TProviderPeriodNamesX( U("weekly"   ) , U("W"  ), U("W"  ) , UnnamedPeriod , U("1w" ) , U(""        ) ),
+	/* Month    */ TProviderPeriodNamesX( U("monthly"  ) , U("M"  ), U("M"  ) , UnnamedPeriod , U("1mo") , U(""        ) ),
+	/* Quarter  */ TProviderPeriodNamesX( U("quarterly") , U(""   ), U(""   ) , U(""        ) , U(""   ) , U(""        ) ),
+	/* Annual   */ TProviderPeriodNamesX( U("annual"   ) , U(""   ), U(""   ) , U(""        ) , U(""   ) , U(""        ) )
 );
 
 inline const TPeriodNamesX& GetPeriodNamesX()
@@ -110,21 +113,21 @@ inline const TPeriodNamesX& GetPeriodNamesX()
 	return g_periodNamesX;
 }
 
-using TPeriods         = std::vector<TQuantDataPeriod>;
-using TProviderPeriods = std::array<TPeriods, CQuantDataProvider::count()>;
+using TSupportedPeriods         = std::vector<TQuantDataPeriod>;
+using TProviderSupportedPeriods = std::array<TSupportedPeriods, CQuantDataProvider::count()>;
 
-inline TProviderPeriods BuildProviderPeriods()
+inline TProviderSupportedPeriods BuildProviderSupportedPeriods()
 {
-	TProviderPeriods providerPeriods;
+	TProviderSupportedPeriods providerArray;
 	for (CQuantDataProvider provider : CQuantDataProvider())
 	{
 		const auto providerOrdinal = provider.ordinal();
-		TPeriods& periods = providerPeriods[providerOrdinal];
+		TSupportedPeriods& periods = providerArray[providerOrdinal];
 
 		for (CQuantDataPeriod period : CQuantDataPeriod())
 		{
 			const auto periodOrdinal = period.ordinal();
-			TStringT apiName = g_periodNamesX[periodOrdinal][providerOrdinal];
+			TWebString apiName = g_periodNamesX[periodOrdinal][providerOrdinal];
 
 			if (util::is_valid_string(apiName))
 			{
@@ -133,7 +136,28 @@ inline TProviderPeriods BuildProviderPeriods()
 			}
 		}
 	}
-	return providerPeriods;
+	return providerArray;
+}
+
+using TPeriodNames         = std::array<TWebString, CQuantDataPeriod::count()>;
+using TProviderPeriodNames = std::array<TPeriodNames, CQuantDataProvider::count()>;
+
+inline TProviderPeriodNames BuildProviderPeriodNames()
+{
+	TProviderPeriodNames providerArray = {};
+	for (CQuantDataProvider provider : CQuantDataProvider())
+	{
+		const auto providerOrdinal = provider.ordinal();
+		TPeriodNames& nameArray = providerArray[providerOrdinal];
+
+		for (CQuantDataPeriod period : CQuantDataPeriod())
+		{
+			const auto periodOrdinal = period.ordinal();
+			TWebString apiName = g_periodNamesX[periodOrdinal][providerOrdinal];
+			nameArray[periodOrdinal] = apiName;
+		}
+	}
+	return providerArray;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +182,7 @@ struct SSymbolSource
 	{}
 	template <class Function>
 	SSymbolSource(
-		TStringT query,
+		TWebString query,
 		ESymbolSourceFormat format,
 		ESymbolSourceFlags flags,
 		Function function) noexcept
@@ -169,7 +193,7 @@ struct SSymbolSource
 	{
 		function(*this);
 	}
-	TStringT const query;
+	TWebString const query;
 	const ESymbolSourceFormat format;
 	const ESymbolSourceFlags flags;
 	json::csv_parameters csv;

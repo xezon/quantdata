@@ -30,10 +30,10 @@
     <ClCompile Include="..\src\dllmain.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\quantdata\manager.cpp">
+    <ClCompile Include="..\src\quantdata\hub.cpp">
       <Filter>src\quantdata</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\quantdata\hub.cpp">
+    <ClCompile Include="..\src\quantdata\manager.cpp">
       <Filter>src\quantdata</Filter>
     </ClCompile>
     <ClCompile Include="..\src\quantdata\ohlc.cpp">
@@ -53,15 +53,6 @@
     <ClInclude Include="..\src\apikey.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\quantdata\manager.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\types.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\checks.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\quantdata\array\array_functions.h">
       <Filter>src\quantdata\array</Filter>
     </ClInclude>
@@ -70,15 +61,6 @@
     </ClInclude>
     <ClInclude Include="..\src\quantdata\array\new_array.h">
       <Filter>src\quantdata\array</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\structs.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\exceptions.h">
-      <Filter>src\quantdata</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\quantdata\api.h">
-      <Filter>src\quantdata</Filter>
     </ClInclude>
     <ClInclude Include="..\..\jsoncons\include\jsoncons\json.hpp">
       <Filter>src\jsoncons</Filter>
@@ -164,22 +146,40 @@
     <ClInclude Include="..\..\jsoncons\include\jsoncons_ext\csv\csv_serializer.hpp">
       <Filter>src\jsoncons_ext\csv</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\quantdata\hub_functions.h">
+    <ClInclude Include="..\src\quantdata\api.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\checks.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\exceptions.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
     <ClInclude Include="..\src\quantdata\hub.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\quantdata\ohlc_functions.h">
+    <ClInclude Include="..\src\quantdata\hub_functions.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\quantdata\tick_functions.h">
+    <ClInclude Include="..\src\quantdata\manager.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
     <ClInclude Include="..\src\quantdata\ohlc.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\quantdata\ohlc_functions.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\structs.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\quantdata\tick.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\tick_functions.h">
+      <Filter>src\quantdata</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quantdata\types.h">
       <Filter>src\quantdata</Filter>
     </ClInclude>
   </ItemGroup>

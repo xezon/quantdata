@@ -6,12 +6,12 @@
 
 namespace quantdata {
 
-EQuantDataResult COhlc::Save(const TQuantDataSaveSettings* pSettings)
+EQuantDataResult COhlcBucket::Save(const TQuantDataSaveSettings* pSettings)
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult COhlc::Release()
+EQuantDataResult COhlcBucket::Release()
 {
 	return EQuantDataResult::Success;
 }

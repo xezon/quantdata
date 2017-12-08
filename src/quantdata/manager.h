@@ -4,11 +4,13 @@
 #include <quantdata.h>
 #include <quantdata/types.h>
 #include <quantdata/api.h>
+#include <string>
 
 namespace quantdata {
 
-using TStringT            = internal::TStringT;
-using TPeriods            = internal::TPeriods;
+using TWebString          = internal::TWebString;
+using TSupportedPeriods   = internal::TSupportedPeriods;
+using TPeriodNames        = internal::TPeriodNames;
 using ESymbolSourceFormat = internal::ESymbolSourceFormat;
 using ESymbolSourceFlags  = internal::ESymbolSourceFlags;
 using SSymbolSource       = internal::SSymbolSource;
@@ -16,12 +18,16 @@ using TSymbolSources      = internal::TSymbolSources;
 using TSymbols            = internal::TSymbols;
 using TSymbolsList        = internal::TSymbolsList;
 
+constexpr auto UnnamedPeriod = internal::UnnamedPeriod;
+
 struct SProviderInfo
 {
-	TStringT       url;
-	TPeriods       periods;
-	TSymbolSources symbolSources;
-	TSymbolsList   symbolsList;
+	CQuantDataProvider type;
+	TWebString         url;
+	TSupportedPeriods  supportedPeriods;
+	TPeriodNames       periodNames;
+	TSymbolSources     symbolSources;
+	TSymbolsList       symbolsList;
 };
 
 class CManager

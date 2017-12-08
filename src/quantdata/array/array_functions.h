@@ -7,8 +7,6 @@
 
 namespace quantdata {
 
-class CManager;
-
 template <class Implementation>
 class CArrayFunctions : public Implementation
 {

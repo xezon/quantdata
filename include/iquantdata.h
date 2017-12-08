@@ -4,21 +4,6 @@
 
 #include <common/types.h>
 
-#ifdef QUANTDATA_IGNORE_ZORRO
-typedef struct T1 T1;
-typedef struct T2 T2;
-typedef struct T6 T6;
-typedef struct CONTRACT T8;
-#else
-#include <zorro.h>
-typedef struct CONTRACT T8;
-#endif
-#ifdef QUANTDATA_IGNORE_GENOTICK
-typedef struct SGenotickDataPoint TGenotickDataPoint;
-#else
-#include <igenotick.h>
-#endif
-
 #define QUANTDATA_EXPORT __declspec(dllexport)
 #define QUANTDATA_IMPORT __declspec(dllimport)
 #define QUANTDATA_CALL __cdecl
@@ -54,19 +39,23 @@ typedef uint8_t     TQuantDataBool;
 typedef alloc_func  TQuantDataAlloc;
 typedef free_func   TQuantDataFree;
 
-#define QuantDataResult_Success              0
-#define QuantDataResult_Failure              1
-#define QuantDataResult_InvalidArgument      2
-#define QuantDataResult_LockedAllocator      3
-#define QuantDataResult_IncompleteAllocator  4
-#define QuantDataResult_InvalidProvider     20
-#define QuantDataResult_NoDataAvailable     21
-#define QuantDataResult_RejectedApiKey      22
-#define QuantDataResult_HttpException       23
-#define QuantDataResult_JsonException       24
-#define QuantDataResult_UnsupportedPeriod   40
-#define QuantDataResult_UnsupportedSymbol   41
-#define QuantDataResult_UnsupportedTime     42
+#define QuantDataResult_Success                0
+#define QuantDataResult_Failure                1
+#define QuantDataResult_InvalidArgument        2
+#define QuantDataResult_LockedAllocator        3
+#define QuantDataResult_IncompleteAllocator    4
+#define QuantDataResult_InvalidProvider       20
+#define QuantDataResult_NoDataAvailable       21
+#define QuantDataResult_RejectedApiKey        22
+#define QuantDataResult_HttpException         23
+#define QuantDataResult_JsonException         24
+#define QuantDataResult_UnsupportedPeriod     40
+#define QuantDataResult_UnsupportedSymbol     41
+#define QuantDataResult_UnsupportedTime       42
+#define QuantDataResult_UnsupportedAdjustment 43
+#define QuantDataResult_UnsupportedFeature    44
+#define QuantDataResult_UnrecognizedTimezone  45
+#define QuantDataResult_MalformedData         46
 // QuantDataResult values 100 to 600 
 // are reserved for http response codes
 
@@ -106,13 +95,12 @@ typedef free_func   TQuantDataFree;
 #define QuantDataPeriod_Quarter  129600.0
 #define QuantDataPeriod_Annual   525600.0
 
-#define QuantDataFormat_csv    0
-#define QuantDataFormat_json   1
-#define QuantDataFormat_t1    10 // zorro tick data
-#define QuantDataFormat_t2    11 // zorro order book data
-#define QuantDataFormat_t6    12 // zorro standard time series
-#define QuantDataFormat_t8    13 // zorro contracts
-#define QuantDataFormat_gtick 20 // genotick data
+#define QuantDataTimezone_EST = -5
+#define QuantDataTimezone_UTC =  0
+#define QuantDataTimezone_JST = +9
+
+#define QuantDataFormat_csv  0
+#define QuantDataFormat_json 1
 
 #ifdef __cplusplus
 
@@ -159,6 +147,14 @@ DEFINE_DATA_ENUM_CLASS(EQuantDataProvider, CQuantDataProvider, uint32_t, QUANTDA
 DEFINE_DATA_FLOAT(TQuantDataPeriod, CQuantDataPeriod, double, QUANTDATA_PERIOD_LIST, int8_t)
 #undef QUANTDATA_PERIOD_LIST
 
+#define QUANTDATA_TIMEZONE_LIST(e) \
+	e( EST , QuantDataTimezone_EST , 0 ) \
+	e( UTC , QuantDataTimezone_UTC , 0 ) \
+	e( JST , QuantDataTimezone_JST , 0 ) \
+
+DEFINE_DATA_ENUM_CLASS(EQuantDataTimezone, CQuantDataTimezone, int32_t, QUANTDATA_TIMEZONE_LIST, int8_t)
+#undef QUANTDATA_TIMEZONE_LIST
+
 enum class EQuantDataSymbolSource : uint32_t
 {
 	Default               = QuantDataSymbolSource_Default,
@@ -168,30 +164,29 @@ enum class EQuantDataSymbolSource : uint32_t
 
 enum class EQuantDataFormat : int32_t
 {
-	csv   = QuantDataFormat_csv,
-	json  = QuantDataFormat_json,
-	t1    = QuantDataFormat_t1,
-	t2    = QuantDataFormat_t2,
-	t6    = QuantDataFormat_t6,
-	t8    = QuantDataFormat_t8,
-	gtick = QuantDataFormat_gtick,
+	csv  = QuantDataFormat_csv,
+	json = QuantDataFormat_json,
 };
 
 enum class EQuantDataResult : int32_t
 {
-	Success             = QuantDataResult_Success,
-	Failure             = QuantDataResult_Failure,
-	InvalidArgument     = QuantDataResult_InvalidArgument,
-	LockedAllocator     = QuantDataResult_LockedAllocator,
-	IncompleteAllocator = QuantDataResult_IncompleteAllocator,
-	InvalidProvider     = QuantDataResult_InvalidProvider,
-	NoDataAvailable     = QuantDataResult_NoDataAvailable,
-	RejectedApiKey      = QuantDataResult_RejectedApiKey,
-	HttpException       = QuantDataResult_HttpException,
-	JsonException       = QuantDataResult_JsonException,
-	UnsupportedPeriod   = QuantDataResult_UnsupportedPeriod,
-	UnsupportedSymbol   = QuantDataResult_UnsupportedSymbol,
-	UnsupportedTime     = QuantDataResult_UnsupportedTime,
+	Success               = QuantDataResult_Success,
+	Failure               = QuantDataResult_Failure,
+	InvalidArgument       = QuantDataResult_InvalidArgument,
+	LockedAllocator       = QuantDataResult_LockedAllocator,
+	IncompleteAllocator   = QuantDataResult_IncompleteAllocator,
+	InvalidProvider       = QuantDataResult_InvalidProvider,
+	NoDataAvailable       = QuantDataResult_NoDataAvailable,
+	RejectedApiKey        = QuantDataResult_RejectedApiKey,
+	HttpException         = QuantDataResult_HttpException,
+	JsonException         = QuantDataResult_JsonException,
+	UnsupportedPeriod     = QuantDataResult_UnsupportedPeriod,
+	UnsupportedSymbol     = QuantDataResult_UnsupportedSymbol,
+	UnsupportedTime       = QuantDataResult_UnsupportedTime,
+	UnsupportedAdjustment = QuantDataResult_UnsupportedAdjustment,
+	UnsupportedFeature    = QuantDataResult_UnsupportedFeature,
+	UnrecognizedTimezone  = QuantDataResult_UnrecognizedTimezone,
+	MalformedData         = QuantDataResult_MalformedData,
 #define _PHRASES
 #define DAT(a,b,c) a = b,
 // from Release/include/cpprest/details/http_constants.dat
@@ -204,6 +199,7 @@ enum class EQuantDataResult : int32_t
 
 typedef uint32_t EQuantDataProvider;
 typedef double   TQuantDataPeriod;
+typedef int32_t  EQuantDataTimezone;
 typedef uint32_t EQuantDataSymbolSource;
 typedef int32_t  EQuantDataFormat;
 typedef int32_t  EQuantDataResult;
@@ -245,6 +241,7 @@ struct SQuantDataDownloadSettings
 	TQuantDataUnixtime start        ZERO_INIT; // optional, default is begin of time
 	TQuantDataUnixtime end          ZERO_INIT; // optional, default is end of time
 	TQuantDataString   symbol       ZERO_INIT; // mandatory
+	TQuantDataString   market       ZERO_INIT; // optional
 	TQuantDataPeriod   period       ZERO_INIT; // mandatory
 	TQuantDataBool     adjusted     ZERO_INIT; // mandatory, might be unsupported
 };
@@ -265,47 +262,24 @@ struct SQuantDataLoadSettings
 };
 typedef struct SQuantDataLoadSettings TQuantDataLoadSettings;
 
-struct SQuantDataT1s
+struct SQuantDataOhlc
 {
-	T1*                 pBuffer    ZERO_INIT;
-	TQuantDataSize      bufferSize ZERO_INIT;
-	TQuantDataSize      actualSize ZERO_INIT;
+	TQuantDataUnixtime time   ZERO_INIT;
+	double             open   ZERO_INIT;
+	double             high   ZERO_INIT;
+	double             low    ZERO_INIT;
+	double             close  ZERO_INIT;
+	double             volume ZERO_INIT;
 };
-typedef struct SQuantDataT1s TQuantDataT1s;
+typedef struct SQuantDataOhlc TQuantDataOhlc;
 
-struct SQuantDataT2s
+struct SQuantDataTick
 {
-	T2*                 pBuffer    ZERO_INIT;
-	TQuantDataSize      bufferSize ZERO_INIT;
-	TQuantDataSize      actualSize ZERO_INIT;
+	TQuantDataUnixtime time   ZERO_INIT;
+	double             bid    ZERO_INIT;
+	double             ask    ZERO_INIT;
 };
-typedef struct SQuantDataT2s TQuantDataT2s;
-
-struct SQuantDataT6s
-{
-	T6*                 pBuffer    ZERO_INIT;
-	TQuantDataSize      bufferSize ZERO_INIT;
-	TQuantDataSize      actualSize ZERO_INIT;
-};
-typedef struct SQuantDataT6s TQuantDataT6s;
-
-struct SQuantDataT8s
-{
-	T8*                 pBuffer    ZERO_INIT;
-	TQuantDataSize      bufferSize ZERO_INIT;
-	TQuantDataSize      actualSize ZERO_INIT;
-};
-typedef struct SQuantDataT8s TQuantDataT8s;
-
-struct SQuantDataGtDataPoints
-{
-	TGenotickDataPoint* pBuffer                   ZERO_INIT;
-	TQuantDataSize      bufferSize                ZERO_INIT;
-	TQuantDataSize      actualSize                ZERO_INIT;
-	TQuantDataSize      bufferOptionalColumnCount ZERO_INIT;
-	TQuantDataSize      actualOptionalColumnCount ZERO_INIT;
-};
-typedef struct SQuantDataGtDataPoints TQuantDataGtDataPoints;
+typedef struct SQuantDataTick TQuantDataTick;
 
 // INTERFACES
 
@@ -327,20 +301,20 @@ struct SQuantDataSymbolsFunctions
 ITYPE(SQuantDataSymbols, IQuantDataSymbols)
 
 
-struct SQuantDataOhlcFunctions
+struct SQuantDataOhlcBucketFunctions
 {
-	EQuantDataResult FPTR(Save) (FTHIS(SQuantDataOhlc), const TQuantDataSaveSettings* pSettings);
-	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataOhlc));
+	EQuantDataResult FPTR(Save) (FTHIS(SQuantDataOhlcBucket), const TQuantDataSaveSettings* pSettings);
+	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataOhlcBucket));
 };
-ITYPE(SQuantDataOhlc, IQuantDataOhlc)
+ITYPE(SQuantDataOhlcBucket, IQuantDataOhlcBucket)
 
 
-struct SQuantDataTickFunctions
+struct SQuantDataTickBucketFunctions
 {
-	EQuantDataResult FPTR(Save) (FTHIS(SQuantDataTick), const TQuantDataSaveSettings* pSettings);
-	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataTick));
+	EQuantDataResult FPTR(Save) (FTHIS(SQuantDataTickBucket), const TQuantDataSaveSettings* pSettings);
+	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataTickBucket));
 };
-ITYPE(SQuantDataTick, IQuantDataTick)
+ITYPE(SQuantDataTickBucket, IQuantDataTickBucket)
 
 
 struct SQuantDataHubFunctions
@@ -356,16 +330,16 @@ struct SQuantDataHubFunctions
 	EQuantDataResult FPTR(GetSymbols) (FTHIS(SQuantDataHub), IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
 
 	// Downloads ohlc data (with timestamp) from the selected provider if available.
-	EQuantDataResult FPTR(DownloadOhlc) (FTHIS(SQuantDataHub), IQuantDataOhlc** ppOhlc, const TQuantDataDownloadSettings* pSettings);
+	EQuantDataResult FPTR(DownloadOhlc) (FTHIS(SQuantDataHub), IQuantDataOhlcBucket** ppOhlc, const TQuantDataDownloadSettings* pSettings);
 
 	// Downloads tick data (with timestamp) from the selected provider if available.
-	EQuantDataResult FPTR(DownloadTick) (FTHIS(SQuantDataHub), IQuantDataTick** ppTick, const TQuantDataDownloadSettings* pSettings);
+	EQuantDataResult FPTR(DownloadTick) (FTHIS(SQuantDataHub), IQuantDataTickBucket** ppTick, const TQuantDataDownloadSettings* pSettings);
 
 	// Opens ohlc data (with timestamp) from a given file.
-	EQuantDataResult FPTR(LoadOhlc) (FTHIS(SQuantDataHub), IQuantDataOhlc** ppOhlc, const TQuantDataLoadSettings* pSettings);
+	EQuantDataResult FPTR(LoadOhlc) (FTHIS(SQuantDataHub), IQuantDataOhlcBucket** ppOhlc, const TQuantDataLoadSettings* pSettings);
 
 	// Opens tick data (with timestamp) from a given file.
-	EQuantDataResult FPTR(LoadTick) (FTHIS(SQuantDataHub), IQuantDataTick** ppTick, const TQuantDataLoadSettings* pSettings);
+	EQuantDataResult FPTR(LoadTick) (FTHIS(SQuantDataHub), IQuantDataTickBucket** ppTick, const TQuantDataLoadSettings* pSettings);
 
 	// Deletes this object. This function must be called exactly once and the callee object can no longer be used afterwards.
 	EQuantDataResult FPTR(Release) (FTHIS(SQuantDataHub));
@@ -400,7 +374,7 @@ protected:
 	const TInterfaceFunctions m_functions ZERO_INIT;
 };
 
-struct SQuantDataOhlc
+struct SQuantDataOhlcBucket
 {
 	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) {
 		return m_functions.Save(this, pSettings);
@@ -409,13 +383,13 @@ struct SQuantDataOhlc
 		return m_functions.Release(this);
 	}
 protected:
-	~SQuantDataOhlc() {}
-	typedef struct SQuantDataOhlcFunctions TInterfaceFunctions;
+	~SQuantDataOhlcBucket() {}
+	typedef struct SQuantDataOhlcBucketFunctions TInterfaceFunctions;
 	const TInterfaceFunctions m_functions ZERO_INIT;
 };
 
 
-struct SQuantDataTick
+struct SQuantDataTickBucket
 {
 	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) {
 		return m_functions.Save(this, pSettings);
@@ -424,8 +398,8 @@ struct SQuantDataTick
 		return m_functions.Release(this);
 	}
 protected:
-	~SQuantDataTick() {}
-	typedef struct SQuantDataTickFunctions TInterfaceFunctions;
+	~SQuantDataTickBucket() {}
+	typedef struct SQuantDataTickBucketFunctions TInterfaceFunctions;
 	const TInterfaceFunctions m_functions ZERO_INIT;
 };
 
@@ -440,16 +414,16 @@ struct SQuantDataHub
 	EQuantDataResult GetSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) {
 		return m_functions.GetSymbols(this, ppSymbols, pSettings);
 	}
-	EQuantDataResult DownloadOhlc(IQuantDataOhlc** ppOhlc, const TQuantDataDownloadSettings* pSettings) {
+	EQuantDataResult DownloadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataDownloadSettings* pSettings) {
 		return m_functions.DownloadOhlc(this, ppOhlc, pSettings);
 	}
-	EQuantDataResult DownloadTick(IQuantDataTick** ppTick, const TQuantDataDownloadSettings* pSettings) {
+	EQuantDataResult DownloadTick(IQuantDataTickBucket** ppTick, const TQuantDataDownloadSettings* pSettings) {
 		return m_functions.DownloadTick(this, ppTick, pSettings);
 	}
-	EQuantDataResult LoadOhlc(IQuantDataOhlc** ppOhlc, const TQuantDataLoadSettings* pSettings) {
+	EQuantDataResult LoadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataLoadSettings* pSettings) {
 		return m_functions.LoadOhlc(this, ppOhlc, pSettings);
 	}
-	EQuantDataResult LoadTick(IQuantDataTick** ppTick, const TQuantDataLoadSettings* pSettings) {
+	EQuantDataResult LoadTick(IQuantDataTickBucket** ppTick, const TQuantDataLoadSettings* pSettings) {
 		return m_functions.LoadTick(this, ppTick, pSettings);
 	}
 	EQuantDataResult Release() {

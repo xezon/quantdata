@@ -10,19 +10,22 @@ namespace quantdata {
 
 CManager::CManager()
 {
-	const auto& providerUrls   = internal::GetProviderUrls();
-	auto providerPeriods       = internal::BuildProviderPeriods();
-	auto providerSymbolSources = internal::BuildProviderSymbolSources();
-	auto providerSymbolsList   = internal::BuildProviderSymbolsList();
+	const auto& providerUrls      = internal::GetProviderUrls();
+	auto providerSupportedPeriods = internal::BuildProviderSupportedPeriods();
+	auto providerPeriodNames      = internal::BuildProviderPeriodNames();
+	auto providerSymbolSources    = internal::BuildProviderSymbolSources();
+	auto providerSymbolsList      = internal::BuildProviderSymbolsList();
 
 	for (CQuantDataProvider provider : CQuantDataProvider())
 	{
-		const auto ordinal         = provider.ordinal();
-		auto& providerInfo         = m_providerInfos[ordinal];
-		providerInfo.url           = providerUrls[ordinal];
-		providerInfo.periods       = std::move(providerPeriods[ordinal]);
-		providerInfo.symbolSources = std::move(providerSymbolSources[ordinal]);
-		providerInfo.symbolsList   = std::move(providerSymbolsList[ordinal]);
+		const auto ordinal            = provider.ordinal();
+		auto& providerInfo            = m_providerInfos[ordinal];
+		providerInfo.type             = provider;
+		providerInfo.url              = providerUrls[ordinal];
+		providerInfo.supportedPeriods = std::move(providerSupportedPeriods[ordinal]);
+		providerInfo.periodNames      = std::move(providerPeriodNames[ordinal]);
+		providerInfo.symbolSources    = std::move(providerSymbolSources[ordinal]);
+		providerInfo.symbolsList      = std::move(providerSymbolsList[ordinal]);
 	}
 }
 
@@ -40,15 +43,13 @@ EQuantDataResult CManager::SetAllocator(const TQuantDataAllocatorSettings* pSett
 	return EQuantDataResult::Success;
 }
 
-using THub = CHubFunctions<CHub>;
-
 EQuantDataResult CManager::CreateHub(IQuantDataHub** ppHub)
 {
 	if (!ppHub)
 		return EQuantDataResult::InvalidArgument;
 
 	m_allocatorInUse = true;
-	*ppHub = mem::placement_g_alloc<THub>(*this);
+	*ppHub = mem::placement_g_alloc<CHubFunctions<CHub>>(*this);
 
 	return EQuantDataResult::Success;
 }

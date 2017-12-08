@@ -121,8 +121,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\dllmain.cpp" />
-    <ClCompile Include="..\src\quantdata\manager.cpp" />
     <ClCompile Include="..\src\quantdata\hub.cpp" />
+    <ClCompile Include="..\src\quantdata\manager.cpp" />
     <ClCompile Include="..\src\quantdata\ohlc.cpp" />
     <ClCompile Include="..\src\quantdata\tick.cpp" />
   </ItemGroup>
@@ -158,18 +158,18 @@
     <ClInclude Include="..\include\iquantdata.h" />
     <ClInclude Include="..\src\apikey.h" />
     <ClInclude Include="..\src\quantdata.h" />
+    <ClInclude Include="..\src\quantdata\api.h" />
     <ClInclude Include="..\src\quantdata\array\array_functions.h" />
     <ClInclude Include="..\src\quantdata\array\new_array.h" />
     <ClInclude Include="..\src\quantdata\array\static_array.h" />
     <ClInclude Include="..\src\quantdata\checks.h" />
     <ClInclude Include="..\src\quantdata\exceptions.h" />
+    <ClInclude Include="..\src\quantdata\hub.h" />
+    <ClInclude Include="..\src\quantdata\hub_functions.h" />
     <ClInclude Include="..\src\quantdata\manager.h" />
     <ClInclude Include="..\src\quantdata\ohlc.h" />
     <ClInclude Include="..\src\quantdata\ohlc_functions.h" />
     <ClInclude Include="..\src\quantdata\structs.h" />
-    <ClInclude Include="..\src\quantdata\hub.h" />
-    <ClInclude Include="..\src\quantdata\hub_functions.h" />
-    <ClInclude Include="..\src\quantdata\api.h" />
     <ClInclude Include="..\src\quantdata\tick.h" />
     <ClInclude Include="..\src\quantdata\tick_functions.h" />
     <ClInclude Include="..\src\quantdata\types.h" />

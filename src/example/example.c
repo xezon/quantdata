@@ -29,10 +29,19 @@ int main(int argc, char** argv)
 	result = pHub->SetProvider(pHub, &providerSettings);
 	assert(result == QuantDataResult_Success);
 
+	IQuantDataOhlcBucket* pOhlcBucket;
+	TQuantDataDownloadSettings downloadSettings;
+	downloadSettings.symbol = "MSFT";
+	downloadSettings.period = QuantDataPeriod_Minute;
+	downloadSettings.adjusted = 0;
+	result = pHub->DownloadOhlc(pHub, &pOhlcBucket, &downloadSettings);
+	assert(result == QuantDataResult_Success);
+	SAFE_RELEASE(pOhlcBucket);
+
 	IQuantDataPeriods* pPeriods = 0;
 	result = pHub->GetPeriods(pHub, &pPeriods);
 	assert(result == QuantDataResult_Success);
-	pPeriods->Release(pPeriods);
+	SAFE_RELEASE(pPeriods);
 
 	TQuantDataSymbolsSettings symbolSettings = {0};
 	symbolSettings.download = 0;
@@ -54,11 +63,6 @@ int main(int argc, char** argv)
 	result = pHub->GetSymbols(pHub, &pSymbols, &symbolSettings);
 	assert(result == QuantDataResult_Success);
 	SAFE_RELEASE(pSymbols);
-
-	TQuantDataDownloadSettings downloadSettings = {0};
-	downloadSettings.symbol = "MSFT";
-	downloadSettings.period = QuantDataPeriod_Minute;
-	downloadSettings.adjusted = 0;
 
 	SAFE_RELEASE(pHub);
 

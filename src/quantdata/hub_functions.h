@@ -35,16 +35,16 @@ public:
 		mutableFunctions.GetSymbols = [](TInterface* pThis, IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) {
 			return static_cast<TThis*>(pThis)->GetSymbols(ppSymbols, pSettings);
 		},
-		mutableFunctions.DownloadOhlc = [](TInterface* pThis, IQuantDataOhlc** ppOhlc, const TQuantDataDownloadSettings* pSettings) {
+		mutableFunctions.DownloadOhlc = [](TInterface* pThis, IQuantDataOhlcBucket** ppOhlc, const TQuantDataDownloadSettings* pSettings) {
 			return static_cast<TThis*>(pThis)->DownloadOhlc(ppOhlc, pSettings);
 		},
-		mutableFunctions.DownloadTick = [](TInterface* pThis, IQuantDataTick** ppTick, const TQuantDataDownloadSettings* pSettings) {
+		mutableFunctions.DownloadTick = [](TInterface* pThis, IQuantDataTickBucket** ppTick, const TQuantDataDownloadSettings* pSettings) {
 			return static_cast<TThis*>(pThis)->DownloadTick(ppTick, pSettings);
 		},
-		mutableFunctions.LoadOhlc = [](TInterface* pThis, IQuantDataOhlc** ppOhlc, const TQuantDataLoadSettings* pSettings) {
+		mutableFunctions.LoadOhlc = [](TInterface* pThis, IQuantDataOhlcBucket** ppOhlc, const TQuantDataLoadSettings* pSettings) {
 			return static_cast<TThis*>(pThis)->LoadOhlc(ppOhlc, pSettings);
 		},
-		mutableFunctions.LoadTick = [](TInterface* pThis, IQuantDataTick** ppTick, const TQuantDataLoadSettings* pSettings) {
+		mutableFunctions.LoadTick = [](TInterface* pThis, IQuantDataTickBucket** ppTick, const TQuantDataLoadSettings* pSettings) {
 			return static_cast<TThis*>(pThis)->LoadTick(ppTick, pSettings);
 		},
 		mutableFunctions.Release = [](TInterface* pThis) {

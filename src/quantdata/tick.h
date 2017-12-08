@@ -5,10 +5,10 @@
 
 namespace quantdata {
 
-class CTick : public IQuantDataTick
+class CTick : public IQuantDataTickBucket
 {
 protected:
-	using TInterface = IQuantDataTick;
+	using TInterface = IQuantDataTickBucket;
 
 protected:
 	CTick() {};

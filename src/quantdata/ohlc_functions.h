@@ -10,17 +10,17 @@ namespace quantdata {
 class CManager;
 
 template <class Implementation>
-class COhlcFunctions : public Implementation
+class COhlcBucketFunctions : public Implementation
 {
 private:
-	using TThis               = COhlcFunctions;
+	using TThis               = COhlcBucketFunctions;
 	using TImplementation     = Implementation;
 	using TInterface          = typename TImplementation::TInterface;
 	using TInterfaceFunctions = typename TInterface::TInterfaceFunctions;
 
 public:
 	template <class... Args>
-	COhlcFunctions(Args&&... args)
+	COhlcBucketFunctions(Args&&... args)
 		: TImplementation(std::forward<Args>(args)...)
 	{
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);
