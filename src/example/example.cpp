@@ -5,6 +5,7 @@
 #include <cassert>
 #include <common/util.h>
 #include <common/mem.h>
+#include <iostream>
 #include "apikey.h"
 
 int main(int argc, char** argv)
@@ -37,6 +38,16 @@ int main(int argc, char** argv)
 	downloadSettings.adjusted = false;
 	result = pHub->DownloadOhlc(&pOhlcBucket, &downloadSettings);
 	assert(result == EQuantDataResult::Success);
+
+	for (const TQuantDataOhlc& ohlc : *pOhlcBucket)
+	{
+		std::cout << "time: " << ohlc.time << std::endl;
+		std::cout << "  open: " << ohlc.open << std::endl;
+		std::cout << "  low: " << ohlc.low << std::endl;
+		std::cout << "  high: " << ohlc.high << std::endl;
+		std::cout << "  close: " << ohlc.close << std::endl;
+		std::cout << "  volume: " << ohlc.volume << std::endl;
+	}
 	util::SafeRelease(pOhlcBucket);
 
 	IQuantDataPeriods* pPeriods;

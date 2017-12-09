@@ -381,6 +381,12 @@ protected:
 
 struct SQuantDataOhlcBucket
 {
+	const TQuantDataOhlc* begin() {
+		return Get(0);
+	}
+	const TQuantDataOhlc* end() {
+		return Get(0) + Size();
+	}
 	const TQuantDataOhlc* Get(TQuantDataSize index) {
 		return m_functions.Get(this, index);
 	}

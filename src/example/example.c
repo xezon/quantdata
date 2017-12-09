@@ -4,6 +4,7 @@
 #include <iquantdata.h>
 #include <assert.h>
 #include <common/util_c.h>
+#include <stdio.h>
 #include "apikey.h"
 
 int main(int argc, char** argv)
@@ -29,13 +30,24 @@ int main(int argc, char** argv)
 	result = pHub->SetProvider(pHub, &providerSettings);
 	assert(result == QuantDataResult_Success);
 
-	IQuantDataOhlcBucket* pOhlcBucket;
-	TQuantDataDownloadSettings downloadSettings;
+	IQuantDataOhlcBucket* pOhlcBucket = 0;
+	TQuantDataDownloadSettings downloadSettings = {0};
 	downloadSettings.symbol = "MSFT";
 	downloadSettings.period = QuantDataPeriod_Minute;
 	downloadSettings.adjusted = 0;
 	result = pHub->DownloadOhlc(pHub, &pOhlcBucket, &downloadSettings);
 	assert(result == QuantDataResult_Success);
+
+	for (TQuantDataSize i = 0, c = pOhlcBucket->Size(pOhlcBucket); i < c; ++i)
+	{
+		const TQuantDataOhlc* pOhlc = pOhlcBucket->Get(pOhlcBucket, i);
+		printf("time: %lld\n", pOhlc->time);
+		printf("  open: %f\n", pOhlc->open);
+		printf("  low: %f\n", pOhlc->low);
+		printf("  high: %f\n", pOhlc->high);
+		printf("  close: %f\n", pOhlc->close);
+		printf("  volume: %f\n", pOhlc->volume);
+	}
 	SAFE_RELEASE(pOhlcBucket);
 
 	IQuantDataPeriods* pPeriods = 0;
