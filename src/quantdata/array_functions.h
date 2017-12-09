@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <quantdata.h>
 #include <common/util.h>
 #include <utility>
 
@@ -25,11 +24,11 @@ public:
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);
 		util::nullify_object_debug(mutableFunctions);
 
-		mutableFunctions.Get = [](TInterface* pThis, TQuantDataSize index) {
-			return static_cast<TThis*>(pThis)->Get(index);
+		mutableFunctions.Get = [](const TInterface* pThis, TQuantDataSize index) {
+			return static_cast<const TThis*>(pThis)->Get(index);
 		};
-		mutableFunctions.Size = [](TInterface* pThis) {
-			return static_cast<TThis*>(pThis)->Size();
+		mutableFunctions.Size = [](const TInterface* pThis) {
+			return static_cast<const TThis*>(pThis)->Size();
 		};
 		mutableFunctions.Release = [](TInterface* pThis) {
 			return static_cast<TThis*>(pThis)->Release();

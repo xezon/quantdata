@@ -26,8 +26,8 @@ public:
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);
 		util::nullify_object_debug(mutableFunctions);
 
-		mutableFunctions.Save = [](TInterface* pThis, const TQuantDataSaveSettings* pSettings) {
-			return static_cast<TThis*>(pThis)->Save(pSettings);
+		mutableFunctions.Save = [](const TInterface* pThis, const TQuantDataSaveSettings* pSettings) {
+			return static_cast<const TThis*>(pThis)->Save(pSettings);
 		};
 		mutableFunctions.Release = [](TInterface* pThis) {
 			static_cast<TThis*>(pThis)->Release();

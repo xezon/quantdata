@@ -37,16 +37,16 @@ private:
 
 	struct IOhlcTasks
 	{
-		virtual EQuantDataResult BuildRequest(const TQuantDataDownloadSettings& settings, const SProviderSettings& provider, const SProviderInfo& providerInfo, http_request& request) = 0;
-		virtual EQuantDataResult ParseResponse(const TQuantDataDownloadSettings& settings, const SProviderInfo& providerInfo, const http_response& response, SOhlcResponse& ohlcResponse) = 0;
+		virtual EQuantDataResult BuildRequest(const TQuantDataDownloadSettings& settings, const SProviderSettings& provider, const SProviderInfo& providerInfo, http_request& request) const = 0;
+		virtual EQuantDataResult ParseResponse(const TQuantDataDownloadSettings& settings, const SProviderInfo& providerInfo, const http_response& response, SOhlcResponse& ohlcResponse) const = 0;
 	protected:
 		~IOhlcTasks() {};
 	};
 
 	struct SOhlcTasksForAlphaVantage : public IOhlcTasks
 	{
-		virtual EQuantDataResult BuildRequest(const TQuantDataDownloadSettings& settings, const SProviderSettings& provider, const SProviderInfo& providerInfo, http_request& request) override;
-		virtual EQuantDataResult ParseResponse(const TQuantDataDownloadSettings& settings, const SProviderInfo& providerInfo, const http_response& response, SOhlcResponse& ohlcResponse) override;
+		virtual EQuantDataResult BuildRequest(const TQuantDataDownloadSettings& settings, const SProviderSettings& provider, const SProviderInfo& providerInfo, http_request& request) const override;
+		virtual EQuantDataResult ParseResponse(const TQuantDataDownloadSettings& settings, const SProviderInfo& providerInfo, const http_response& response, SOhlcResponse& ohlcResponse) const override;
 	};
 
 	using TOhlcTasksVariant = std::variant<SOhlcTasksForAlphaVantage>;
@@ -55,18 +55,18 @@ protected:
 	CHub(const CManager& manager);
 
 	EQuantDataResult SetProvider(const TQuantDataProviderSettings* pSettings);
-	EQuantDataResult GetPeriods(IQuantDataPeriods** ppPeriods);
-	EQuantDataResult GetSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings);
-	EQuantDataResult DownloadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataDownloadSettings* pSettings);
-	EQuantDataResult DownloadTick(IQuantDataTickBucket** ppTick, const TQuantDataDownloadSettings* pSettings);
-	EQuantDataResult LoadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataLoadSettings* pSettings);
-	EQuantDataResult LoadTick(IQuantDataTickBucket** ppTick, const TQuantDataLoadSettings* pSettings);
+	EQuantDataResult GetPeriods(IQuantDataPeriods** ppPeriods) const;
+	EQuantDataResult GetSymbols(IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) const;
+	EQuantDataResult DownloadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataDownloadSettings* pSettings) const;
+	EQuantDataResult DownloadTick(IQuantDataTickBucket** ppTick, const TQuantDataDownloadSettings* pSettings) const;
+	EQuantDataResult LoadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataLoadSettings* pSettings) const;
+	EQuantDataResult LoadTick(IQuantDataTickBucket** ppTick, const TQuantDataLoadSettings* pSettings) const;
 	void             Release();
 
 private:
-	EQuantDataResult ExtractJsonSymbols(const http_response& response, TSymbolInfos& symbolInfos);
-	EQuantDataResult ExtractCsvSymbols(const http_response& response, TSymbolInfos& symbolInfos, const json::csv_parameters& csv);
-	EQuantDataResult DownloadSymbols(const SProviderInfo& providerInfo, const size_t symbolListIndex, TSymbolInfos& symbolInfos);
+	EQuantDataResult ExtractJsonSymbols(const http_response& response, TSymbolInfos& symbolInfos) const;
+	EQuantDataResult ExtractCsvSymbols(const http_response& response, TSymbolInfos& symbolInfos, const json::csv_parameters& csv) const;
+	EQuantDataResult DownloadSymbols(const SProviderInfo& providerInfo, const size_t symbolListIndex, TSymbolInfos& symbolInfos) const;
 	static EQuantDataResult Download(http_client& client, const http_request& request, http_response& response);
 
 	const CManager&   m_manager;

@@ -44,7 +44,7 @@ EQuantDataResult CHub::SetProvider(const TQuantDataProviderSettings* pSettings)
 	return EQuantDataResult::InvalidProvider;
 }
 
-EQuantDataResult CHub::GetPeriods(IQuantDataPeriods** ppPeriods)
+EQuantDataResult CHub::GetPeriods(IQuantDataPeriods** ppPeriods) const
 {
 	if (!ppPeriods)
 		return EQuantDataResult::InvalidArgument;
@@ -60,7 +60,7 @@ EQuantDataResult CHub::GetPeriods(IQuantDataPeriods** ppPeriods)
 
 EQuantDataResult CHub::ExtractJsonSymbols(
 	const http_response& response,
-	TSymbolInfos& symbolInfos)
+	TSymbolInfos& symbolInfos) const
 {
 	std::string utf8string;
 
@@ -99,7 +99,7 @@ EQuantDataResult CHub::ExtractJsonSymbols(
 EQuantDataResult CHub::ExtractCsvSymbols(
 	const http_response& response,
 	TSymbolInfos& symbolInfos,
-	const json::csv_parameters& csv)
+	const json::csv_parameters& csv) const
 {
 	std::string utf8string;
 
@@ -129,7 +129,7 @@ EQuantDataResult CHub::ExtractCsvSymbols(
 EQuantDataResult CHub::DownloadSymbols(
 	const SProviderInfo& providerInfo,
 	const size_t symbolListIndex,
-	TSymbolInfos& symbolInfos)
+	TSymbolInfos& symbolInfos) const
 {
 	const TSymbolSources& symbolSources = providerInfo.symbolSources;
 	if (symbolListIndex < symbolSources.size())
@@ -156,7 +156,7 @@ EQuantDataResult CHub::DownloadSymbols(
 }
 
 EQuantDataResult CHub::GetSymbols(
-	IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings)
+	IQuantDataSymbols** ppSymbols, const TQuantDataSymbolsSettings* pSettings) const
 {
 	if (!ppSymbols || !pSettings)
 		return EQuantDataResult::InvalidArgument;
@@ -205,7 +205,7 @@ EQuantDataResult CHub::GetSymbols(
 	return result;
 }
 
-EQuantDataResult CHub::DownloadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataDownloadSettings* pSettings)
+EQuantDataResult CHub::DownloadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataDownloadSettings* pSettings) const
 {
 	if (!ppOhlc || !IsValidDownload(pSettings))
 		return EQuantDataResult::InvalidArgument;
@@ -256,7 +256,7 @@ EQuantDataResult CHub::SOhlcTasksForAlphaVantage::BuildRequest(
 	const TQuantDataDownloadSettings& settings,
 	const SProviderSettings& provider,
 	const SProviderInfo& providerInfo,
-	http_request& request)
+	http_request& request) const
 {
 	const CQuantDataPeriod period(settings.period);
 	const http_string wapikey = to_web_string(provider.apikey);
@@ -359,7 +359,7 @@ EQuantDataResult CHub::SOhlcTasksForAlphaVantage::ParseResponse(
 	const TQuantDataDownloadSettings& settings,
 	const SProviderInfo& providerInfo,
 	const http_response& response,
-	SOhlcResponse& ohlcResponse)
+	SOhlcResponse& ohlcResponse) const
 {
 	std::string utf8string;
 
@@ -448,17 +448,17 @@ EQuantDataResult CHub::SOhlcTasksForAlphaVantage::ParseResponse(
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CHub::DownloadTick(IQuantDataTickBucket** ppTick, const TQuantDataDownloadSettings* pSettings)
+EQuantDataResult CHub::DownloadTick(IQuantDataTickBucket** ppTick, const TQuantDataDownloadSettings* pSettings) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CHub::LoadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataLoadSettings* pSettings)
+EQuantDataResult CHub::LoadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantDataLoadSettings* pSettings) const
 {
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CHub::LoadTick(IQuantDataTickBucket** ppTick, const TQuantDataLoadSettings* pSettings)
+EQuantDataResult CHub::LoadTick(IQuantDataTickBucket** ppTick, const TQuantDataLoadSettings* pSettings) const
 {
 	return EQuantDataResult::Success;
 }

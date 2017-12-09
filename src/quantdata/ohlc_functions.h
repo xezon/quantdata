@@ -26,22 +26,22 @@ public:
 		auto& mutableFunctions = const_cast<TInterfaceFunctions&>(m_functions);
 		util::nullify_object_debug(mutableFunctions);
 
-		mutableFunctions.Get = [](TInterface* pThis, TQuantDataSize index) {
+		mutableFunctions.Get = [](const TInterface* pThis, TQuantDataSize index) {
 			return static_cast<const TThis*>(pThis)->Get(index);
 		};
-		mutableFunctions.Size = [](TInterface* pThis) {
+		mutableFunctions.Size = [](const TInterface* pThis) {
 			return static_cast<const TThis*>(pThis)->Size();
 		};
-		mutableFunctions.GetProvider = [](TInterface* pThis) {
+		mutableFunctions.GetProvider = [](const TInterface* pThis) {
 			return static_cast<const TThis*>(pThis)->GetProvider();
 		};
-		mutableFunctions.GetPeriod = [](TInterface* pThis) {
+		mutableFunctions.GetPeriod = [](const TInterface* pThis) {
 			return static_cast<const TThis*>(pThis)->GetPeriod();
 		};
-		mutableFunctions.GetTimezone = [](TInterface* pThis) {
+		mutableFunctions.GetTimezone = [](const TInterface* pThis) {
 			return static_cast<const TThis*>(pThis)->GetTimezone();
 		};
-		mutableFunctions.Save = [](TInterface* pThis, const TQuantDataSaveSettings* pSettings) {
+		mutableFunctions.Save = [](const TInterface* pThis, const TQuantDataSaveSettings* pSettings) {
 			return static_cast<const TThis*>(pThis)->Save(pSettings);
 		};
 		mutableFunctions.Release = [](TInterface* pThis) {

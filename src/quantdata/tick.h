@@ -14,7 +14,7 @@ protected:
 protected:
 	CTickBucket() {};
 
-	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings);
+	EQuantDataResult Save(const TQuantDataSaveSettings* pSettings) const;
 
 	void Release()
 	{
