@@ -35,21 +35,25 @@ private:
 		EQuantDataTimezone timezone = EQuantDataTimezone::UTC;
 	};
 
-	struct IOhlcTasks
+	struct IProviderJobs
 	{
-		virtual EQuantDataResult BuildRequest(const TQuantDataDownloadSettings& settings, const SProviderSettings& provider, const SProviderInfo& providerInfo, http_request& request) const = 0;
-		virtual EQuantDataResult ParseResponse(const TQuantDataDownloadSettings& settings, const SProviderInfo& providerInfo, const http_response& response, SOhlcResponse& ohlcResponse) const = 0;
+		virtual EQuantDataResult BuildOhlcRequest(const TQuantDataDownloadSettings& settings, const SProviderSettings& provider,
+			const SProviderInfo& providerInfo, http_request& request) const = 0;
+		virtual EQuantDataResult ParseOhlcResponse(const TQuantDataDownloadSettings& settings, const SProviderInfo& providerInfo,
+			const http_response& response, SOhlcResponse& ohlcResponse) const = 0;
 	protected:
-		~IOhlcTasks() {};
+		~IProviderJobs() {};
 	};
 
-	struct SOhlcTasksForAlphaVantage : public IOhlcTasks
+	struct SAlphaVantageJobs : public IProviderJobs
 	{
-		virtual EQuantDataResult BuildRequest(const TQuantDataDownloadSettings& settings, const SProviderSettings& provider, const SProviderInfo& providerInfo, http_request& request) const override;
-		virtual EQuantDataResult ParseResponse(const TQuantDataDownloadSettings& settings, const SProviderInfo& providerInfo, const http_response& response, SOhlcResponse& ohlcResponse) const override;
+		virtual EQuantDataResult BuildOhlcRequest(const TQuantDataDownloadSettings& settings, const SProviderSettings& provider,
+			const SProviderInfo& providerInfo, http_request& request) const override;
+		virtual EQuantDataResult ParseOhlcResponse(const TQuantDataDownloadSettings& settings, const SProviderInfo& providerInfo,
+			const http_response& response, SOhlcResponse& ohlcResponse) const override;
 	};
 
-	using TOhlcTasksVariant = std::variant<SOhlcTasksForAlphaVantage>;
+	using TProviderJobsVariant = std::variant<SAlphaVantageJobs>;
 
 protected:
 	CHub(const CManager& manager);
@@ -69,10 +73,10 @@ private:
 	EQuantDataResult DownloadSymbols(const SProviderInfo& providerInfo, const size_t symbolListIndex, TSymbolInfos& symbolInfos) const;
 	static EQuantDataResult Download(http_client& client, const http_request& request, http_response& response);
 
-	const CManager&   m_manager;
-	SProviderSettings m_provider;
-	IOhlcTasks*       m_pOhlcTasks;
-	TOhlcTasksVariant m_ohlcTasksVariant;
+	const CManager&      m_manager;
+	SProviderSettings    m_provider;
+	IProviderJobs*       m_pJobs;
+	TProviderJobsVariant m_jobs;
 };
 
 } // namespace quantdata

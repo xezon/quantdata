@@ -16,7 +16,7 @@ namespace quantdata {
 
 CHub::CHub(const CManager& manager)
 	: m_manager(manager)
-	, m_pOhlcTasks(nullptr)
+	, m_pJobs(nullptr)
 {
 }
 
@@ -29,10 +29,10 @@ EQuantDataResult CHub::SetProvider(const TQuantDataProviderSettings* pSettings)
 		switch (m_provider.type)
 		{
 		case EQuantDataProvider::AlphaVantage:
-			m_pOhlcTasks = &m_ohlcTasksVariant.emplace<SOhlcTasksForAlphaVantage>();
+			m_pJobs = &m_jobs.emplace<SAlphaVantageJobs>();
 			break;
 		default:
-			m_pOhlcTasks = nullptr;
+			m_pJobs = nullptr;
 			break;
 		}
 
@@ -40,7 +40,7 @@ EQuantDataResult CHub::SetProvider(const TQuantDataProviderSettings* pSettings)
 	}
 
 	m_provider.Reset();
-	m_pOhlcTasks = nullptr;
+	m_pJobs = nullptr;
 	return EQuantDataResult::InvalidProvider;
 }
 
@@ -213,7 +213,7 @@ EQuantDataResult CHub::DownloadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantD
 	if (!m_provider.Valid())
 		return EQuantDataResult::InvalidProvider;
 
-	if (!m_pOhlcTasks)
+	if (!m_pJobs)
 		return EQuantDataResult::UnsupportedFeature;
 	
 	CQuantDataPeriod period(pSettings->period);
@@ -224,7 +224,7 @@ EQuantDataResult CHub::DownloadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantD
 	const CQuantDataProvider& provider = m_provider.type;
 	const SProviderInfo& providerInfo = m_manager.GetProviderInfo(provider);
 	http_request request;
-	EQuantDataResult result = m_pOhlcTasks->BuildRequest(*pSettings, m_provider, providerInfo, request);
+	EQuantDataResult result = m_pJobs->BuildOhlcRequest(*pSettings, m_provider, providerInfo, request);
 
 	if (result == EQuantDataResult::Success)
 	{
@@ -238,7 +238,7 @@ EQuantDataResult CHub::DownloadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantD
 			SOhlcResponse ohlcResponse;
 			ohlcResponse.period = period;
 
-			result = m_pOhlcTasks->ParseResponse(*pSettings, providerInfo, response, ohlcResponse);
+			result = m_pJobs->ParseOhlcResponse(*pSettings, providerInfo, response, ohlcResponse);
 
 			if (result == EQuantDataResult::Success)
 			{
@@ -252,7 +252,7 @@ EQuantDataResult CHub::DownloadOhlc(IQuantDataOhlcBucket** ppOhlc, const TQuantD
 	return result;
 }
 
-EQuantDataResult CHub::SOhlcTasksForAlphaVantage::BuildRequest(
+EQuantDataResult CHub::SAlphaVantageJobs::BuildOhlcRequest(
 	const TQuantDataDownloadSettings& settings,
 	const SProviderSettings& provider,
 	const SProviderInfo& providerInfo,
@@ -355,7 +355,7 @@ EQuantDataResult CHub::SOhlcTasksForAlphaVantage::BuildRequest(
 	return EQuantDataResult::Success;
 }
 
-EQuantDataResult CHub::SOhlcTasksForAlphaVantage::ParseResponse(
+EQuantDataResult CHub::SAlphaVantageJobs::ParseOhlcResponse(
 	const TQuantDataDownloadSettings& settings,
 	const SProviderInfo& providerInfo,
 	const http_response& response,
@@ -420,7 +420,7 @@ EQuantDataResult CHub::SOhlcTasksForAlphaVantage::ParseResponse(
 			const json::const_json_object_iterator pOpen    = json::find_similar(jsonOhlc, "open");
 			const json::const_json_object_iterator pHigh    = json::find_similar(jsonOhlc, "high");
 			const json::const_json_object_iterator pLow     = json::find_similar(jsonOhlc, "low");
-			const json::const_json_object_iterator pClose   = json::find_similar(jsonOhlc, "close");
+			const json::const_json_object_iterator pClose   = json::find_similar(jsonOhlc, settings.adjusted ? "adjusted close" : "close" );
 			const json::const_json_object_iterator pVolume  = json::find_similar(jsonOhlc, "volume");
 			const json::const_json_object_iterator pOhlcEnd = jsonOhlc.object_range().end();
 
