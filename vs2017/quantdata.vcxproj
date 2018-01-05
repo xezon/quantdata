@@ -169,7 +169,6 @@
     <ClInclude Include="..\src\quantdata\manager.h" />
     <ClInclude Include="..\src\quantdata\ohlc.h" />
     <ClInclude Include="..\src\quantdata\ohlc_functions.h" />
-    <ClInclude Include="..\src\quantdata\structs.h" />
     <ClInclude Include="..\src\quantdata\tick.h" />
     <ClInclude Include="..\src\quantdata\tick_functions.h" />
     <ClInclude Include="..\src\quantdata\types.h" />
